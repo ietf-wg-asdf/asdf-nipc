@@ -59,11 +59,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '../NIPC.yaml#/components/schemas/SuccessResponse'
                   - $ref: '../NIPC.yaml#/components/schemas/Id'
                   - $ref: '../NIPC.yaml#/components/schemas/Property'
         '400':

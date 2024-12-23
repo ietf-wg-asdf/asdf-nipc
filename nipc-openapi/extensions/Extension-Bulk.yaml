@@ -51,6 +51,11 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
@@ -138,7 +143,6 @@ components:
 ## Multiple returns for a bulk operation
     Extension-BulkResponse:
       allOf:
-        - $ref: '../NIPC.yaml#/components/schemas/SuccessResponse'
         - $ref: '../NIPC.yaml#/components/schemas/Id'
       type: object
       properties:

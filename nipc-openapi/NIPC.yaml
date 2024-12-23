@@ -74,11 +74,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/PropertyValue'
         '400':
@@ -122,11 +126,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/PropertyValue'
         '400':
@@ -170,11 +178,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/PropertyValueResponseArray'
         '400':
@@ -216,11 +228,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/PropertyValueResponseArray'
         '400':
@@ -266,11 +282,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/Event'                  
                 
@@ -315,11 +335,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'  
                   - $ref: '#/components/schemas/Event' 
         '400':
@@ -363,11 +387,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/Event' 
         '400':
@@ -412,12 +440,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
-                allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - $ref: '#/components/schemas/EventStatusResponseArray'
+                $ref: '#/components/schemas/EventStatusResponseArray'
         '400':
           description: Bad request
         '401':
@@ -467,11 +498,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/PropertyValue'
         '400':
@@ -515,10 +550,11 @@ paths:
       responses:
         '200':
           description: Success
-          content:
-            application/json:
+          headers:
+            X-Request-ID:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
+                type: integer
+              description: Unique Request ID
         '400':
           description: Bad request
         '401':
@@ -562,11 +598,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse' 
                   - $ref: '#/components/schemas/Id'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
         '400':
@@ -610,11 +650,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse' 
                   - $ref: '#/components/schemas/Id'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
         '400':
@@ -652,11 +696,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
         '400':
           description: Bad request
@@ -692,11 +740,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse' 
                   - $ref: '#/components/schemas/Id'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
         '400':
@@ -744,11 +796,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/Value'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
@@ -794,11 +850,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/Value'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
@@ -845,12 +905,16 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - $ref: '#/components/schemas/SdfObject'
+                  - $ref: '#/components/schemas/SdfReference'
                   - $ref: '#/components/schemas/Id'
         '400':
           description: Bad request
@@ -893,21 +957,23 @@ paths:
             example: "https://example.com/heartrate/sdfObject/healthsensor"
       requestBody:
         content:
-          application/json:
+          application/sdf+json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/SdfObject'
-                - $ref: '#/components/schemas/Id'
+              $ref: '#/components/schemas/SdfObject'
         required: true
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - $ref: '#/components/schemas/SdfObject'
+                  - $ref: '#/components/schemas/SdfReference'
                   - $ref: '#/components/schemas/Id'
         '400':
           description: Bad request
@@ -950,12 +1016,16 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
-                  - $ref: '#/components/schemas/SdfObject'
+                  - $ref: '#/components/schemas/SdfReference'
                   - $ref: '#/components/schemas/Id'
         '400':
           description: Bad request
@@ -998,11 +1068,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/SdfObject'
                   - $ref: '#/components/schemas/Id'
         '400':
@@ -1054,11 +1128,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/DataApp'
         '400':
           description: Bad request
@@ -1108,11 +1186,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/DataApp'
         '400':
           description: Bad request
@@ -1156,11 +1238,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/DataApp'
         '400':
           description: Bad request
@@ -1204,11 +1290,15 @@ paths:
       responses:
         '200':
           description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SuccessResponse'
                   - $ref: '#/components/schemas/DataApp'
         '400':
           description: Bad request
@@ -1397,6 +1487,14 @@ components:
               type: string 
 
  ## sdfObject registration definition
+    SdfReference:
+      type: object
+      description: SDF URL referring to the sdfobject
+      properties: 
+        SdfReference:
+          type: string
+          example: "https://example.com/heartrate/sdfObject/healthsensor"
+    
     SdfObject:
       type: object
       description: Sample SDF object
@@ -1486,33 +1584,11 @@ components:
                   characteristicID: 12345678-1234-5678-1234-56789abcdef4
 
 # responses
-## Baseline success reponse
-    SuccessResponse:
-      required:
-        - status
-      type: object
-      properties:
-        status:
-          type: string
-          example: SUCCESS
-          enum:
-            - SUCCESS
-        requestID:
-          type: string
-          example: 12345678-5678-1234-5578-abcdef1234
 
 ## Error 500 application Failure response
     FailureResponse:
-      required:
-        - status
-        - errorCode
       type: object
       properties:
-        status:
-          type: string
-          example: FAILURE
-          enum:
-            - FAILURE
         reason:
           type: string
           example: Not Found
@@ -1523,9 +1599,6 @@ components:
             - 2000 # Generic catch-all error code for any API
             - 2001 # Invalid device ID or gateway doesn't recognize the ID
             - 2002 # Group ID not allowed
-        requestID:
-          type: string
-          example: 12345678-5678-1234-5578-abcdef1234
     
     ConnectionErrorCodes:
       type: object
@@ -1585,14 +1658,10 @@ components:
             - 1403 # Invalid action identifier
 
 ## Property operations responses
-    PropertyValueSuccess:
-      allOf:
-        - $ref: '#/components/schemas/SuccessResponse'
-        - $ref: '#/components/schemas/PropertyValue'   
     
     PropertyValueResponseArrayItem:
       oneOf:
-        - $ref: '#/components/schemas/PropertyValueSuccess'
+        - $ref: '#/components/schemas/PropertyValue'
         - $ref: '#/components/schemas/FailureResponse'
     
     PropertyValueResponseArray:
@@ -1609,7 +1678,6 @@ components:
         - $ref: '#/components/schemas/Id'
         - $ref: '#/components/schemas/Event' 
       oneOf:
-        - $ref: '#/components/schemas/SuccessResponse'
         - $ref: '#/components/schemas/FailureResponse'
 
     EventStatusResponseArray:
