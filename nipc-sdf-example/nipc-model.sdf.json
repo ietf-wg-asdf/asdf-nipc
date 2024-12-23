@@ -1,0 +1,87 @@
+{
+    "namespace": {
+        "heartrate_example": "https://example.com/heartrate"
+    },
+    "defaultNamespace": "heartrate_example",
+    "sdfObject": {
+        "healthsensor": {
+            "sdfProperty": {
+                "heartrate": {
+                    "description": "The current measured heart rate",
+                    "type": "number",
+                    "unit": "beat/min",
+                    "observable": false,
+                    "writable": false,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+                            "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+                        }
+                    }
+                }
+            },
+            "sdfEvent": {
+                "fallDetected": {
+                    "sdfOutputData": {
+                        "type": "boolean",
+                        "protocolMap": {
+                            "ble": {
+                                "type": "gatt",
+                                "serviceID": "12345678-1234-5678-1234-56789abcdef1",
+                                "characteristicID": "12345678-1234-5678-1234-56789abcdef1"
+                            }
+                        }
+                    }
+                },
+                "isPresent": {
+                    "sdfOutputData": {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "sdfType": "byte-string"
+                            },
+                            "rssi": {
+                                "type": "number"
+                            }
+                        },
+                        "protocolMap": {
+                            "ble": {
+                                "type": "advertisement"
+                            }
+                        }
+                    }
+                },
+                "isConnected": {
+                    "sdfOutputData": {
+                        "type": "boolean",
+                        "protocolMap": {
+                            "ble": {
+                                "type": "connection_events"
+                            }
+                        }
+                    }
+                }
+            },
+            "sdfAction": {
+                "start": {
+                    "description": "Start heartrate monitoring",
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "12345678-1234-5678-1234-56789abcdef8",
+                            "characteristicID": "12345678-1234-5678-1234-56789abcdef8"
+                        }
+                    }
+                },
+                "stop": {
+                    "description": "Stop heartrate monitoring",
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "12345678-1234-5678-1234-56789abcdef9",
+                            "characteristicID": "12345678-1234-5678-1234-56789abcdef9"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

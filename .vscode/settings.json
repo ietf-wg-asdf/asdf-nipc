@@ -1,0 +1,13 @@
+{
+    "editor.rulers": [
+        72
+    ],
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "*.sdf.json"
+            ],
+            "url": "https://raw.githubusercontent.com/ietf-wg-asdf/SDF/master/sdf-validation.jso.json"
+        }
+    ]
+}

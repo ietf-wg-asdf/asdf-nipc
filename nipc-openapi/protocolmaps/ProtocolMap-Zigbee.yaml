@@ -1,0 +1,127 @@
+openapi: 3.0.3
+info:
+  title: Non IP Device Control (NIPC) Zigbee Protocol Mapping
+  description: |-
+    Non IP Device Control (NIPC) Zigbee Protocol Mapping. 
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: bbrinckm@cisco.com
+  license:
+    name: TBD
+    url: TBD
+  version: 0.4.5
+externalDocs:
+  description: NIPC IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
+
+components:
+  schemas:
+# Zigbee Protocol Mapping
+##  Protocol Mapping for Zigbee Service Map
+    ProtocolMap-Zigbee-ServiceMap:
+      required:
+        - zigbee
+      type: object
+      properties:
+        zigbee:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtocolMap-Zigbee-Endpoint'
+
+    ProtocolMap-Zigbee-Endpoint:
+      required:
+        - endpointID
+        - clusters
+      type: object
+      properties:
+        endpointID:
+          type: integer
+          format: int32
+          example: 10
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtocolMap-Zigbee-Cluster'
+
+    ProtocolMap-Zigbee-Cluster:
+      required:
+        - clusterID
+        - properties
+      type: object
+      properties:
+        clusterID:
+          type: integer
+          format: int32
+          example: 0
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtocolMap-Zigbee-Property'
+
+    ProtocolMap-Zigbee-Property:
+      required:
+        - propertyID
+        - propertyType
+      type: object
+      properties:
+        propertyID:
+          type: integer
+          format: int32
+          example: 1
+        propertyType:
+          type: integer
+          format: int32
+          example: 32
+          
+## Protocol Mapping for Zigbee broadcast
+    ProtocolMap-Zigbee-Broadcast:
+      required:
+        - zigbee
+      type: object
+      properties:
+        zigbee:
+          type: object
+
+## Protocol mapping for Zigbee property
+    ProtocolMap-Zigbee-Propmap:
+      required:
+        - zigbee
+      type: object
+      properties:
+        zigbee:
+          required:
+            - endpointID
+            - clusterID
+            - propertyID
+          type: object
+          properties:
+            endpointID:
+              type: integer
+              format: int32
+              example: 1
+            clusterID:
+              type: integer
+              format: int32
+              example: 6
+            propertyID:
+              type: integer
+              format: int32
+              example: 16
+            type:
+              type: integer
+              format: int32
+              example: 1
+
+    ProtocolMap-Zigbee-Event:
+      allOf:  
+        - $ref: '#/components/schemas/ProtocolMap-Zigbee-Propmap'
+
+## Zigbee Error codes
+    ProtocolMap-Zigbee-ErrorCodes:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+          enum:
+            - 1021 # Zigbee join failed

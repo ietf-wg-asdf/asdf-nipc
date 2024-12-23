@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: Non IP Device Control (NIPC) API firmware upgrade extension
+  description: |-
+    Non IP Device Control (NIPC) API firmware upgrade extension, requires the file extension
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: bbrinckm@cisco.com
+  license:
+    name: TBD
+    url: TBD
+  version: 0.4.5
+externalDocs:
+  description: NIPC IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
+servers:
+  - url: "{gw_host}/nipc/draft-04"
+    variables:
+      gw_host:
+        default: localhost
+        description: Gateway Host
+tags:
+  - name:  NIPC API extensions
+    description: |-
+      APIs that simplify application interaction by implementing one or more basic API's into a single API call.
+
+paths:
+### Extensions
+  /{id}/extension/firmware:
+    put:
+      tags:
+        - NIPC API extensions
+      summary: Upgrade the firmware of a device
+      description: |-
+        Update the firmware of a device. Will perform all operations required to upgrade the firmware. Id cannot be a group-id.
+      operationId: upgradeFirmware
+      parameters:
+      - name: id
+        in: path
+        description: device id that need to be filtered, group id is not allowed
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: './Extension-File.yaml#/components/schemas/Extension-File'
+                - $ref: '#/components/schemas/Extension-Firmware'
+        required: true
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
+          content:
+            application/json:
+              schema:
+                allOf: 
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: '#/components/schemas/Extension-UpgradeStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '405':
+          description: Invalid request
+        '500':
+          description: Server-side failure
+          content:
+            application/json:
+              schema:
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
+                  
+    get:
+      tags:
+        - NIPC API extensions
+      summary: Get the status of a firmware upgrade of a device
+      description: |-
+        Get the status of a firmware upgrade of a device. REturns success when ongoing or completed, with a reason. Returns failure when upgrade has failed. Id cannot be a group-id.
+      operationId: upgradeFirmwareStatus
+      parameters:
+      - name: id
+        in: path
+        description: device id that need to be filtered, group id is not allowed
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
+          content:
+            application/json:
+              schema:
+                allOf: 
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: '#/components/schemas/Extension-UpgradeStatus'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '405':
+          description: Invalid request
+        '500':
+          description: Server-side failure
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
+  
+components:
+  schemas:
+# Extensions
+## a Firmware Extension
+    Extension-Firmware:
+      type: object
+      properties:
+        firmware:
+          type: string
+          enum:
+            - nordic
+            - silabs
+
+## Firmware upgrade status extension
+    Extension-UpgradeStatus:
+      type: object
+      properties:
+        upgradeStatus:
+          type: string
+          enum:
+            - started
+            - completed
+            - in progress
+            - rolled-back
+            - failed
+
+
+
+

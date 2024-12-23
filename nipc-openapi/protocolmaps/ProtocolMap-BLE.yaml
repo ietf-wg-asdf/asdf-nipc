@@ -1,0 +1,188 @@
+openapi: 3.0.3
+info:
+  title: Non IP Device Control (NIPC) BLE Protocol Mapping
+  description: |-
+    Non IP Device Control (NIPC) BLE Protocol Mapping. 
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: bbrinckm@cisco.com
+  license:
+    name: TBD
+    url: TBD
+  version: 0.4.5
+externalDocs:
+  description: NIPC IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
+
+components:
+  schemas:
+# BLE Protocol Mapping
+## A Service is a device with optional service IDs
+    ProtocolMap-BLE-ServiceList:
+      type: object
+      properties:
+        ble:
+          type: object
+          properties:
+            services:
+              type: array
+              items:
+                type: object
+                properties:
+                  serviceID:
+                    type: string
+                    format: uuid
+                    example: 12345678-1234-5678-1234-56789abcdef4
+            cached:
+              description: |-
+                If we can cache information, then device doesn't need
+                to be rediscovered before every connected.
+              type: boolean
+              default: false
+            cacheIdlePurge:
+              description: cache expiry period, when device allows
+              type: integer
+              example: 3600 # default 1 hour
+            autoUpdate:
+              description: |-
+                autoupdate services if device supports it (default)
+              type: boolean
+              example: true
+            bonding: #optional, by default defined in SCIM object 
+              type: string
+              example: default
+              enum:
+                - default 
+                - none
+                - justworks
+                - passkey
+                - oob
+
+##  Protocol Mapping for BLE Service Map
+    ProtocolMap-BLE-ServiceMap:
+      required:
+        - services
+      type: object
+      properties:
+        ble:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtocolMap-BLE-Service'
+
+    ProtocolMap-BLE-Service:
+      required:
+        - serviceID
+        - characteristics
+      type: object
+      properties:
+        serviceID:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+        characteristics:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtocolMap-BLE-Characteristic'
+
+    ProtocolMap-BLE-Characteristic:
+      required:
+        - characteristicID
+        - flags
+        - descriptors
+      type: object
+      properties:
+        characteristicID:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+        flags:
+          type: array
+          example:
+          - read
+          - write
+          items:
+            type: string
+            enum:
+              - read
+              - write
+              - notify
+        descriptors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtocolMap-BLE-Descriptor'
+
+    ProtocolMap-BLE-Descriptor:
+      required:
+        - descriptorID
+      type: object
+      properties:
+        descriptorID:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+
+##  Protocol Mapping for BLE Broadcast
+    ProtocolMap-BLE-Broadcast:
+      required:
+        - ble
+      type: object
+      properties:
+        ble:
+          type: object
+
+## Protocol Mapping for BLE Property
+    ProtocolMap-BLE-Propmap:
+      required:
+        - ble
+      type: object
+      properties:
+        ble:
+          required:
+            - serviceID
+            - characteristicID
+          type: object
+          properties:
+            serviceID:
+              type: string
+              format: uuid
+              example: 12345678-1234-5678-1234-56789abcdef4
+            characteristicID:
+              type: string
+              format: uuid
+              example: 12345678-1234-5678-1234-56789abcdef4
+              
+## Defines different types of BLE events
+    ProtocolMap-BLE-Event:
+      required:
+        - ble
+      type: object
+      properties:
+        ble:
+          required:
+            - type
+          type: object
+          properties:
+            type:
+              type: string
+              example: gatt
+              enum:
+                - gatt
+                - connection_events
+                - advertisements
+            serviceID:
+              type: string
+              example: 12345678-1234-5678-1234-56789abcdef0
+            characteristicID:
+              type: string
+              example: 12345678-1234-5678-1234-56789abcdef1
+
+## BLE Error codes
+    ProtocolMap-BLE-ErrorCodes:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+          enum:
+            - 1011 # BLE bonding failed
+            - 1013 # BLE service discovery failed

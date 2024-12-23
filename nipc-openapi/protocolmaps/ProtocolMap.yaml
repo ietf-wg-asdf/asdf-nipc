@@ -1,0 +1,72 @@
+openapi: 3.0.3
+info:
+  title: Non IP Device Control (NIPC) Protocol Mapping
+  description: |-
+    Non IP Device Control (NIPC) Protocol Mapping. When adding a new protocol mapping pls add a reference to the protocol map for all the schemas in this file.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: bbrinckm@cisco.com
+  license:
+    name: TBD
+    url: TBD
+  version: 0.4.5
+externalDocs:
+  description: NIPC IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
+
+components:
+  schemas:
+# Protocol Mapping
+## Protocol Map for Service Discovery
+    ProtocolMap-ServiceList:
+      type: object
+      properties:
+        protocolMap:
+          oneOf:
+            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-ServiceList'
+
+## Protocol Map for Service Discovery result
+    ProtocolMap-ServiceMap:
+      type: object
+      properties:
+        protocolMap:
+          oneOf:
+            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-ServiceMap'
+            - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-ServiceMap'
+        
+## Protocol Map for Error Codes
+    ProtocolMap-ErrorCodes:
+      type: object
+      properties:
+        protocolMap:
+          oneOf:  
+            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-ErrorCodes'
+            - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-ErrorCodes'
+
+## Protocol Map for Broadcasts
+    ProtocolMap-Broadcast:
+      type: object
+      properties:
+        protocolMap:
+          oneOf:  
+            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-Broadcast'
+            - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-Broadcast'
+
+## Protocol Map for a property
+    ProtocolMap-Property:
+      type: object
+      properties:
+        protocolMap:
+          oneOf:  
+            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-Propmap'
+            - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-Propmap'
+
+## Protocol Map for an event
+    ProtocolMap-Event:
+      type: object
+      properties:
+        protocolMap:
+          oneOf:  
+            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-Event'
+            - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-Event'
+ 
