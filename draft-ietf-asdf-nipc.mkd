@@ -2048,7 +2048,7 @@ the implementor.
 ~~~~~~
 <CODE BEGINS>
 file "openapi.yml"
-{::include nipc-openapi/NIPC_REST.yaml}
+{::include nipc-openapi/NIPC.yaml}
 <CODE ENDS>
 ~~~~~~
 {: #openAPI}
