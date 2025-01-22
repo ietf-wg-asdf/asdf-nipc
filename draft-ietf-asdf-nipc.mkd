@@ -450,548 +450,6 @@ Example failure response:
 ~~~~~
 {: #exfail title="Example failure response"}
 
-# NIPC Actions
-
-The primary goal of NIPC actions is to exchange data with a Non-IP device, by
-means of reading, writing or streaming NIPC properties to applications. An
-explicit connection may be required, which is also an action. An application
-may also want to transmit a broadcast.
-
-## Connections
-
-A connection is an operation that establishes or tears down an association or
-connection with a device. Optionally during connection setup properties 
-supported by a device can be discovered. 
-
-/action/connection
-
-The connection API allows an application to request to connect to 
-a device.
-
-Operations:
-
- - Connect to a device: POST
- - Return active connections: GET
- - Disconnect a device: DELETE 
-
-### Connection API
-
-#### Connect to a device {#connect}
-
-Method: POST /action/connection
-
-Description: Connect to a device
-
-Parameters: None
-
-Request Body: 
-
- - an Object, as defined in {{objectdef}} 
- - optionally a set of properties to be discovered. These are supplied
-   in protocol objects, as defined in {{proobj}}.
-   In the case of BLE, if no protocol object is included, service discovery is 
-   performed to discover all supported properties when connecting to
-   a device. Optionally, service discovery may be limited to properties 
-   defined in the "ble" protocol extension. The services to be 
-   discovered can be added in an array. Property discover can be buffered
-   across connections, so the API also supports caching parameters. 
- - Connection retry parameters 
-
-Example body of a connection without specific discovery of properties:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "retries": 3,
-  "retryMultipleAPs": true
-}
-~~~~~
-{: #exconn title="Example Connection"}
-
-where-
-
- - "id", "type" and "technology" are part of the object definition (device
-   or group), as defined in {{objectdef}}. 
- - "retries" defines the number of retries in case the operations does not 
-   succeed
- - "retryMultipleAPs" can be used in case there is an infrastructure with 
-   multiple access points or radios that can reach the device. If set to "true"
-   a different access point may be used for retries.
-
-In case the application would like to discover specific properties of a device,
-a protocol object can be added that defines what properties should be
-discovered.
-
-Example body of a BLE connection with specific discovery of properties:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "ble": {
-    "services": [
-      {
-        "serviceID": "12345678-1234-5678-1234-56789abcdef4"
-      }
-    ],
-    "cached": false,
-    "cacheIdlePurge": 3600,
-    "autoUpdate": true,
-    "bonding": "default"
-  },
-  "retries": 3,
-  "retryMultipleAPs": true
-}
-~~~~~
-{: #exconnprp title="Example Connection with explicit discovery of connections"}  
-
-where in the BLE protocol object: 
-
- - "services" is an array of services defined by their serviceIDs.
- - "cached" refers to whether the services need to be cached for 
-   subsequent connects, in order not to perform service discovery on
-   each request.
- - "cacheIdlepurge" defines how long the cache should be maintained 
-   before purging
- - some devices support notifications on changes in services, 
-   "autoUpdate" allows the network to update services based on 
-   notification (on by default)
- - "bonding" allows you to override the bonding method configured when 
-   onboarding the device
-
-Response: 
-Success responses include standard success response properties
-as defined in {{success}} as well as a protocol object with an array of 
-discovered properties, as defined in the specific protocol.
-For example, for BLE, this is an array of supported services, which in turn
-contains an array of charateristics, which in turn contains an array of
-descriptors, as shown in {{BLEservices}}.
-
-~~~~~
-    services
-     - serviceID
-        |
-        |> characteristics
-            - charactericID
-            - flags
-               |
-               |> Descriptors
-                   - descriptorID
-~~~~~
-{: #BLEservices title="BLE Services"}
-
-Example of a BLE connection response with BLE discovered properties:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "ble": [
-    {
-      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-      "characteristics": [
-        {
-          "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-          "flags": [
-            "read",
-            "write"
-          ],
-          "descriptors": [
-            {
-              "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-~~~~~
-{: #exconnresp title="Example Connection response"}
-
-where in the BLE protocol object:
-
- - "id", "requestID" and "technology" are part of the standard {{success}} definition 
- - "ble" protocol object contains an Array of BLE services as shown in
-   {{BLEservices}}
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Return active connections
-
-Method: GET /action/connection
-
-Description: Returns one or more active connections, based on ids 
-provided in parameters (none = return all connections).
-
-Parameters, in query: 
-One of following options-
-
- - None: return all active connections for this application 
- - single id: return connection status for this id
- - comma separated ids: return connection status for multiple ids
-
-Response: 
-A standard success ({{exsuccess}}) or failure ({{exfail}}) response, including
-an array of device objects and their connection status. Success if the device
-is connected, failure if the device is not connected.  
-
-Example get connection response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "connections": [
-    {
-      "status": "SUCCESS",
-      "requestID": "12345678-5678-1234-5578-abcdef1234",
-      "id": "12345678-1234-5678-1234-56789abcdef4"
-    },
-    {
-      "status": "FAILURE",
-      "reason": "Not Found",
-      "errorCode": 12,
-      "requestID": "12345678-5678-1234-5578-abcdef1234"
-    }
-  ]
-}
-~~~~~
-{: #exgetresp title="Example Connection response"}
-
-In this example, status of 2 connections was requested. The request was
-successfully executed, 1 of the 2 connections was found active, the other
-one not.
-
-#### Disconnect a device 
-
-Method: DELETE /action/connection
-
-Description: Disconnect one or more devices, based on ids provided in
-parameters
-
-Parameters, in query: 
-One of following options-
-
- - None: Disconnect all devices for connections this application made
- - single id: disconnect device with id
- - comma separated ids: disconnect multiple devices with ids
-
-Response: 
-The response for the DELETE function is the same as the response for the GET
-function. See {{exsuccess}} for success response, and {{exconnresp}} for failed
-responses.
-
-## Properties
-
-Property APIs allow applictions to read and write property values from/to
-devices.
-
-/action/property
-
-Operations:
-
- - Write value: POST
- - Update value: PUT
- - Read value: GET
- - Delete value: DELETE 
-
-### Property API
-
-#### Writing a value {#write}
-
-Method: POST /action/property/
-
-Description: Writes a value to a property
-
-Parameters: None
-
-Request Body: 
-
- - an Object, as defined in {{objectdef}}
- - A propertyID to write to
- - A value to be written
- - optional parameters
-
-Example body writing a property:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "propertyID": "temperature",
-  "value": "dGVzdA==",
-  "forcedResponse": true
-}
-~~~~~
-{: #exwrite title="Example writing a property"}
-
-where-
-
- - "id", "type" and "technology" are part of the object definition (device
-   or group), as defined in {{objectdef}}
- - "propertyID" is the ID of a previously registered property mapping
- - "value" is the bytes to be written in base64 encoding
- - "forcedresponse" requests a specific response behavior of the device
-   that is not the default
-
-Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as the propertyID and the value written.
-
-Example of a write property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "propertyID": "temperature",
-  "value": "dGVzdA=="
-}
-~~~~~
-{: #exwrresp title="Example write property response"}
-
-where- 
-
- - "id", "requestID" and "technology" are part of the standard {{success}} definition 
- - "propertyID" is the ID of a previously registered property mapping
- - "value" is the bytes to be written in base64 encoding
- - "propertyID" is the ID of the property
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Updating a value {#update}
-
-Method: PUT /action/property
-
-Description: Updates a value of a property 
-
-Parameters: None
-
-Request Body: 
-
- - an Object, as defined in {{objectdef}}
- - A propertyID to write to
- - A value to be written
- - optional parameters
-
-Example body updating a property:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "propertyID": "temperature",
-  "value": "dGVzdA==",
-  "forcedResponse": true
-}
-~~~~~
-{: #exupd title="Example updating a property"}
-
-where-
-
- - "id", "type" and "technology" are part of the object definition (device
-   or group), as defined in {{objectdef}}
- - "propertyID" is the ID of a previously registered property mapping
- - "value" is the value to be updated in base64 encoding
- - "forcedresponse" requests a specific response behavior of the device
-   that is not the default
-
-Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as the propertyID and the value updated.
-
-Example of a write property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "propertyID": "temperature",
-  "value": "dGVzdA=="
-}
-~~~~~
-{: #exupresp title="Example update property response"}
-
-where- 
-
- - "id", "requestID" and "technology" are part of the standard {{success}} definition 
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Read a property 
-
-Method: GET /action/property/{property}
-
-Description: Read a property from a device
-
-Parameters, in path: 
-A propertyID {property} that needs to be read.
-
-Parameters, in query: 
-An id of a device on which the property has to be read.
-
-Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as the propertyID and the value read.
-
-Example of a read property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",                   
-  "id": "12345678-1234-5678-1234-56789abcdef4",                        
-  "propertyID": "temperature",
-  "value": "dGVzdA=="
-}
-~~~~~ 
-{: #exreresp title="Example read property response"}
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Delete a property value
-
-Method: DELETE /action/property/{property}
-
-Description: Delete a property value from a device
-
-Parameters, in path:
-A propertyID {property} that needs to be deleted..
-
-Parameters, in query:
-An id of a device on which the property has to be deleted.
-
-Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as the propertyID and the value deleted.
-
-Example of a delete property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "propertyID": "temperature",
-  "value": "dGVzdA=="
-}
-~~~~~
-{: #exdelresp title="Example delete property response"}
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-## Subscriptions
-
-/action/property/subscription
-
-Subscriptions are properties that deliver a data stream instead of a single
-value. The property subscription API allows an application to manage these 
-data streams.
-
-Operations:
-
- - Start a subscription data stream: POST
- - Get status of a subscription data stream: GET
- - Stop a subscription data stream: DELETE 
-
-### Property subscription API
-
-#### Starting a subscription data stream 
-
-Method: POST /action/property/subscription
-
-Description: Start a subcription data stream pertaining to a specific 
-property
-
-Parameters: None
-
-Request Body: 
-
- - an Object, as defined in {{objectdef}}
- - A propertyID for which to start the subscription 
- - optional parameters
-
-Example body for starting a subscription of a property:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "propertyID": "temperature",
-  "forcedAck": true
-}
-~~~~~
-{: #exstartsub title="Example starting a subscription for a property"}
-
-where-
-
- - "id", "type" and "technology" are part of the object definition (device
-   or group), as defined in {{objectdef}}
- - "propertyID" is the ID of a previously registered property mapping
- - "forcedAck" requests a specific response behavior of the device
-   that is not the default
-
-Response:
-Success responses is a standard success response when the
-subscription is started, as defined in {{success}}. 
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Get status of a subscription data stream
-
-Method: GET /action/property/subscription/{property}
-
-Description: Gets the status of a subscription data stream, success if
-active, failure if not active 
-
-Parameters, in path:
-A propertyID {property} for the subscription.
-
-Parameters, in query:
-An id of a device on which the subscription has to be started.
-
-Response:
-Success responses is a standard success response when the
-subscription is started, as defined in {{success}}.
-
-A failure to find the subscription will generate a standard failed response. 
-Please refer to {{failure}} definition of failed response.
-
-#### stop a subscription data stream
-
-Method: DELETE /action/property/subscription/{property}
-
-Description: stops a subscription data stream
-
-Parameters, in path:
-A propertyID {property} for the subscription.
-
-Parameters, in query:
-An id of a device on which the subscription has to be started.
-
-Response:
-Success response is a standard success response when the
-subscription is deleted, as defined in {{success}}.
-
-A failure to delete the subscription will generate a standard failed response.
-Please refer to {{failure}} definition of failed response.
-
 # NIPC Registrations
 
 NIPC allows an application to register properties to use in action APIs. NIPC
@@ -1745,6 +1203,861 @@ where a property-
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
+
+# NIPC APIs
+
+The primary goal of the NIPC APIs is to exchange data with a Non-IP device, by
+means of reading, writing or streaming NIPC properties to applications. 
+
+The NIPC APIs are divided into 3 categories:
+
+ - NIPC Property APIs: These APIs allow applications to get and update device 
+   properties.
+ - NIPC Event APIs: These APIs allow applications to enable or disable event reporting on devices.
+ - NIPC Action APIs: These APIs allow applications to perform actions on devices.
+ - NIPC Action APIs with embedded protocol mapping: These APIs allow applications to perform actions on devices, but do not use registered properties, events or actions.
+
+An SDF model must be registered for the device in order to use these NIPC Property, Event and Action APIs.
+These APIs depend on the sdfProperty, sdfEvent and sdfAction objects defined in the SDF model.
+These APIs can be called for a given device ID and property/event/action name.
+This name can be the given name of the property/event/action in the SDF model. In this case, the default namespace is assumed.
+If there are multiple properties/events/actions with the same name, the global name reference to the property/event/action in the SDF model can be used as defined in {{Section 4 of I-D.ietf-asdf-sdf}}.
+
+The property/event/action SDF name will be used against the registered SDF model to determine the protocol-specific protocolMap that the NIPC API will operate on. If a global name is to be used, 
+it must be percent-encoded to be used in the URL as per {{!RFC3986}}.
+
+## NIPC Property APIs
+
+These APIs allow applications to get and update device properties. 
+These operations may require a connection to the device to be established. 
+This connection can be established as part of the same API call implicitly.
+If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+
+### Write a value
+
+Method: `POST /{id}/property/{property}`
+
+Description: Writes a value to a property on a device
+
+Parameters: 
+
+ - id: the id of the device
+ - property: the property to write to
+
+Request Body:
+
+  - value: the bytes to be written in base64 encoding
+
+Response:
+
+Example of a write property response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "property": "temperature",
+  "value": "dGVzdA=="
+}
+~~~~~
+{:json #exwrresp title="Example write property response"}
+
+where-
+
+ - "id" is the id of the device
+ - "property" is the property that was written to
+ - "value" is the bytes that were written in base64 encoding
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Read a value
+
+Method: `GET /{id}/property/{property}`
+
+Description: Reads a value from a property on a device
+
+Parameters: 
+
+ - id: the id of the device
+ - property: the property to read from
+
+Response:
+
+Example of a read property response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "property": "temperature",
+  "value": "dGVzdA=="
+}
+~~~~~
+{:json #exreresp title="Example read property response"}
+
+where-
+
+ - "id" is the id of the device
+ - "property" is the property that was read from
+ - "value" is the bytes that were read in base64 encoding
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Write multiple values
+
+Method: `PUT /{id}/property`
+
+Description: Write values to one or more properties on a device
+
+Parameters: 
+
+ - id: the id of the device
+
+Request Body:
+
+  - an array of properties to update, each containing a property and a value
+
+Example body updating multiple properties:
+
+~~~~~
+{
+  "properties": [
+    {
+      "property": "temperature",
+      "value": "dGVzdA=="
+    },
+    {
+      "property": "humidity",
+      "value": "eGVzdB=="
+    }
+  ]
+}
+~~~~~
+{:json #exupmprop title="Example updating multiple properties"}
+
+Response: 
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "properties": [
+    {
+      "property": "temperature",
+      "value": "dGVzdA=="
+    },
+    {
+      "property": "humidity",
+      "value": "eGVzdB=="
+    }
+  ]
+}
+~~~~~
+{:json #exupmresp title="Example update multiple properties response"}
+
+where-
+
+ - "id" is the id of the device
+ - "properties" is an array of properties that were updated, each containing a property and a value
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Read multiple values
+
+Method: `GET /{id}/property`
+
+Description: Read values from one or more properties on a device
+
+Parameters: 
+
+ - id: the id of the device
+
+Query Parameters:
+
+ - property: a comma separated list of properties to read
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "properties": [
+    {
+      "property": "temperature",
+      "value": "dGVzdA=="
+    },
+    {
+      "property": "humidity",
+      "value": "eGVzdB=="
+    }
+  ]
+}
+~~~~~
+{:json #exreadmresp title="Example read multiple properties response"}
+
+where-
+
+ - "id" is the id of the device
+ - "properties" is an array of properties that were read, each containing a property and a value
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+## NIPC Event APIs
+
+These APIs allow applications to enable or disable event reporting on devices.
+These operations may require a connection to the device to be established. This connection can be established as part of the same API call implicitly. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+
+### Enable event reporting
+
+Method: `POST /{id}/event/{event}`
+
+Description: Enables an event on a specific device
+
+Parameters: 
+
+ - id: the id of the device
+ - event: the event to enable
+
+The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`. 
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+}
+~~~~~
+{:json #exenableresp title="Example enable event response"}
+
+where-
+
+ - "id" is the id of the device
+ - "event" is the event that was enabled
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Disable event reporting
+
+Method: `DELETE /{id}/event/{event}`
+
+Description: Disables an event on a specific device
+
+Parameters:
+
+  - id: the id of the device
+  - event: the event to disable
+
+The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+}
+~~~~~
+{:json #exdisableresp title="Example disable event response"}
+
+where-
+
+ - "id" is the id of the device
+ - "event" is the event that was disabled
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Get event status
+
+Method: `GET /{id}/event/{event}`
+
+Description: Get the status of an event on a specific device
+
+Parameters:
+
+  - id: the id of the device
+  - event: the event to get the status of
+
+The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+}
+~~~~~
+{:json #exgeteventresp title="Example get event status response"}
+
+where-
+
+ - "id" is the id of the device
+ - "event" is the event that was queried
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Get status of multiple events
+
+Method: `GET /{id}/event`
+
+Description: Get the status of one or more events on a specific device
+
+Parameters:
+
+  - id: the id of the device
+
+Query Parameters:
+
+  - event: a comma separated list of events to get the status of
+
+Response: 
+
+Example of a response:
+
+~~~~~
+{
+  "events": [
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+    }
+  ]
+}
+~~~~~
+{:json #exgetmresp title="Example get multiple events status response"}
+
+where-
+
+ - "id" is the id of the device
+ - "events" is an array of events that were queried
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+## NIPC Action APIs
+
+These APIs allow applications to perform actions on devices. These operations may require a connection to the device to be established. This connection can be established as part of the same API call implicitly. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+
+### Perform an action
+
+Method: `PUT /{id}/action/{action}`
+
+Description: Perform an action on a specific device
+
+Parameters:
+
+  - id: the id of the device
+  - action: the action to perform
+
+Request Body:
+
+  - value: the bytes to be written in base64 encoding
+
+Example body of an action:
+
+~~~~~
+{
+  "value": "dGVzdA=="
+}
+~~~~~
+{:json #exaction title="Example action"}
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "action": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfAction%2Fstart"
+}
+~~~~~
+{:json #exactionresp title="Example action response"}
+
+where-
+
+ - "id" is the id of the device
+ - "action" is the action that was performed
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+## NIPC Action APIs with embedded protocol mapping
+
+These APIs allow applications to perform actions on devices, but do not use registered properties, events or actions. These APIs do not perform an implicit connection, so a connection must be established before calling these APIs.
+
+### Connect to a device
+
+Method: `POST /{id}/action/connection`
+
+Description: Connect to a device
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+  - Connection retry parameters
+  - A protocol map object. In the case of BLE,if no protocol map is included, service discovery is 
+   performed to discover all supported properties when connecting to
+   a device. Optionally, service discovery may be limited to properties 
+   defined in the "ble" protocol extension. The services to be 
+   discovered can be added in an array. Property discover can be buffered
+   across connections, so the API also supports caching parameters. 
+
+Example body of a connection without specific discovery of properties:
+
+~~~~~
+{
+  "retries": 3,
+  "retryMultipleAPs": true
+}
+~~~~~
+{:json #exconn title="Example connection"}
+
+where-
+
+ - "retries" defines the number of retries in case the operations does not 
+   succeed
+ - "retryMultipleAPs" can be used in case there is an infrastructure with 
+   multiple access points or radios that can reach the device. If set to "true"
+   a different access point may be used for retries.
+
+In case the application would like to discover specific properties of a device,
+a protocol mapping can be added that defines what properties should be
+discovered.
+
+Example body of a BLE connection with specific discovery of properties:
+
+~~~~~
+{
+  "retries": 3,
+  "retryMultipleAPs": true,
+  "protocolMap": {
+    "ble": {
+      "services": [
+        {
+          "serviceID": "12345678-1234-5678-1234-56789abcdef4"
+        }
+      ],
+      "cached": false,
+      "cacheIdlePurge": 3600,
+      "autoUpdate": true,
+      "bonding": "default"
+    }
+  }
+}
+~~~~~
+{:json #exconnprp title="Example connection with explicit discovery of connections"}
+
+where in the BLE protocol object: 
+
+ - "services" is an array of services defined by their serviceIDs.
+ - "cached" refers to whether the services need to be cached for 
+   subsequent connects, in order not to perform service discovery on
+   each request.
+ - "cacheIdlepurge" defines how long the cache should be maintained 
+   before purging
+ - some devices support notifications on changes in services, 
+   "autoUpdate" allows the network to update services based on 
+   notification (on by default)
+ - "bonding" allows you to override the bonding method configured when 
+   onboarding the device
+
+Response:
+
+Success responses include a protocol mapping with an array of 
+discovered properties, as defined in the specific protocol.
+For example, for BLE, this is an array of supported services, which in turn
+contains an array of charateristics, which in turn contains an array of
+descriptors, as shown in {{BLEservices}}.
+
+~~~~~
+    services
+     - serviceID
+        |
+        |> characteristics
+            - charactericID
+            - flags
+               |
+               |> Descriptors
+                   - descriptorID
+~~~~~
+{: #BLEservices title="BLE Services"}
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "protocolMap": {
+    "ble": [
+      {
+        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "characteristics": [
+          {
+            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "flags": [
+              "read",
+              "write"
+            ],
+            "descriptors": [
+              {
+                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+~~~~~
+{:json #exconnresp title="Example connection response"}
+
+where-
+
+  - "id" is the id of the device
+   - "protocolMap" contains an Array of BLE services as shown in
+   {{BLEservices}}
+
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
+
+### Update a connection
+
+Method: `PUT /{id}/action/connection`
+
+Description: Update cached ServiceMap for a device. Full service discovery will be performed, unless specific services are described in the API body.
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+  - A protocol map object. In the case of BLE,if no protocol map is included, service discovery is 
+   performed to discover all supported properties when connecting to
+   a device. Optionally, service discovery may be limited to properties 
+   defined in the "ble" protocol extension. The services to be 
+   discovered can be added in an array. Property discover can be buffered
+   across connections, so the API also supports caching parameters.
+
+Example body of an update connection:
+
+~~~~~
+{
+  "protocolMap": {
+    "ble": {
+      "services": [
+        {
+          "serviceID": "12345678-1234-5678-1234-56789abcdef4"
+        }
+      ],
+      "cached": false,
+      "cacheIdlePurge": 3600,
+      "autoUpdate": true
+    }
+  }
+}
+~~~~~
+{:json #exupconn title="Example service discovery response"}
+
+where in the BLE protocol object: 
+
+ - "services" is an array of services defined by their serviceIDs.
+ - "cached" refers to whether the services need to be cached for 
+   subsequent connects, in order not to perform service discovery on
+   each request.
+ - "cacheIdlepurge" defines how long the cache should be maintained 
+   before purging
+ - some devices support notifications on changes in services, 
+   "autoUpdate" allows the network to update services based on 
+   notification (on by default)
+
+Response:
+
+Success responses include a protocol mapping with an array of 
+discovered properties, as defined in the specific protocol.
+For example, for BLE, this is an array of supported services, which in turn
+contains an array of charateristics, which in turn contains an array of
+descriptors, as shown in {{BLEservices}}.
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "protocolMap": {
+    "ble": [
+      {
+        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "characteristics": [
+          {
+            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "flags": [
+              "read",
+              "write"
+            ],
+            "descriptors": [
+              {
+                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+~~~~~
+{:json #exupconnresp title="Example connection response"}
+
+where-
+
+  - "id" is the id of the device
+   - "protocolMap" contains an Array of BLE services as shown in
+   {{BLEservices}}
+
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
+
+### Disconnect from a device
+
+Method: `DELETE /{id}/action/connection`
+
+Description: Disconnect from a device
+
+Parameters:
+
+  - id: the id of the device
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4"
+}
+~~~~~
+{:json #exdisconnresp title="Example disconnect response"}
+
+where-
+
+ - "id" is the id of the device
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Get connection status
+
+Method: `GET /{id}/action/connection`
+
+Description: Get connection status for a device. Success when device(s) is/are connected, includes service map for the device if available. Failure when a device is not connected
+
+Parameters:
+
+  - id: the id of the device
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "protocolMap": {
+    "ble": [
+      {
+        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "characteristics": [
+          {
+            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "flags": [
+              "read",
+              "write"
+            ],
+            "descriptors": [
+              {
+                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+~~~~~
+{:json #exconnstatresp title="Example connection status response"}
+
+where-
+
+  - "id" is the id of the device
+   - "protocolMap" contains an Array of BLE services as shown in
+   {{BLEservices}}
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Write a value using protocol mapping
+
+Method: `POST /{id}/action/property/write`
+
+Description: Writes a value to a property on a device using protocol mapping
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+  - value: the bytes to be written in base64 encoding
+  - protocolMap: the protocol mapping for the property
+
+Example body of a write property:
+
+~~~~~
+{
+  "value": "dGVzdA==",
+  "protocolMap": {
+    "ble": {
+      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+      "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+    }
+  }
+}
+~~~~~
+{:json #exwriteprop title="Example write property"}
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "value": "dGVzdA==",
+  "protocolMap": {
+    "ble": {
+      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+      "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+    }
+  }
+}
+~~~~~
+{:json #exwritepropresp title="Example write property response"}
+
+where-
+
+ - "id" is the id of the device
+ - "value" is the bytes that were written in base64 encoding
+ - "protocolMap" is the protocol mapping for the property
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Read a value using protocol mapping
+
+Method: `POST /{id}/action/property/read`
+
+Description: Reads a value from a property on a device using protocol mapping
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+  - protocolMap: the protocol mapping for the property
+
+Example body of a read property:
+
+~~~~~
+{
+  "protocolMap": {
+    "ble": {
+      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+      "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+    }
+  }
+}
+~~~~~
+{:json #exreadprop title="Example read property"}
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "value": "dGVzdA==",
+  "protocolMap": {
+    "ble": {
+      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+      "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+    }
+  }
+}
+~~~~~
+{:json #exreadpropresp title="Example read property response"}
+
+where-
+
+ - "id" is the id of the device
+ - "value" is the bytes that were read in base64 encoding
+ - "protocolMap" is the protocol mapping for the property
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Broadcast to a device
+
+Method: `POST /{id}/action/broadcast`
+
+Description: Broadcast a payload to a device. The broadcast is performed on the AP where the device was last seen
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+An example body of a broadcast:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "protocolMap": {
+    "ble": {}
+  },
+  "cycle": "single",
+  "broadcastTime": 3000,
+  "broadcastInterval": 500,
+  "payload": "AgEaAgoMFv9MABAHch9BsDkgeA=="
+}
+~~~~~
+{:json #exbroadcast title="Example broadcast"}
+
+where-
+
+ - "id" is the id of the device
+ - "protocolMap" is the protocol mapping for the property to identify the protocol to be used
+ - "cycle" is the broadcast cycle, either "single" or "repeat"
+ - "broadcastTime" is the time in milliseconds for the broadcast to run
+ - "broadcastInterval" is the time in milliseconds between each broadcast
+ - "payload" is the bytes to be broadcast in base64 encoding
+
+Response:
+
+This API responds with a HTTP 200 OK status code and an empty body when successful.
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
 
 # NIPC Extensibility
 

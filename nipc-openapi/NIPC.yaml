@@ -9,7 +9,7 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.4.5
+  version: 0.4.6
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
@@ -31,13 +31,13 @@ tags:
       APIs that perform actions on devices.
   - name: NIPC action APIs with embedded protocol mapping
     description: |-
-      APIs that perform actions on devices, but do not use registered properties, events or ation. These API's have embedded protocol mappings
+      APIs that perform actions on devices, but do not use registered properties, events or actions. These APIs have embedded protocol mappings
   - name: NIPC registration APIs
     description: |-
       APIs that register sdf models or data applications
   - name:  NIPC API extensions
     description: |-
-      APIs that simplify application interaction by implementing one or more basic API's into a single API call.
+      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
 
 paths:
 ### NIPC Property APIs
@@ -259,9 +259,9 @@ paths:
     post:
       tags:
         - NIPC event APIs
-      summary: Enable an event on a specific a device
+      summary: Enable an event on a specific device
       description: |-
-        Enable an event on a specific a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+        Enable an event on a specific device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
       operationId: EnableEvent
       parameters:
       - name: id
@@ -312,9 +312,9 @@ paths:
     delete:
       tags:
         - NIPC event APIs
-      summary: Disable an event on a specific a device
+      summary: Disable an event on a specific device
       description: |-
-        Disable an event on a specific a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
+        Disable an event on a specific device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
       operationId: DisableEvent
       parameters:
       - name: id
@@ -364,9 +364,9 @@ paths:
     get:
       tags:
         - NIPC event APIs
-      summary: Get status of an event on a specific a device
+      summary: Get status of an event on a specific device
       description: |-
-        Get status of an event on a specific a device. Success is event is active, failure if event not active. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
+        Get status of an event on a specific device. Success is event is active, failure if event not active. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
       operationId: GetEvent
       parameters:
       - name: id
@@ -419,7 +419,7 @@ paths:
         - NIPC event APIs
       summary: Get status of events on a device or group of devices
       description: |-
-        Get status of an event or multiple events on a specific a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id is a device-id or group-id
+        Get status of an event or multiple events on a specific device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id is a device-id or group-id
       operationId: GetEvents
       parameters:
       - name: id
@@ -465,13 +465,13 @@ paths:
                   - $ref: '#/components/schemas/EventErrorCodes'
 
 ### NIPC action APIs
-  /{id}/action/{property}:
+  /{id}/action/{action}:
     put:
       tags:
         - NIPC action APIs
-      summary: Perform an action on a property on a device
+      summary: Perform an action on a device
       description: |-
-        Perform an action on a property on a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
+        Perform an action on a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
       operationId: ActionProperty
       parameters:
       - name: id
@@ -482,13 +482,13 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: action
         in: path
-        description: property that needs to be filtered
+        description: action that needs to be performed
         required: true
         schema:
           type: string
-          example: "lightswitch"
+          example: "start"
       requestBody:
         content:
           application/json:
@@ -508,7 +508,7 @@ paths:
               schema:
                 allOf: 
                   - $ref: '#/components/schemas/Id'
-                  - $ref: '#/components/schemas/PropertyValue'
+                  - $ref: '#/components/schemas/ActionValue'
         '400':
           description: Bad request
         '401':
@@ -682,7 +682,7 @@ paths:
         - NIPC action APIs with embedded protocol mapping
       summary: Disconnect a device 
       description: |-
-        Disconnect a device. 3 retries by default, optionally retry policy can be defined in the API body. If the protocol requires service discovery, full service discovery will be performed, unless specific services are described in the API body.
+        Disconnect a device.
       operationId: ActionDeleteConnection
       parameters:
         - name: id
@@ -1340,6 +1340,15 @@ components:
           type: string
           example: "temperature"
 
+    Action:
+      required:
+        - action
+      type: object
+      properties:
+        action:
+          type: string
+          example: "start"
+
 ## A value 
     Value:
       required:
@@ -1355,6 +1364,11 @@ components:
     PropertyValue:
       allOf:
         - $ref: '#/components/schemas/Property'
+        - $ref: '#/components/schemas/Value'
+
+    ActionValue:
+      allOf:
+        - $ref: '#/components/schemas/Action'
         - $ref: '#/components/schemas/Value'
 
 ## An array of Property values
