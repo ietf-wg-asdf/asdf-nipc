@@ -64,7 +64,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "temperature"
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
       requestBody:
         content:
           application/json:
@@ -122,7 +122,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "temperature"
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
       responses:
         '200':
           description: Success
@@ -224,7 +224,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "temperature"
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
       responses:
         '200':
           description: Success
@@ -278,7 +278,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "patient/heartbeat"
+          example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
@@ -331,7 +331,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "patient/heartbeat"
+          example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
@@ -383,7 +383,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "patient/heartbeat"
+          example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
@@ -436,7 +436,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "patient/heartbeat"
+          example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
@@ -488,7 +488,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "start"
+          example: "#/sdfObject/healthsensor/sdfAction/start"
       requestBody:
         content:
           application/json:
@@ -900,7 +900,7 @@ paths:
         content:
           application/sdf+json:
             schema:
-              $ref: '#/components/schemas/SdfObject'
+              $ref: '#/components/schemas/SdfModel'
         required: true
       responses:
         '200':
@@ -931,14 +931,14 @@ paths:
                   - $ref: '#/components/schemas/FailureResponse' 
                   - $ref: '#/components/schemas/RegistrationErrorCodes'
  
-  /{id}/registration/model/{sdfobject}:
+  /{id}/registration/model/{sdfRef}:
     put:
       tags:
         - NIPC registration APIs
-      summary: Update an sdfObject
+      summary: Update an SDF model
       description: |-
-        Update an sdfObject, including Properties, Events and actions
-      operationId: updateSdfObject
+        Update an SDF model, including Properties, Events and actions
+      operationId: updateSdf
       parameters:
         - name: id
           in: path
@@ -948,18 +948,18 @@ paths:
             type: string
             format: uuid
             example: 12345678-1234-5678-1234-56789abcdef4
-        - name: sdfobject
+        - name: sdfRef
           in: path
-          description: sdfObject name
+          description: sdfRef can be a reference to an sdfThing or sdfObject
           required: true
           schema:
             type: string
-            example: "https://example.com/heartrate/sdfObject/healthsensor"
+            example: "https://example.com/heartrate#/sdfObject/healthsensor"
       requestBody:
         content:
           application/sdf+json:
             schema:
-              $ref: '#/components/schemas/SdfObject'
+              $ref: '#/components/schemas/SdfModel'
         required: true
       responses:
         '200':
@@ -1012,7 +1012,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "https://example.com/heartrate/sdfObject/healthsensor"
+            example: "https://example.com/heartrate#/sdfObject/healthsensor"
       responses:
         '200':
           description: Success
@@ -1064,7 +1064,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "https://example.com/heartrate/sdfObject/healthsensor"
+            example: "https://example.com/heartrate#/sdfObject/healthsensor"
       responses:
         '200':
           description: Success
@@ -1077,7 +1077,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SdfObject'
+                  - $ref: '#/components/schemas/SdfModel'
                   - $ref: '#/components/schemas/Id'
         '400':
           description: Bad request
@@ -1338,7 +1338,7 @@ components:
       properties:
         property:
           type: string
-          example: "temperature"
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
 
     Action:
       required:
@@ -1505,23 +1505,73 @@ components:
       type: object
       description: SDF URL referring to the sdfobject
       properties: 
-        SdfReference:
+        sdfRef:
           type: string
-          example: "https://example.com/heartrate/sdfObject/healthsensor"
+          example: "https://example.com/heartrate#/sdfObject/healthsensor"
     
+    SdfModel:
+      allOf:
+        - type: object
+          description: Sample SDF model
+          properties:
+            namespace:
+              type: object
+              additionalProperties:
+                type: string
+              example:
+                heartrate: https://example.com/heartrate
+            defaultNamespace:
+              type: string
+              example: heartrate
+        - oneOf:
+          - $ref: '#/components/schemas/SdfThing'
+          - $ref: '#/components/schemas/SdfObject'
+
+    SdfThing:
+      type: object
+      description: Sample SDF thing
+      properties:
+        sdfThing:
+          additionalProperties:
+            anyOf:
+                - $ref: '#/components/schemas/SdfProperty'
+                - $ref: '#/components/schemas/SdfEvent'
+                - $ref: '#/components/schemas/SdfAction'
+                - $ref: '#/components/schemas/SdfObject'
+          example:
+            multipleSensor:
+              sdfEvent:
+                isPresent:
+                  sdfOutputData:
+                    protocolMap:
+                      ble:
+                        type: advertisement
+              sdfObject:
+                healthsensor:
+                  sdfProperty:
+                    heartrate:
+                      protocolMap:
+                        ble:
+                          serviceID: 12345678-1234-5678-1234-56789abcdef4
+                          characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                  sdfEvent:
+                    fallDetected:
+                      sdfOutputData:
+                        protocolMap:
+                          ble:
+                            serviceID: 12345678-1234-5678-1234-56789abcdef4
+                            characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                  sdfAction:
+                    start:
+                      protocolMap:
+                        ble:
+                          serviceID: 12345678-1234-5678-1234-56789abcdef4
+                          characteristicID: 12345678-1234-5678-1234-56789abcdef4
+
     SdfObject:
       type: object
       description: Sample SDF object
       properties:
-        namespace:
-          type: object
-          additionalProperties:
-            type: string
-          example:
-            heartrate: https://example.com/heartrate
-        defaultNamespace:
-          type: string
-          example: heartrate
         sdfObject:
           additionalProperties:
             anyOf:
@@ -1538,10 +1588,11 @@ components:
                       characteristicID: 12345678-1234-5678-1234-56789abcdef4
               sdfEvent:
                 fallDetected:
-                  protocolMap:
-                    ble:
-                      serviceID: 12345678-1234-5678-1234-56789abcdef4
-                      characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                  sdfOutputData:
+                    protocolMap:
+                      ble:
+                        serviceID: 12345678-1234-5678-1234-56789abcdef4
+                        characteristicID: 12345678-1234-5678-1234-56789abcdef4
               sdfAction:
                 start:
                   protocolMap:
@@ -1577,10 +1628,11 @@ components:
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Event'
           example:
             fallDetected:
-              protocolMap:
-                ble:
-                  serviceID: 12345678-1234-5678-1234-56789abcdef4
-                  characteristicID: 12345678-1234-5678-1234-56789abcdef4
+              sdfOutputData:
+                protocolMap:
+                  ble:
+                    serviceID: 12345678-1234-5678-1234-56789abcdef4
+                    characteristicID: 12345678-1234-5678-1234-56789abcdef4
     
     SdfAction:
       type: object

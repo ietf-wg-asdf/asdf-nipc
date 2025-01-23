@@ -1218,13 +1218,14 @@ The NIPC APIs are divided into 3 categories:
  - NIPC Action APIs with embedded protocol mapping: These APIs allow applications to perform actions on devices, but do not use registered properties, events or actions.
 
 An SDF model must be registered for the device in order to use these NIPC Property, Event and Action APIs.
-These APIs depend on the sdfProperty, sdfEvent and sdfAction objects defined in the SDF model.
-These APIs can be called for a given device ID and property/event/action name.
-This name can be the given name of the property/event/action in the SDF model. In this case, the default namespace is assumed.
-If there are multiple properties/events/actions with the same name, the global name reference to the property/event/action in the SDF model can be used as defined in {{Section 4 of I-D.ietf-asdf-sdf}}.
+The SDF model can be a top-level sdfThing with multiple sdfObjects or a top-level sdfObject.
+These APIs depend on the SDF affordance (i.e. sdfProperty, sdfEvent and sdfAction) objects defined in the SDF model and a device ID that is defined in {{I-D.ietf-scim-device-model}}.
+The SDF affordance can be referenced using the fragment identifier as described in {{I-D.ietf-asdf-sdf}}. In this case, the default namespace is assumed.
+If there are multiple properties/events/actions with the same fragment identifier, the global name of the SDF affordance in the SDF model can be used as defined in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
-The property/event/action SDF name will be used against the registered SDF model to determine the protocol-specific protocolMap that the NIPC API will operate on. If a global name is to be used, 
-it must be percent-encoded to be used in the URL as per {{!RFC3986}}.
+The SDF affordance name will be used against the registered SDF model to 
+determine the protocol-specific protocolMap that the NIPC API will operate on. 
+The fragment identifier or the global name must be percent-encoded to be used in the URL as per {{!RFC3986}}.
 
 ## NIPC Property APIs
 
@@ -1255,7 +1256,7 @@ Example of a write property response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "property": "temperature",
+  "property": "#/sdfObject/thermostat/sdfProperty/temperature",
   "value": "dGVzdA=="
 }
 ~~~~~
@@ -1287,7 +1288,7 @@ Example of a read property response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "property": "temperature",
+  "property": "#/sdfObject/thermostat/sdfProperty/temperature",
   "value": "dGVzdA=="
 }
 ~~~~~
@@ -1321,11 +1322,11 @@ Example body updating multiple properties:
 {
   "properties": [
     {
-      "property": "temperature",
+      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
       "value": "dGVzdA=="
     },
     {
-      "property": "humidity",
+      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
       "value": "eGVzdB=="
     }
   ]
@@ -1342,11 +1343,11 @@ Example of a response:
   "id": "12345678-1234-5678-1234-56789abcdef4",
   "properties": [
     {
-      "property": "temperature",
+      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
       "value": "dGVzdA=="
     },
     {
-      "property": "humidity",
+      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
       "value": "eGVzdB=="
     }
   ]
@@ -1384,11 +1385,11 @@ Example of a response:
   "id": "12345678-1234-5678-1234-56789abcdef4",
   "properties": [
     {
-      "property": "temperature",
+      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
       "value": "dGVzdA=="
     },
     {
-      "property": "humidity",
+      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
       "value": "eGVzdB=="
     }
   ]
@@ -1407,6 +1408,9 @@ A failure will generate a standard failed response. Please refer to {{failure}} 
 
 These APIs allow applications to enable or disable event reporting on devices.
 These operations may require a connection to the device to be established. This connection can be established as part of the same API call implicitly. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+
+The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
+This event is also used as the MQTT topic name.
 
 ### Enable event reporting
 
@@ -1576,7 +1580,7 @@ Example of a response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "action": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfAction%2Fstart"
+  "action": "#/sdfObject/healthsensor/sdfAction/start"
 }
 ~~~~~
 {:json #exactionresp title="Example action response"}
