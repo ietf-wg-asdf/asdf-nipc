@@ -222,9 +222,12 @@ paths:
         in: query
         description: properties that needs to be filtered, multiple values are comma-separated
         required: true
+        explode: false
         schema:
-          type: string
-          example: "#/sdfObject/thermostat/sdfProperty/temperature"
+          type: array
+          items:
+            type: string
+            example: "#/sdfObject/thermostat/sdfProperty/temperature"
       responses:
         '200':
           description: Success
@@ -433,10 +436,13 @@ paths:
       - name: event
         in: query
         description: events that needs to be filtered, multiple values are comma-separated
+        explode: false
         required: true
         schema:
-          type: string
-          example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
+          type: array
+          items:
+            type: string
+            example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
