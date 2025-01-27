@@ -54,12 +54,12 @@ informative:
 --- abstract
 
 This memo specifies RESTful application layer interface for gateways 
-providing operations against non-IP devices. The described interface is
-extensible. This memo initially describes Bluetooth Low Energy and 
-Zigbee as they are the most commonly deployed.
+providing operations against non-IP devices, as well as a CBOR-based 
+publish-subscribe interface for streaming data. The described interfaces are
+extensible. The specification also defines a protocol mapping function to
+to map this interface to commonly used non-IP protocols. 
 
 --- middle
-
 
 # Introduction
 
@@ -67,14 +67,16 @@ Zigbee as they are the most commonly deployed.
 
 Low-power sensors, actuators and other connected devices introduced in
 environments and use cases such as building management, healthcare, workplaces,
-manufacturing, logistics and hospitality are often battery-powered. Often they
-do not support wireless of wired interfaces that support the IP protocol.
-Most of these environments however mainly support IP-based networking
-infrastructure. Therefore, applications on the IP network that aim to
-communicate or receive telemetry from these non-IP low-power devices must do
-so through a gateway function on the IP network. This gateway functions then 
-translates the communication to the non-IP protocol that the low-power device 
-supports. Promiment examples of such protocols are {{BLE53}} and {{Zigbee22}}.
+manufacturing, logistics and hospitality are often battery-powered. With 
+limited power budget, they may not be able to support the IP protocol on their
+wired or wireless interfaces, hence they support protocols that require a lower
+power budget. Promiment examples of such protocols are {{BLE53}} and
+{{Zigbee22}}. These devices typically do require to communicate with devices
+or applications that are connected to IP-based networking infrastructure. 
+Therefore, applications on the IP network that need to communicate or receive
+telemetry from these non-IP low-power devices must do so through a gateway 
+function on the IP network. This gateway functions then translates the 
+communication to the non-IP protocol that the low-power device supports. 
 
 ~~~~~
                                                                
@@ -91,7 +93,7 @@ a particular protocol, such as a BLE GATT REST API for BLE Gateways
 ({{https://www.bluetooth.com/bluetooth-resources/gatt-rest-api/}}), however 
 they have been limited to a single protocol or a particular use case. In
 absence of an open standard describing how applications on an IP network
-communicate with non-IP devices, bespoke and vendors specific implementations
+communicate with non-IP devices, bespoke and vendor-specific implementations
 have proliferated. This results in parallel infrastructure of both gateways 
 and non-IP networks being deployed on a case by case basis, each connecting
 separately into the IP network, with a distinct set of APIs. At the same time,
@@ -101,7 +103,8 @@ wireless radios, of different types. These radios can transmit and receive
 different frame types, such as {{BLE53}} and {{Zigbee22}}. This specification
 aims to define a Gateway API for these Non-IP protocols that can be leveraged
 by this wireless infrastructure in order to connect Non-IP devices into IP
-networks.
+networks. The specification aims to be extensible, in order to support existing
+and future non-IP protocols.
 
 A standardized Non-IP Gateway interface has following benefits:
 
@@ -111,7 +114,7 @@ A standardized Non-IP Gateway interface has following benefits:
  - Faster and more cost-effective adoption of Non-IP devices in IP network
    environments.
 
-## Non-IP Gateway functions
+## Non-IP Gateway
 
 A non-IP gateway MUST provide at least following functions:
 
@@ -122,7 +125,7 @@ A non-IP gateway MUST provide at least following functions:
    context about the device to service gateway API requests. It also ensures
    segmentation of devices that were onboarded by particular applications.
  - A persistent inventory of onboarded devices  mapping to the application
-   that onboarded them and the access point/radio that is serving them.
+   that onboarded them and the non-IP access point/radio that is serving them.
  - An API that allows for bi-directional communication to non-IP devices.
  - One or more channels to process requests, responses, and asymmetric
    communications with the non-IP radio resources (Access Points)
@@ -130,10 +133,13 @@ A non-IP gateway MUST provide at least following functions:
  - The ability to stream telemetry received from non-IP devices in real-time
    to applications on the IP network.
 
-The onboarding function is out of scope of this document, but can be provided
-by a provisioning interface such as {{!RFC7644}} leveraging 
-{{!I-D.ietf-scim-device-model}}. All other defined functions are
-supported by Non IP-Control (NIPC).
+The definition of the onboarding function is out of scope of this document, but
+can be provided by a provisioning interface such as {{!RFC7644}} leveraging 
+{{!I-D.ietf-scim-device-model}}. NIPC performs operations on a device or group
+object, hence it requires device onboarding to be performed prior to performing
+a NIPC operation on a device. NIPC APIs will reference a device or group id 
+generated at the time of onboarding as a unique identifier. Apart from 
+onboarding, Non IP-Control (NIPC) supports all functions defined above.
 
 The Application gateway is a network function, so its goal is to proxy payloads 
 between Non-IP and IP networks. It is not intended to be a middleware function
@@ -141,28 +147,28 @@ that interprets, decodes or modifies these payloads.
 
 ~~~~~
 
-                            +-----------------------------------+
-                            |                                   |
-    +-----------+   Request |  +---------+                      |
-    | onboarding|------------->|  SCIM   |                      |
-    |    app    |<-------------| Server  |                      |
-    +-----------+  Ctrl Endpt  +---------+                      |
-                            |                                   |
-    +-----------+           |  +------------+  +-------+  +--+  |
-    |  Control  |>...REST...|.>|            |..|  AP   |..|D |  |
-    |     &     |           |  |   Gateway  |  +-------+  +--+  |
-    | Telemetry |<...MQTT...|.<|            |                   |
-    |    Apps   |           |  +------------+                   |
-    +-----------+           |                                   |
-                            |       Network Deployment          |
-                            +-----------------------------------+
+                             +-----------------------------------+
+                             |                                   |
+    +-----------+   Request  |  +---------+                      |
+    | onboarding|-------------->|  SCIM   |                      |
+    |    app    |<--------------| Server  |                      |
+    +-----------+  Ctrl Endpt|  +---------+                      |
+                             |                                   |
+    +-----------+            |  +------------+  +-------+  +--+  |
+    |  Control  |>...REST....|.>|    NIPC    |..|  AP   |..|D |  |
+    |     &     |            |  |   Gateway  |  +-------+  +--+  |
+    | Telemetry |<..pub/sub..|.<|            |                   |
+    |    Apps   |            |  +------------+                   |
+    +-----------+            |                                   |
+                             |       Network Deployment          |
+                             +-----------------------------------+
 
 ~~~~~
 {: #arch title="Basic Architecture"}
 
-{{arch}} shows us applications, the application layer gateway (ALG),
+{{arch}} shows us applications, the NIPC application layer gateway (ALG),
 an access point (AP), and a device (D). The applications, application layer
-gateway and access point are deployed on an IP-Network. The AP also has a
+gateway and access point are deployed on an IP-Network. The AP supports a
 Non-IP interface, which it uses to communicate with the device.
 The Application is deployed in a different administrative domain than the
 network elements (ALG & AP).
@@ -170,35 +176,7 @@ The role of the ALG is to provide a gateway function to applications wishing
 to communicate with non-IP devices in the network domain served by the ALG.
 Applications implementing Non-IP Control can leverage RESTful interfaces
 to communicate with Non-IP devices in the network domain and subscribe to
-events levering MQTT.
-
-## Interaction flow
-
-In order to enable a network wishing to offer NIPC ALG functions, the network
-administrator authorizes application(s) to perform operations on the Gateway.
-This happens out of band and may be accomplished by means of exchanging tokens
-or public keys.
-Authorization can be role-based. The 3 primary roles are:  
-
-1. Onboarding: Authorize an onboarding application against a SCIM server
-   co-located with the gateway.  
-2. Control: Authorize applications that may control devices.
-3. Data: Authorize applications that may receive telemetry.  
-It is possible to further refine roles down to an API basis.
-
-Applications can perform the API requests they were authorized for.
-In order for application to perform a NIPC operation on a device, the device
-must be first onboarded, for example by means of SCIM.
-
-Previous steps are prerequisites and not within the scope of this specification, 
-but are provided for context. Subsequent operations are defined by NIPC.
-
-1. An application authorized for Control can perform NIPC calls to the
-   gateway in order to establish bi-directional communication to one or more
-   devices. Optionally, also set up a publish/subcribe topic to receive
-   streaming data from a device (telemetry interface).
-2. An application authorized can receive streaming data on a pub/sub 
-   topic configured by the control interface (telemetry interface).
+events levering a CBOR-based pub/sub interface.
 
 ## Terminology
 
@@ -214,49 +192,87 @@ capitals, as shown here.
 
 Non-IP protocols, such as BLE or Zigbee, typically define a number of basic
 operations that are similar across protocols. Examples of this are read and 
-write data. NIPC leverages a unified API to support those operations.
+write data. NIPC provides a unified API to support those operations.
 
-NIPC defines actions, which are implemented as REST over HTTP request-response
-APIs. NIPC Also defines events, which are implemented as MQTT topics.
+To perform NIPC operations on a device, the gateways needs 2 things:
+1) Information about the instance of the device or thing: The device must be
+onboarded on the gateway (e.g. by means of SCIM). This allows the NIPC Gateway
+to retrieve the device object, identified by an id referenced in the path of 
+the NIPC API.
+2) Information about the interaction model: The Gateway must be able to perform
+protocol-neutral operations, and hence requires a mapping of protocol-neutral
+operations to protocol specific operations. These are supplied to the gateway
+by means of an SDF model, described in {{!I-D.ietf-adsf-sdf}. 
 
-In case NIPC is not leveraged in combination with a data model such as ASDF
-{{!I-D.ietf-asdf-sdf}}, which can define the properties of a devices,
-NIPC also support registrations. Registrations perform mapping of 
-properties to protocol-specific attributes.
+~~~~~
 
-All operations pertain to a devices or a group of devices, which are addressed
-by UUIDs. These UUID's were generated at time of onboarding and returned to 
-the application, for example in a SCIM response.
+    +------------+   
+    |    SCIM    |                      
+    |   object   |           +----------------+          
+    |    {id}    |---------->|                |
+    +------------+           | NIPC Operation |
+                             |    - Property  |
+                             |    - Action    |
+    +------------+           |    - Event     |
+    |     SDF    |---------->|                |
+    |    model   |           +----------------+
+    |            |
+    +------------+  
 
- 
+~~~~~
+{: #prereq title="NIPC prerequisites"}
+
+Once these 2 prerequisites have been fulfilled, applications that are
+authorized can perform NIPC operations on device ids. NIPC operations
+are operations on properties, or constitute actions or events on devices,
+as per the affordances defined in an SDF model.
+
+## Onboarding
+
+In order to perform a NIPC operation on a device, the device has to have its 
+identity declared to the NIPC gateway. We refer to this as 'onboarding'. Apart
+from the device identity, it is also necessary that the device object contains
+all required information to bootstrap trust with the device, as well as
+establish connectivity, as NIPC operations assume that connectivity is there. 
+Allthough onboarding could theoretically be performed in other ways, it is
+strongly recommended to leverage {{!RFC7644}} with
+{{!I-D.ietf-scim-device-model}}, as the SCIM device schema has been developed
+to contain all nessary attributes and extensions to support NIPC.
+
+## Registrations 
+
+NIPC registration APIs allow applications to declare information that is not
+related to a device instance. Registrations can be information about an
+interaction model of a device or group of devices, or information about an
+application that is required to interact with the gateway.
+
+### SDF model registrations
+
+The SDF model for a device or group of devices determines how a gateway may
+interact with a device or group of devices in a protocol-neutral way. 
+In order to do that, the SDF model must contain protocol mappings, mapping 
+protocol-neutral SDF affordances to protocol-specific ones.
+The SDF afforndances supported by the device, as well as its protcol-mappings
+are provide to the gatewat by means of an SDF model registration. SDF models
+are described in {{!I-D.ietf-asdf-sdf}. 
+
+### Data application registration
+
+An application authorized to perform NIPC operations on devices needs to be
+able to define which applications can receive streaming event data from the
+gateway. The data-app registration API allows mapping of an event to a data 
+app as well as a protocol.
+
 ## NIPC Operations
 
-NIPC adheres to nomenclature defined by Semantic Definition Format (SDF) for
-Data and Interactions of Things {{!I-D.ietf-asdf-sdf}}. Therefore NIPC
-defines actions and events on properties. 
+NIPC operations are protocol-neutral operations on SDF affordances, more 
+specifically properties, actions & events.
 
-### Actions
+### Properties
 
-NIPC supports 3 types of actions:
-
- - connection: Allows an application to establish to manage connections with
-   a device (if so required by the technology).
  - property: Allows applications to read or write device properties. In case
    the property supports streaming data, a subscription property can be
    managed.
- - broadcast: This allows the application to send a broadcast message to a
-   device or group of devices.
-
-### Registrations
-
-In absence of a model such as SDF that defines device properties, NIPC allows
-an application to register them. NIPC defines 2 types of registrations:
-
- - property: Manage registrations of properties and their protocol mappings.
-   For example, a property called temperature can be mapped to a BLE Service
-   Characteristic.
- - event: Manage registrations of events and their MQTT properties such as 
-   MQTT topic definition.
 
 ### Extensions
 
@@ -2343,7 +2359,19 @@ The sequence of operations for this are:
 
 # Security Considerations
 
-TBD.
+## API authorization 
+
+In order to enable a network wishing to offer NIPC ALG functions, the network
+administrator authorizes application(s) to perform operations on the Gateway.
+This happens out of band and may be accomplished by means of exchanging tokens
+or public keys.
+Authorization can be role-based. The 3 primary roles are:  
+
+1. Onboarding: Authorize an onboarding application against a SCIM server
+   co-located with the gateway.  
+2. Control: Authorize applications that may control devices.
+3. Data: Authorize applications that may receive telemetry.  
+It is possible to further refine roles down to an API basis.
 
 # IANA Considerations
 

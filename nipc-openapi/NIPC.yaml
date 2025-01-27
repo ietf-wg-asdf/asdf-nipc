@@ -1059,7 +1059,7 @@ paths:
             type: string
             format: uuid
             example: 12345678-1234-5678-1234-56789abcdef4
-        - name: sdfobject
+        - name: sdfRef
           in: path
           description: sdfObject name
           required: true
@@ -1111,7 +1111,7 @@ paths:
             type: string
             format: uuid
             example: 12345678-1234-5678-1234-56789abcdef4
-        - name: sdfobject
+        - name: sdfRef
           in: path
           description: sdfObject name
           required: true
