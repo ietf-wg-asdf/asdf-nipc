@@ -266,34 +266,95 @@ app as well as a protocol.
 ## NIPC Operations
 
 NIPC operations are protocol-neutral operations on SDF affordances, more 
-specifically properties, actions & events.
+specifically properties, actions & events. NIPC operations can happen against
+affordances that were registered in an SDF model. If connection management is
+required to execute a NIPC operation, it is assumed that the gateway implictly
+establishes and tears down required connections.
 
-### Properties
+### Properties APIs
 
- - property: Allows applications to read or write device properties. In case
-   the property supports streaming data, a subscription property can be
-   managed.
+Property APIs allow applications perform operations on properties, such as to
+read or write values to them.
 
-### Extensions
+### Actions
 
-The final set of operations are not fundamental NIPC operations, but are
-extensions. Extensions are compound APIs. They leverage basic NIPC operations
-but combine multiple operations in to one API call for efficiency.
-An example of this is the the bulk operation, allowing to send multiple
-operations in one operation. Extension allows for extensions, either generic
-extensions that are IANA registered, or vendor specific extensions 
+Action APIs perform actions on devices, such as enabling or disabling a feature
+on a device.
 
 ### Events
 
-Events are published over MQTT. Events can be normal sreaming data, but also
-broadcasts or connection events.
+Event APIs allow apps to enable or disable event reporting on devices. Events
+are reported over the events publish/subscribe interface.o
+
+### Action APIs with embedded protocol mapping
+
+Action APIs with embedded protocol mapping are APIs that perform actions on
+devices, but do not use registered afforances. These APIs have embedded protocol
+mappings. They allow for explicit connection management, which is useful when 
+executing multiple property operations and/or actions. In this case implicit
+connections management may be less efficient. They also consist of other 
+operations such as broadcasts.
+
+### Extensions
+
+Extensions are not part of the core NIPC API specification, but 
+extensions. Extensions are compound APIs. They leverage basic NIPC operations
+but combine multiple operations in to one API call for efficiency.
+An example of this is the the bulk operation, allowing to send multiple
+operations in one operation. Extensions can be generic, IANA registered 
+extentions, or vendor specific extensions.
+
+## Events publish subscribe interface
+
+Events are published on a publish/subscribe interface. Events can be of
+different types:
+- Streaming data from devices
+- Broadcasts from devices
+- Connection events: Devices connecting & disconnecting
 
 ## Protocols
 
-NIPC actions, registrations and extensions are request/response APIs. They make
-use of a JSON schema over RESTful HTTP{{!RFC9114}}. 
+### NIPC APIs
 
-NIPC events are encoded in CBOR ({{!RFC8949}}) and delivered over MQTT.
+NIPC is a protocol that is based on RESTful HTTP {{!RFC9114}}. Along with HTTP
+headers and URIs, NIPC uses JSON {{!RFC7159}} payloads to convey NIPC 
+operations, such as registrations, actions, event and property operations. This
+is the case for both request and response parameters, as well as errors.
+NIPC uses the standard JSON media type "application/json", except for the SDF 
+model registration APIs, where the media type reflects the content as an SDF 
+model, and hence is media type "application/sdf+json".
+
+### NIPC publish/subscribe events
+
+NIPC publish/subscribe events are encoded in CBOR ({{!RFC8949}}) and can be
+delivered over either:
+- MQTT
+- Webhook
+- Websocket
+
+## Paths
+
+The NIPC HTTP protocol is described in terms of a path relative to a Base URI.
+The Base URI MUST NOT contain a query string, as clients MAY append additional 
+path information and query parameters as part of forming the request.  The base
+URI is a URL that most often consists of the "https" protocol scheme, a domain
+name, and an initial path {{!RFC3986}}.  That initial path for NIPC is 
+recommended to be /nipc.
+For example:
+
+      "https://example.com/nipc/"
+
+Based on this a well_known URI {{!RFC8615}} of nipc can be defined.
+
+Additionally a version number may be added, for example: 
+
+      "https://example.com/nipc/v1/"
+
+Every NIPC API pertains to either a device or group of devices, identified by
+an id, hence the id will be reflected as the first parameter in the path. 
+For example:
+
+      "https://example.com/nipc/v1/{id}"
 
 ## Schema
 
@@ -306,8 +367,6 @@ identifier. The common schema for Object is defined as follows:
 | Attribute     | Req |   Type  |          Example                     |
 +---------------+-----+---------+--------------------------------------|
 | id            |  T  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-| type          |  T  |  enum   | device, group                        |
-| technology    |  F  |  enum   | ble, zigbee                          |
 {: #objectdef title="Definition of an Object"}
 
 where-
@@ -315,23 +374,8 @@ where-
  - id is the unique uuid of the device. This is generated when registering
    the device, for example against a SCIM server. As such this ID is known
    both to the application as well as the NIPC Server. 
- - type is either "group" or "device".
- - technology is the radio technology supported by the device. The mappings
-   defined in this spec are "ble" or "zigbee". Mappings are extendable to 
-   new technologies.
 
-Example device object:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-}
-~~~~~
-{: #exdevobj title="Example device object"}
-
-### Property mapping {#propertymap}
+### Protocol mapping {#protocolmap}
 
 An object can support one or more communications protocols. Even though Non-IP
 communications protocols all perform operations on properties, implementations
@@ -2382,6 +2426,8 @@ with {{!RFC8126}}.
 ## Protocol mapping
 
 ## API extensions
+
+## well_known URI
 
 --- back
 
