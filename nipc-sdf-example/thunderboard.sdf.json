@@ -482,7 +482,17 @@
                     "sdfOutputData": {
                         "protocolMap": {
                             "ble": {
-                                "type": "advertisement"
+                                "type": "advertisements"
+                            }
+                        }
+                    }
+                },
+                "isConnected": {
+                    "description": "BLE connection events",
+                    "sdfOutputData": {
+                        "protocolMap": {
+                            "ble": {
+                                "type": "connection_events"
                             }
                         }
                     }
