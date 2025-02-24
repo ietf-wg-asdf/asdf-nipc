@@ -162,7 +162,7 @@ that interprets, decodes or modifies these payloads.
 
 {{arch}} shows us applications, the application layer gateway (ALG),
 an access point (AP), and a device (D). The applications, application layer
-gateway and access point are deployed on an IP-Network. The AP also has a
+gateway, and access point are deployed on an IP-Network. The AP also has a
 Non-IP interface, which it uses to communicate with the device.
 The Application is deployed in a different administrative domain than the
 network elements (ALG & AP).
@@ -619,8 +619,8 @@ where in the BLE protocol object:
  - "ble" protocol object contains an Array of BLE services as shown in
    {{BLEservices}}
 
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
+A failure will generate a standard failure response. Please refer to {{failure}}
+definition of failure response.
 
 #### Return active connections
 
