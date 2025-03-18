@@ -202,7 +202,7 @@ the NIPC API.
 2) Information about the interaction model: The Gateway must be able to perform
 protocol-neutral operations, and hence requires a mapping of protocol-neutral
 operations to protocol specific operations. These are supplied to the gateway
-by means of an SDF model, described in {{!I-D.ietf-adsf-sdf}. 
+by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 
 ~~~~~
 
@@ -254,7 +254,7 @@ In order to do that, the SDF model must contain protocol mappings, mapping
 protocol-neutral SDF affordances to protocol-specific ones.
 The SDF afforndances supported by the device, as well as its protcol-mappings
 are provide to the gatewat by means of an SDF model registration. SDF models
-are described in {{!I-D.ietf-asdf-sdf}. 
+are described in {{!I-D.ietf-asdf-sdf}}.
 
 ### Data application registration
 
@@ -997,7 +997,7 @@ definition of failed response.
 /registration/property
   
 The property registration API allows an application to register a property
-mapping against a protocol-specific property as decribed in {{propertymap}}
+mapping against a protocol-specific property as decribed in {{protocolmap}}
 
 Operations:
 
@@ -1040,7 +1040,7 @@ where-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+   {{protocolmap}}
 
 Response:
 Success responses include standard success response properties
@@ -1070,7 +1070,7 @@ where-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+   {{protocolmap}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1107,7 +1107,7 @@ where-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+   {{protocolmap}}
 
 Response:
 Success responses include standard success response properties
@@ -1137,7 +1137,7 @@ where-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+   {{protocolmap}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1198,7 +1198,7 @@ where a property-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+   {{protocolmap}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1259,7 +1259,7 @@ where a property-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+   {{protocolmap}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -2134,7 +2134,7 @@ NIPC is extensible in two ways:
  
 ## Protocol extensions
 
-As described in {{propertymap}} NIPC supports mapping protocol specific
+As described in {{protocolmap}} NIPC supports mapping protocol specific
 mapping to NIPC properties. BLE and Zigbee are used as examples, but protocol
 mapping is extensible to other protocols, so now non-IP protocols can be 
 supported by NIPC without a schema change.
@@ -2272,7 +2272,7 @@ Each message also has a subscription choice group that will define the
 type of data that is being published.
 
 ~~~~ CDDL
-{::include data_subscription.cddl}
+{::include cddl/data_subscription.cddl}
 ~~~~
 {:cddl}
 
