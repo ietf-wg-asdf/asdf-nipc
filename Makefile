@@ -4,7 +4,7 @@ DOCS=	draft-ietf-asdf-nipc.txt \
 
 FTXT=
 
-YAML=  nipc-openapi/NIPC_REST.yaml
+YAML=  nipc-openapi/NIPC.yaml
 
 all: $(DOCS)
 

@@ -1,0 +1,503 @@
+{
+    "namespace": {
+        "thunderboard": "https://example.com/thunderboard"
+    },
+    "defaultNamespace": "thunderboard",
+    "sdfThing": {
+        "Thunderboard": {
+            "sdfObject": {
+                "gas": {
+                    "description": "IAQ",
+                    "sdfProperty": {
+                        "iaq_eco2": {
+                            "description": "ECO2",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "efd658ae-c400-ef33-76e7-91b00019103b",
+                                    "characteristicID": "efd658ae-c401-ef33-76e7-91b00019103b"
+                                }
+                            }
+                        },
+                        "iaq_tvoc": {
+                            "description": "TVOC",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "efd658ae-c400-ef33-76e7-91b00019103b",
+                                    "characteristicID": "efd658ae-c402-ef33-76e7-91b00019103b"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {}
+                },
+                "sound": {
+                    "description": "Environment Sensing",
+                    "sdfProperty": {
+                        "es_sound_level": {
+                            "description": "Sound Level",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "181a",
+                                    "characteristicID": "c8546913-bf02-45eb-8dde-9f8754f4a32e"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {}
+                },
+                "hall": {
+                    "description": "Hall Effect",
+                    "sdfProperty": {
+                        "hall_state": {
+                            "description": "State",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
+                                    "characteristicID": "f598dbc5-2f01-4ec5-9936-b3d1aa4f957f"
+                                }
+                            }
+                        },
+                        "hall_field_strength": {
+                            "description": "Field Strength",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
+                                    "characteristicID": "f598dbc5-2f02-4ec5-9936-b3d1aa4f957f"
+                                }
+                            }
+                        },
+                        "hall_control_point": {
+                            "description": "Control Point",
+                            "observable": false,
+                            "writable": true,
+                            "readable": false,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
+                                    "characteristicID": "f598dbc5-2f03-4ec5-9936-b3d1aa4f957f"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {
+                        "hall_state": {
+                            "description": "State",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
+                                        "characteristicID": "f598dbc5-2f01-4ec5-9936-b3d1aa4f957f"
+                                    }
+                                }
+                            }
+                        },
+                        "hall_field_strength": {
+                            "description": "Field Strength",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
+                                        "characteristicID": "f598dbc5-2f02-4ec5-9936-b3d1aa4f957f"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "pressure": {
+                    "description": "Environment Sensing",
+                    "sdfProperty": {
+                        "es_pressure": {
+                            "description": "Pressure",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "181a",
+                                    "characteristicID": "2a6d"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {}
+                },
+                "aio": {
+                    "description": "Automation IO",
+                    "sdfProperty": {
+                        "aio_digital_in": {
+                            "description": "Digital",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "1815",
+                                    "characteristicID": "2A56"
+                                }
+                            }
+                        },
+                        "aio_digital_out": {
+                            "description": "Digital",
+                            "observable": false,
+                            "writable": true,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "1815",
+                                    "characteristicID": "2A56"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {
+                        "aio_digital_in": {
+                            "description": "Digital",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "1815",
+                                        "characteristicID": "2A56"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "rht": {
+                    "description": "Environment Sensing",
+                    "sdfProperty": {
+                        "es_temperature": {
+                            "description": "Temperature",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "181a",
+                                    "characteristicID": "2a6e"
+                                }
+                            }
+                        },
+                        "es_humidity": {
+                            "description": "Humidity",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "181a",
+                                    "characteristicID": "2a6f"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {}
+                },
+                "in_place_ota_dfu": {
+                    "description": "Silicon Labs OTA",
+                    "sdfProperty": {
+                        "ota_control": {
+                            "description": "Silicon Labs OTA Control",
+                            "observable": false,
+                            "writable": true,
+                            "readable": false,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "1D14D6EE-FD63-4FA1-BFA4-8F47B42119F0",
+                                    "characteristicID": "F7BF3564-FB6D-4E53-88A4-5E37E0326063"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {}
+                },
+                "rgb": {
+                    "description": "UI",
+                    "sdfProperty": {
+                        "ui_rgbleds": {
+                            "description": "RGB Leds",
+                            "observable": false,
+                            "writable": true,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "fcb89c40-c600-59f3-7dc3-5ece444a401b",
+                                    "characteristicID": "fcb89c40-c603-59f3-7dc3-5ece444a401b"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {}
+                },
+                "battery": {
+                    "description": "Battery Service, Power Source",
+                    "sdfProperty": {
+                        "batt_measurement": {
+                            "description": "Battery Level",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "180F",
+                                    "characteristicID": "2A19"
+                                }
+                            }
+                        },
+                        "power_source_type": {
+                            "description": "Power Source",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "ec61a454-ed00-a5e8-b8f9-de9ec026ec51",
+                                    "characteristicID": "ec61a454-ed01-a5e8-b8f9-de9ec026ec51"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {
+                        "batt_measurement": {
+                            "description": "Battery Level",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "180F",
+                                        "characteristicID": "2A19"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "light": {
+                    "description": "Environment Sensing",
+                    "sdfProperty": {
+                        "es_uvindex": {
+                            "description": "UV Index",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "181a",
+                                    "characteristicID": "2a76"
+                                }
+                            }
+                        },
+                        "es_ambient_light": {
+                            "description": "Ambient Light",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "181a",
+                                    "characteristicID": "c8546913-bfd9-45eb-8dde-9f8754f4a32e"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {}
+                },
+                "imu": {
+                    "description": "IMU",
+                    "sdfProperty": {
+                        "imu_control_point": {
+                            "description": "Control Point",
+                            "observable": false,
+                            "writable": true,
+                            "readable": false,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
+                                    "characteristicID": "71e30b8c-4131-4703-b0a0-b0bbba75856b"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {
+                        "imu_acceleration": {
+                            "description": "Acceleration",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
+                                        "characteristicID": "c4c1f6e2-4be5-11e5-885d-feff819cdc9f"
+                                    }
+                                }
+                            }
+                        },
+                        "imu_orientation": {
+                            "description": "Orientation",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
+                                        "characteristicID": "b7c4b694-bee3-45dd-ba9f-f3b5e994f49a"
+                                    }
+                                }
+                            }
+                        },
+                        "imu_control_point": {
+                            "description": "Control Point",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
+                                        "characteristicID": "71e30b8c-4131-4703-b0a0-b0bbba75856b"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "description": "Generic Access, Device Information",
+            "sdfProperty": {
+                "device_name": {
+                    "description": "Device Name",
+                    "observable": false,
+                    "writable": true,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "1800",
+                            "characteristicID": "2A00"
+                        }
+                    }
+                },
+                "appearance": {
+                    "description": "Appearance",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "1800",
+                            "characteristicID": "2A01"
+                        }
+                    }
+                },
+                "manufacturer_name_string": {
+                    "description": "Manufacturer Name String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A29"
+                        }
+                    }
+                },
+                "model_number_string": {
+                    "description": "Model Number String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A24"
+                        }
+                    }
+                },
+                "serial_number_string": {
+                    "description": "Serial Number String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A25"
+                        }
+                    }
+                },
+                "hardware_revision_string": {
+                    "description": "Hardware Revision String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A27"
+                        }
+                    }
+                },
+                "firmware_revision_string": {
+                    "description": "Firmware Revision String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A26"
+                        }
+                    }
+                },
+                "system_id": {
+                    "description": "System ID",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A23"
+                        }
+                    }
+                }
+            },
+            "sdfEvent": {
+                "isPresent": {
+                    "description": "BLE advertisements",
+                    "sdfOutputData": {
+                        "protocolMap": {
+                            "ble": {
+                                "type": "advertisements"
+                            }
+                        }
+                    }
+                },
+                "isConnected": {
+                    "description": "BLE connection events",
+                    "sdfOutputData": {
+                        "protocolMap": {
+                            "ble": {
+                                "type": "connection_events"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

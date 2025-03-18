@@ -9,7 +9,7 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.4.5
+  version: 0.4.6
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
@@ -31,13 +31,13 @@ tags:
       APIs that perform actions on devices.
   - name: NIPC action APIs with embedded protocol mapping
     description: |-
-      APIs that perform actions on devices, but do not use registered properties, events or ation. These API's have embedded protocol mappings
+      APIs that perform actions on devices, but do not use registered properties, events or actions. These APIs have embedded protocol mappings
   - name: NIPC registration APIs
     description: |-
       APIs that register sdf models or data applications
   - name:  NIPC API extensions
     description: |-
-      APIs that simplify application interaction by implementing one or more basic API's into a single API call.
+      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
 
 paths:
 ### NIPC Property APIs
@@ -64,7 +64,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "temperature"
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
       requestBody:
         content:
           application/json:
@@ -122,7 +122,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "temperature"
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
       responses:
         '200':
           description: Success
@@ -222,9 +222,12 @@ paths:
         in: query
         description: properties that needs to be filtered, multiple values are comma-separated
         required: true
+        explode: false
         schema:
-          type: string
-          example: "temperature"
+          type: array
+          items:
+            type: string
+            example: "#/sdfObject/thermostat/sdfProperty/temperature"
       responses:
         '200':
           description: Success
@@ -259,9 +262,9 @@ paths:
     post:
       tags:
         - NIPC event APIs
-      summary: Enable an event on a specific a device
+      summary: Enable an event on a specific device
       description: |-
-        Enable an event on a specific a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+        Enable an event on a specific device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
       operationId: EnableEvent
       parameters:
       - name: id
@@ -278,7 +281,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "patient/heartbeat"
+          example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
@@ -312,9 +315,9 @@ paths:
     delete:
       tags:
         - NIPC event APIs
-      summary: Disable an event on a specific a device
+      summary: Disable an event on a specific device
       description: |-
-        Disable an event on a specific a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
+        Disable an event on a specific device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
       operationId: DisableEvent
       parameters:
       - name: id
@@ -331,7 +334,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "patient/heartbeat"
+          example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
@@ -364,9 +367,9 @@ paths:
     get:
       tags:
         - NIPC event APIs
-      summary: Get status of an event on a specific a device
+      summary: Get status of an event on a specific device
       description: |-
-        Get status of an event on a specific a device. Success is event is active, failure if event not active. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
+        Get status of an event on a specific device. Success is event is active, failure if event not active. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
       operationId: GetEvent
       parameters:
       - name: id
@@ -383,7 +386,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "patient/heartbeat"
+          example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
@@ -419,7 +422,7 @@ paths:
         - NIPC event APIs
       summary: Get status of events on a device or group of devices
       description: |-
-        Get status of an event or multiple events on a specific a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id is a device-id or group-id
+        Get status of an event or multiple events on a specific device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id is a device-id or group-id
       operationId: GetEvents
       parameters:
       - name: id
@@ -433,10 +436,13 @@ paths:
       - name: event
         in: query
         description: events that needs to be filtered, multiple values are comma-separated
+        explode: false
         required: true
         schema:
-          type: string
-          example: "patient/heartbeat"
+          type: array
+          items:
+            type: string
+            example: "#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
         '200':
           description: Success
@@ -465,13 +471,13 @@ paths:
                   - $ref: '#/components/schemas/EventErrorCodes'
 
 ### NIPC action APIs
-  /{id}/action/{property}:
+  /{id}/action/{action}:
     put:
       tags:
         - NIPC action APIs
-      summary: Perform an action on a property on a device
+      summary: Perform an action on a device
       description: |-
-        Perform an action on a property on a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
+        Perform an action on a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
       operationId: ActionProperty
       parameters:
       - name: id
@@ -482,13 +488,13 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: action
         in: path
-        description: property that needs to be filtered
+        description: action that needs to be performed
         required: true
         schema:
           type: string
-          example: "lightswitch"
+          example: "#/sdfObject/healthsensor/sdfAction/start"
       requestBody:
         content:
           application/json:
@@ -508,7 +514,7 @@ paths:
               schema:
                 allOf: 
                   - $ref: '#/components/schemas/Id'
-                  - $ref: '#/components/schemas/PropertyValue'
+                  - $ref: '#/components/schemas/ActionValue'
         '400':
           description: Bad request
         '401':
@@ -682,7 +688,7 @@ paths:
         - NIPC action APIs with embedded protocol mapping
       summary: Disconnect a device 
       description: |-
-        Disconnect a device. 3 retries by default, optionally retry policy can be defined in the API body. If the protocol requires service discovery, full service discovery will be performed, unless specific services are described in the API body.
+        Disconnect a device.
       operationId: ActionDeleteConnection
       parameters:
         - name: id
@@ -900,7 +906,7 @@ paths:
         content:
           application/sdf+json:
             schema:
-              $ref: '#/components/schemas/SdfObject'
+              $ref: '#/components/schemas/SdfModel'
         required: true
       responses:
         '200':
@@ -930,15 +936,13 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
                   - $ref: '#/components/schemas/RegistrationErrorCodes'
- 
-  /{id}/registration/model/{sdfobject}:
-    put:
+    get:
       tags:
         - NIPC registration APIs
-      summary: Update an sdfObject
+      summary: Get all registered sdfRefs
       description: |-
-        Update an sdfObject, including Properties, Events and actions
-      operationId: updateSdfObject
+        Get all registered sdfRefs for a device or group
+      operationId: getSdfRefs
       parameters:
         - name: id
           in: path
@@ -948,18 +952,67 @@ paths:
             type: string
             format: uuid
             example: 12345678-1234-5678-1234-56789abcdef4
-        - name: sdfobject
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/SdfReference'
+                    - $ref: '#/components/schemas/Id'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '405':
+          description: Invalid request
+        '500':
+          description: Server-side failure
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/FailureResponse' 
+                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+
+
+  /{id}/registration/model/{sdfRef}:
+    put:
+      tags:
+        - NIPC registration APIs
+      summary: Update an SDF model
+      description: |-
+        Update an SDF model, including Properties, Events and actions
+      operationId: updateSdf
+      parameters:
+        - name: id
           in: path
-          description: sdfObject name
+          description: device or group id the model is to be registered for
           required: true
           schema:
             type: string
-            example: "https://example.com/heartrate/sdfObject/healthsensor"
+            format: uuid
+            example: 12345678-1234-5678-1234-56789abcdef4
+        - name: sdfRef
+          in: path
+          description: sdfRef can be a reference to an sdfThing or sdfObject
+          required: true
+          schema:
+            type: string
+            example: "https://example.com/heartrate#/sdfObject/healthsensor"
       requestBody:
         content:
           application/sdf+json:
             schema:
-              $ref: '#/components/schemas/SdfObject'
+              $ref: '#/components/schemas/SdfModel'
         required: true
       responses:
         '200':
@@ -1006,13 +1059,13 @@ paths:
             type: string
             format: uuid
             example: 12345678-1234-5678-1234-56789abcdef4
-        - name: sdfobject
+        - name: sdfRef
           in: path
           description: sdfObject name
           required: true
           schema:
             type: string
-            example: "https://example.com/heartrate/sdfObject/healthsensor"
+            example: "https://example.com/heartrate#/sdfObject/healthsensor"
       responses:
         '200':
           description: Success
@@ -1058,13 +1111,13 @@ paths:
             type: string
             format: uuid
             example: 12345678-1234-5678-1234-56789abcdef4
-        - name: sdfobject
+        - name: sdfRef
           in: path
           description: sdfObject name
           required: true
           schema:
             type: string
-            example: "https://example.com/heartrate/sdfObject/healthsensor"
+            example: "https://example.com/heartrate#/sdfObject/healthsensor"
       responses:
         '200':
           description: Success
@@ -1077,7 +1130,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/SdfObject'
+                  - $ref: '#/components/schemas/SdfModel'
                   - $ref: '#/components/schemas/Id'
         '400':
           description: Bad request
@@ -1338,7 +1391,16 @@ components:
       properties:
         property:
           type: string
-          example: "temperature"
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
+
+    Action:
+      required:
+        - action
+      type: object
+      properties:
+        action:
+          type: string
+          example: "start"
 
 ## A value 
     Value:
@@ -1355,6 +1417,11 @@ components:
     PropertyValue:
       allOf:
         - $ref: '#/components/schemas/Property'
+        - $ref: '#/components/schemas/Value'
+
+    ActionValue:
+      allOf:
+        - $ref: '#/components/schemas/Action'
         - $ref: '#/components/schemas/Value'
 
 ## An array of Property values
@@ -1491,23 +1558,73 @@ components:
       type: object
       description: SDF URL referring to the sdfobject
       properties: 
-        SdfReference:
+        sdfRef:
           type: string
-          example: "https://example.com/heartrate/sdfObject/healthsensor"
+          example: "https://example.com/heartrate#/sdfObject/healthsensor"
     
+    SdfModel:
+      allOf:
+        - type: object
+          description: Sample SDF model
+          properties:
+            namespace:
+              type: object
+              additionalProperties:
+                type: string
+              example:
+                heartrate: https://example.com/heartrate
+            defaultNamespace:
+              type: string
+              example: heartrate
+        - oneOf:
+          - $ref: '#/components/schemas/SdfThing'
+          - $ref: '#/components/schemas/SdfObject'
+
+    SdfThing:
+      type: object
+      description: Sample SDF thing
+      properties:
+        sdfThing:
+          additionalProperties:
+            anyOf:
+                - $ref: '#/components/schemas/SdfProperty'
+                - $ref: '#/components/schemas/SdfEvent'
+                - $ref: '#/components/schemas/SdfAction'
+                - $ref: '#/components/schemas/SdfObject'
+          example:
+            multipleSensor:
+              sdfEvent:
+                isPresent:
+                  sdfOutputData:
+                    protocolMap:
+                      ble:
+                        type: advertisement
+              sdfObject:
+                healthsensor:
+                  sdfProperty:
+                    heartrate:
+                      protocolMap:
+                        ble:
+                          serviceID: 12345678-1234-5678-1234-56789abcdef4
+                          characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                  sdfEvent:
+                    fallDetected:
+                      sdfOutputData:
+                        protocolMap:
+                          ble:
+                            serviceID: 12345678-1234-5678-1234-56789abcdef4
+                            characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                  sdfAction:
+                    start:
+                      protocolMap:
+                        ble:
+                          serviceID: 12345678-1234-5678-1234-56789abcdef4
+                          characteristicID: 12345678-1234-5678-1234-56789abcdef4
+
     SdfObject:
       type: object
       description: Sample SDF object
       properties:
-        namespace:
-          type: object
-          additionalProperties:
-            type: string
-          example:
-            heartrate: https://example.com/heartrate
-        defaultNamespace:
-          type: string
-          example: heartrate
         sdfObject:
           additionalProperties:
             anyOf:
@@ -1524,10 +1641,11 @@ components:
                       characteristicID: 12345678-1234-5678-1234-56789abcdef4
               sdfEvent:
                 fallDetected:
-                  protocolMap:
-                    ble:
-                      serviceID: 12345678-1234-5678-1234-56789abcdef4
-                      characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                  sdfOutputData:
+                    protocolMap:
+                      ble:
+                        serviceID: 12345678-1234-5678-1234-56789abcdef4
+                        characteristicID: 12345678-1234-5678-1234-56789abcdef4
               sdfAction:
                 start:
                   protocolMap:
@@ -1563,10 +1681,11 @@ components:
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Event'
           example:
             fallDetected:
-              protocolMap:
-                ble:
-                  serviceID: 12345678-1234-5678-1234-56789abcdef4
-                  characteristicID: 12345678-1234-5678-1234-56789abcdef4
+              sdfOutputData:
+                protocolMap:
+                  ble:
+                    serviceID: 12345678-1234-5678-1234-56789abcdef4
+                    characteristicID: 12345678-1234-5678-1234-56789abcdef4
     
     SdfAction:
       type: object

@@ -54,12 +54,12 @@ informative:
 --- abstract
 
 This memo specifies RESTful application layer interface for gateways 
-providing operations against non-IP devices. The described interface is
-extensible. This memo initially describes Bluetooth Low Energy and 
-Zigbee as they are the most commonly deployed.
+providing operations against non-IP devices, as well as a CBOR-based 
+publish-subscribe interface for streaming data. The described interfaces are
+extensible. The specification also defines a protocol mapping function to
+to map this interface to commonly used non-IP protocols. 
 
 --- middle
-
 
 # Introduction
 
@@ -67,14 +67,16 @@ Zigbee as they are the most commonly deployed.
 
 Low-power sensors, actuators and other connected devices introduced in
 environments and use cases such as building management, healthcare, workplaces,
-manufacturing, logistics and hospitality are often battery-powered. Often they
-do not support wireless of wired interfaces that support the IP protocol.
-Most of these environments however mainly support IP-based networking
-infrastructure. Therefore, applications on the IP network that aim to
-communicate or receive telemetry from these non-IP low-power devices must do
-so through a gateway function on the IP network. This gateway functions then 
-translates the communication to the non-IP protocol that the low-power device 
-supports. Promiment examples of such protocols are {{BLE53}} and {{Zigbee22}}.
+manufacturing, logistics and hospitality are often battery-powered. With 
+limited power budget, they may not be able to support the IP protocol on their
+wired or wireless interfaces, hence they support protocols that require a lower
+power budget. Promiment examples of such protocols are {{BLE53}} and
+{{Zigbee22}}. These devices typically do require to communicate with devices
+or applications that are connected to IP-based networking infrastructure. 
+Therefore, applications on the IP network that need to communicate or receive
+telemetry from these non-IP low-power devices must do so through a gateway 
+function on the IP network. This gateway functions then translates the 
+communication to the non-IP protocol that the low-power device supports. 
 
 ~~~~~
                                                                
@@ -91,7 +93,7 @@ a particular protocol, such as a BLE GATT REST API for BLE Gateways
 ({{https://www.bluetooth.com/bluetooth-resources/gatt-rest-api/}}), however 
 they have been limited to a single protocol or a particular use case. In
 absence of an open standard describing how applications on an IP network
-communicate with non-IP devices, bespoke and vendors specific implementations
+communicate with non-IP devices, bespoke and vendor-specific implementations
 have proliferated. This results in parallel infrastructure of both gateways 
 and non-IP networks being deployed on a case by case basis, each connecting
 separately into the IP network, with a distinct set of APIs. At the same time,
@@ -101,7 +103,8 @@ wireless radios, of different types. These radios can transmit and receive
 different frame types, such as {{BLE53}} and {{Zigbee22}}. This specification
 aims to define a Gateway API for these Non-IP protocols that can be leveraged
 by this wireless infrastructure in order to connect Non-IP devices into IP
-networks.
+networks. The specification aims to be extensible, in order to support existing
+and future non-IP protocols.
 
 A standardized Non-IP Gateway interface has following benefits:
 
@@ -111,7 +114,7 @@ A standardized Non-IP Gateway interface has following benefits:
  - Faster and more cost-effective adoption of Non-IP devices in IP network
    environments.
 
-## Non-IP Gateway functions
+## Non-IP Gateway
 
 A non-IP gateway MUST provide at least following functions:
 
@@ -122,7 +125,7 @@ A non-IP gateway MUST provide at least following functions:
    context about the device to service gateway API requests. It also ensures
    segmentation of devices that were onboarded by particular applications.
  - A persistent inventory of onboarded devices  mapping to the application
-   that onboarded them and the access point/radio that is serving them.
+   that onboarded them and the non-IP access point/radio that is serving them.
  - An API that allows for bi-directional communication to non-IP devices.
  - One or more channels to process requests, responses, and asymmetric
    communications with the non-IP radio resources (Access Points)
@@ -130,10 +133,13 @@ A non-IP gateway MUST provide at least following functions:
  - The ability to stream telemetry received from non-IP devices in real-time
    to applications on the IP network.
 
-The onboarding function is out of scope of this document, but can be provided
-by a provisioning interface such as {{!RFC7644}} leveraging 
-{{!I-D.ietf-scim-device-model}}. All other defined functions are
-supported by Non IP-Control (NIPC).
+The definition of the onboarding function is out of scope of this document, but
+can be provided by a provisioning interface such as {{!RFC7644}} leveraging 
+{{!I-D.ietf-scim-device-model}}. NIPC performs operations on a device or group
+object, hence it requires device onboarding to be performed prior to performing
+a NIPC operation on a device. NIPC APIs will reference a device or group id 
+generated at the time of onboarding as a unique identifier. Apart from 
+onboarding, Non IP-Control (NIPC) supports all functions defined above.
 
 The Application gateway is a network function, so its goal is to proxy payloads 
 between Non-IP and IP networks. It is not intended to be a middleware function
@@ -141,28 +147,28 @@ that interprets, decodes or modifies these payloads.
 
 ~~~~~
 
-                            +-----------------------------------+
-                            |                                   |
-    +-----------+   Request |  +---------+                      |
-    | onboarding|------------->|  SCIM   |                      |
-    |    app    |<-------------| Server  |                      |
-    +-----------+  Ctrl Endpt  +---------+                      |
-                            |                                   |
-    +-----------+           |  +------------+  +-------+  +--+  |
-    |  Control  |>...REST...|.>|            |..|  AP   |..|D |  |
-    |     &     |           |  |   Gateway  |  +-------+  +--+  |
-    | Telemetry |<...MQTT...|.<|            |                   |
-    |    Apps   |           |  +------------+                   |
-    +-----------+           |                                   |
-                            |       Network Deployment          |
-                            +-----------------------------------+
+                             +-----------------------------------+
+                             |                                   |
+    +-----------+   Request  |  +---------+                      |
+    | onboarding|-------------->|  SCIM   |                      |
+    |    app    |<--------------| Server  |                      |
+    +-----------+  Ctrl Endpt|  +---------+                      |
+                             |                                   |
+    +-----------+            |  +------------+  +-------+  +--+  |
+    |  Control  |>...REST....|.>|    NIPC    |..|  AP   |..|D |  |
+    |     &     |            |  |   Gateway  |  +-------+  +--+  |
+    | Telemetry |<..pub/sub..|.<|            |                   |
+    |    Apps   |            |  +------------+                   |
+    +-----------+            |                                   |
+                             |       Network Deployment          |
+                             +-----------------------------------+
 
 ~~~~~
 {: #arch title="Basic Architecture"}
 
-{{arch}} shows us applications, the application layer gateway (ALG),
+{{arch}} shows us applications, the NIPC application layer gateway (ALG),
 an access point (AP), and a device (D). The applications, application layer
-gateway and access point are deployed on an IP-Network. The AP also has a
+gateway and access point are deployed on an IP-Network. The AP supports a
 Non-IP interface, which it uses to communicate with the device.
 The Application is deployed in a different administrative domain than the
 network elements (ALG & AP).
@@ -170,35 +176,7 @@ The role of the ALG is to provide a gateway function to applications wishing
 to communicate with non-IP devices in the network domain served by the ALG.
 Applications implementing Non-IP Control can leverage RESTful interfaces
 to communicate with Non-IP devices in the network domain and subscribe to
-events levering MQTT.
-
-## Interaction flow
-
-In order to enable a network wishing to offer NIPC ALG functions, the network
-administrator authorizes application(s) to perform operations on the Gateway.
-This happens out of band and may be accomplished by means of exchanging tokens
-or public keys.
-Authorization can be role-based. The 3 primary roles are:  
-
-1. Onboarding: Authorize an onboarding application against a SCIM server
-   co-located with the gateway.  
-2. Control: Authorize applications that may control devices.
-3. Data: Authorize applications that may receive telemetry.  
-It is possible to further refine roles down to an API basis.
-
-Applications can perform the API requests they were authorized for.
-In order for application to perform a NIPC operation on a device, the device
-must be first onboarded, for example by means of SCIM.
-
-Previous steps are prerequisites and not within the scope of this specification, 
-but are provided for context. Subsequent operations are defined by NIPC.
-
-1. An application authorized for Control can perform NIPC calls to the
-   gateway in order to establish bi-directional communication to one or more
-   devices. Optionally, also set up a publish/subcribe topic to receive
-   streaming data from a device (telemetry interface).
-2. An application authorized can receive streaming data on a pub/sub 
-   topic configured by the control interface (telemetry interface).
+events levering a CBOR-based pub/sub interface.
 
 ## Terminology
 
@@ -214,70 +192,169 @@ capitals, as shown here.
 
 Non-IP protocols, such as BLE or Zigbee, typically define a number of basic
 operations that are similar across protocols. Examples of this are read and 
-write data. NIPC leverages a unified API to support those operations.
+write data. NIPC provides a unified API to support those operations.
 
-NIPC defines actions, which are implemented as REST over HTTP request-response
-APIs. NIPC Also defines events, which are implemented as MQTT topics.
+To perform NIPC operations on a device, the gateways needs 2 things:
+1) Information about the instance of the device or thing: The device must be
+onboarded on the gateway (e.g. by means of SCIM). This allows the NIPC Gateway
+to retrieve the device object, identified by an id referenced in the path of 
+the NIPC API.
+2) Information about the interaction model: The Gateway must be able to perform
+protocol-neutral operations, and hence requires a mapping of protocol-neutral
+operations to protocol specific operations. These are supplied to the gateway
+by means of an SDF model, described in {{!I-D.ietf-adsf-sdf}. 
 
-In case NIPC is not leveraged in combination with a data model such as ASDF
-{{!I-D.ietf-asdf-sdf}}, which can define the properties of a devices,
-NIPC also support registrations. Registrations perform mapping of 
-properties to protocol-specific attributes.
+~~~~~
 
-All operations pertain to a devices or a group of devices, which are addressed
-by UUIDs. These UUID's were generated at time of onboarding and returned to 
-the application, for example in a SCIM response.
+    +------------+   
+    |    SCIM    |                      
+    |   object   |           +----------------+          
+    |    {id}    |---------->|                |
+    +------------+           | NIPC Operation |
+                             |    - Property  |
+                             |    - Action    |
+    +------------+           |    - Event     |
+    |     SDF    |---------->|                |
+    |    model   |           +----------------+
+    |            |
+    +------------+  
 
- 
+~~~~~
+{: #prereq title="NIPC prerequisites"}
+
+Once these 2 prerequisites have been fulfilled, applications that are
+authorized can perform NIPC operations on device ids. NIPC operations
+are operations on properties, or constitute actions or events on devices,
+as per the affordances defined in an SDF model.
+
+## Onboarding
+
+In order to perform a NIPC operation on a device, the device has to have its 
+identity declared to the NIPC gateway. We refer to this as 'onboarding'. Apart
+from the device identity, it is also necessary that the device object contains
+all required information to bootstrap trust with the device, as well as
+establish connectivity, as NIPC operations assume that connectivity is there. 
+Allthough onboarding could theoretically be performed in other ways, it is
+strongly recommended to leverage {{!RFC7644}} with
+{{!I-D.ietf-scim-device-model}}, as the SCIM device schema has been developed
+to contain all nessary attributes and extensions to support NIPC.
+
+## Registrations 
+
+NIPC registration APIs allow applications to declare information that is not
+related to a device instance. Registrations can be information about an
+interaction model of a device or group of devices, or information about an
+application that is required to interact with the gateway.
+
+### SDF model registrations
+
+The SDF model for a device or group of devices determines how a gateway may
+interact with a device or group of devices in a protocol-neutral way. 
+In order to do that, the SDF model must contain protocol mappings, mapping 
+protocol-neutral SDF affordances to protocol-specific ones.
+The SDF afforndances supported by the device, as well as its protcol-mappings
+are provide to the gatewat by means of an SDF model registration. SDF models
+are described in {{!I-D.ietf-asdf-sdf}. 
+
+### Data application registration
+
+An application authorized to perform NIPC operations on devices needs to be
+able to define which applications can receive streaming event data from the
+gateway. The data-app registration API allows mapping of an event to a data 
+app as well as a protocol.
+
 ## NIPC Operations
 
-NIPC adheres to nomenclature defined by Semantic Definition Format (SDF) for
-Data and Interactions of Things {{!I-D.ietf-asdf-sdf}}. Therefore NIPC
-defines actions and events on properties. 
+NIPC operations are protocol-neutral operations on SDF affordances, more 
+specifically properties, actions & events. NIPC operations can happen against
+affordances that were registered in an SDF model. If connection management is
+required to execute a NIPC operation, it is assumed that the gateway implictly
+establishes and tears down required connections.
+
+### Properties APIs
+
+Property APIs allow applications perform operations on properties, such as to
+read or write values to them.
 
 ### Actions
 
-NIPC supports 3 types of actions:
-
- - connection: Allows an application to establish to manage connections with
-   a device (if so required by the technology).
- - property: Allows applications to read or write device properties. In case
-   the property supports streaming data, a subscription property can be
-   managed.
- - broadcast: This allows the application to send a broadcast message to a
-   device or group of devices.
-
-### Registrations
-
-In absence of a model such as SDF that defines device properties, NIPC allows
-an application to register them. NIPC defines 2 types of registrations:
-
- - property: Manage registrations of properties and their protocol mappings.
-   For example, a property called temperature can be mapped to a BLE Service
-   Characteristic.
- - event: Manage registrations of events and their MQTT properties such as 
-   MQTT topic definition.
-
-### Extensions
-
-The final set of operations are not fundamental NIPC operations, but are
-extensions. Extensions are compound APIs. They leverage basic NIPC operations
-but combine multiple operations in to one API call for efficiency.
-An example of this is the the bulk operation, allowing to send multiple
-operations in one operation. Extension allows for extensions, either generic
-extensions that are IANA registered, or vendor specific extensions 
+Action APIs perform actions on devices, such as enabling or disabling a feature
+on a device.
 
 ### Events
 
-Events are published over MQTT. Events can be normal sreaming data, but also
-broadcasts or connection events.
+Event APIs allow apps to enable or disable event reporting on devices. Events
+are reported over the events publish/subscribe interface.o
+
+### Action APIs with embedded protocol mapping
+
+Action APIs with embedded protocol mapping are APIs that perform actions on
+devices, but do not use registered afforances. These APIs have embedded protocol
+mappings. They allow for explicit connection management, which is useful when 
+executing multiple property operations and/or actions. In this case implicit
+connections management may be less efficient. They also consist of other 
+operations such as broadcasts.
+
+### Extensions
+
+Extensions are not part of the core NIPC API specification, but 
+extensions. Extensions are compound APIs. They leverage basic NIPC operations
+but combine multiple operations in to one API call for efficiency.
+An example of this is the the bulk operation, allowing to send multiple
+operations in one operation. Extensions can be generic, IANA registered 
+extentions, or vendor specific extensions.
+
+## Events publish subscribe interface
+
+Events are published on a publish/subscribe interface. Events can be of
+different types:
+- Streaming data from devices
+- Broadcasts from devices
+- Connection events: Devices connecting & disconnecting
 
 ## Protocols
 
-NIPC actions, registrations and extensions are request/response APIs. They make
-use of a JSON schema over RESTful HTTP{{!RFC9114}}. 
+### NIPC APIs
 
-NIPC events are encoded in CBOR ({{!RFC8949}}) and delivered over MQTT.
+NIPC is a protocol that is based on RESTful HTTP {{!RFC9114}}. Along with HTTP
+headers and URIs, NIPC uses JSON {{!RFC7159}} payloads to convey NIPC 
+operations, such as registrations, actions, event and property operations. This
+is the case for both request and response parameters, as well as errors.
+NIPC uses the standard JSON media type "application/json", except for the SDF 
+model registration APIs, where the media type reflects the content as an SDF 
+model, and hence is media type "application/sdf+json".
+
+### NIPC publish/subscribe events
+
+NIPC publish/subscribe events are encoded in CBOR ({{!RFC8949}}) and can be
+delivered over either:
+- MQTT
+- Webhook
+- Websocket
+
+## Paths
+
+The NIPC HTTP protocol is described in terms of a path relative to a Base URI.
+The Base URI MUST NOT contain a query string, as clients MAY append additional 
+path information and query parameters as part of forming the request.  The base
+URI is a URL that most often consists of the "https" protocol scheme, a domain
+name, and an initial path {{!RFC3986}}.  That initial path for NIPC is 
+recommended to be /nipc.
+For example:
+
+      "https://example.com/nipc/"
+
+Based on this a well_known URI {{!RFC8615}} of nipc can be defined.
+
+Additionally a version number may be added, for example: 
+
+      "https://example.com/nipc/v1/"
+
+Every NIPC API pertains to either a device or group of devices, identified by
+an id, hence the id will be reflected as the first parameter in the path. 
+For example:
+
+      "https://example.com/nipc/v1/{id}"
 
 ## Schema
 
@@ -290,8 +367,6 @@ identifier. The common schema for Object is defined as follows:
 | Attribute     | Req |   Type  |          Example                     |
 +---------------+-----+---------+--------------------------------------|
 | id            |  T  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-| type          |  T  |  enum   | device, group                        |
-| technology    |  F  |  enum   | ble, zigbee                          |
 {: #objectdef title="Definition of an Object"}
 
 where-
@@ -299,23 +374,8 @@ where-
  - id is the unique uuid of the device. This is generated when registering
    the device, for example against a SCIM server. As such this ID is known
    both to the application as well as the NIPC Server. 
- - type is either "group" or "device".
- - technology is the radio technology supported by the device. The mappings
-   defined in this spec are "ble" or "zigbee". Mappings are extendable to 
-   new technologies.
 
-Example device object:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-}
-~~~~~
-{: #exdevobj title="Example device object"}
-
-### Property mapping {#propertymap}
+### Protocol mapping {#protocolmap}
 
 An object can support one or more communications protocols. Even though Non-IP
 communications protocols all perform operations on properties, implementations
@@ -449,548 +509,6 @@ Example failure response:
 }
 ~~~~~
 {: #exfail title="Example failure response"}
-
-# NIPC Actions
-
-The primary goal of NIPC actions is to exchange data with a Non-IP device, by
-means of reading, writing or streaming NIPC properties to applications. An
-explicit connection may be required, which is also an action. An application
-may also want to transmit a broadcast.
-
-## Connections
-
-A connection is an operation that establishes or tears down an association or
-connection with a device. Optionally during connection setup properties 
-supported by a device can be discovered. 
-
-/action/connection
-
-The connection API allows an application to request to connect to 
-a device.
-
-Operations:
-
- - Connect to a device: POST
- - Return active connections: GET
- - Disconnect a device: DELETE 
-
-### Connection API
-
-#### Connect to a device {#connect}
-
-Method: POST /action/connection
-
-Description: Connect to a device
-
-Parameters: None
-
-Request Body: 
-
- - an Object, as defined in {{objectdef}} 
- - optionally a set of properties to be discovered. These are supplied
-   in protocol objects, as defined in {{proobj}}.
-   In the case of BLE, if no protocol object is included, service discovery is 
-   performed to discover all supported properties when connecting to
-   a device. Optionally, service discovery may be limited to properties 
-   defined in the "ble" protocol extension. The services to be 
-   discovered can be added in an array. Property discover can be buffered
-   across connections, so the API also supports caching parameters. 
- - Connection retry parameters 
-
-Example body of a connection without specific discovery of properties:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "retries": 3,
-  "retryMultipleAPs": true
-}
-~~~~~
-{: #exconn title="Example Connection"}
-
-where-
-
- - "id", "type" and "technology" are part of the object definition (device
-   or group), as defined in {{objectdef}}. 
- - "retries" defines the number of retries in case the operations does not 
-   succeed
- - "retryMultipleAPs" can be used in case there is an infrastructure with 
-   multiple access points or radios that can reach the device. If set to "true"
-   a different access point may be used for retries.
-
-In case the application would like to discover specific properties of a device,
-a protocol object can be added that defines what properties should be
-discovered.
-
-Example body of a BLE connection with specific discovery of properties:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "ble": {
-    "services": [
-      {
-        "serviceID": "12345678-1234-5678-1234-56789abcdef4"
-      }
-    ],
-    "cached": false,
-    "cacheIdlePurge": 3600,
-    "autoUpdate": true,
-    "bonding": "default"
-  },
-  "retries": 3,
-  "retryMultipleAPs": true
-}
-~~~~~
-{: #exconnprp title="Example Connection with explicit discovery of connections"}  
-
-where in the BLE protocol object: 
-
- - "services" is an array of services defined by their serviceIDs.
- - "cached" refers to whether the services need to be cached for 
-   subsequent connects, in order not to perform service discovery on
-   each request.
- - "cacheIdlepurge" defines how long the cache should be maintained 
-   before purging
- - some devices support notifications on changes in services, 
-   "autoUpdate" allows the network to update services based on 
-   notification (on by default)
- - "bonding" allows you to override the bonding method configured when 
-   onboarding the device
-
-Response: 
-Success responses include standard success response properties
-as defined in {{success}} as well as a protocol object with an array of 
-discovered properties, as defined in the specific protocol.
-For example, for BLE, this is an array of supported services, which in turn
-contains an array of charateristics, which in turn contains an array of
-descriptors, as shown in {{BLEservices}}.
-
-~~~~~
-    services
-     - serviceID
-        |
-        |> characteristics
-            - charactericID
-            - flags
-               |
-               |> Descriptors
-                   - descriptorID
-~~~~~
-{: #BLEservices title="BLE Services"}
-
-Example of a BLE connection response with BLE discovered properties:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "ble": [
-    {
-      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-      "characteristics": [
-        {
-          "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-          "flags": [
-            "read",
-            "write"
-          ],
-          "descriptors": [
-            {
-              "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-~~~~~
-{: #exconnresp title="Example Connection response"}
-
-where in the BLE protocol object:
-
- - "id", "requestID" and "technology" are part of the standard {{success}} definition 
- - "ble" protocol object contains an Array of BLE services as shown in
-   {{BLEservices}}
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Return active connections
-
-Method: GET /action/connection
-
-Description: Returns one or more active connections, based on ids 
-provided in parameters (none = return all connections).
-
-Parameters, in query: 
-One of following options-
-
- - None: return all active connections for this application 
- - single id: return connection status for this id
- - comma separated ids: return connection status for multiple ids
-
-Response: 
-A standard success ({{exsuccess}}) or failure ({{exfail}}) response, including
-an array of device objects and their connection status. Success if the device
-is connected, failure if the device is not connected.  
-
-Example get connection response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "connections": [
-    {
-      "status": "SUCCESS",
-      "requestID": "12345678-5678-1234-5578-abcdef1234",
-      "id": "12345678-1234-5678-1234-56789abcdef4"
-    },
-    {
-      "status": "FAILURE",
-      "reason": "Not Found",
-      "errorCode": 12,
-      "requestID": "12345678-5678-1234-5578-abcdef1234"
-    }
-  ]
-}
-~~~~~
-{: #exgetresp title="Example Connection response"}
-
-In this example, status of 2 connections was requested. The request was
-successfully executed, 1 of the 2 connections was found active, the other
-one not.
-
-#### Disconnect a device 
-
-Method: DELETE /action/connection
-
-Description: Disconnect one or more devices, based on ids provided in
-parameters
-
-Parameters, in query: 
-One of following options-
-
- - None: Disconnect all devices for connections this application made
- - single id: disconnect device with id
- - comma separated ids: disconnect multiple devices with ids
-
-Response: 
-The response for the DELETE function is the same as the response for the GET
-function. See {{exsuccess}} for success response, and {{exconnresp}} for failed
-responses.
-
-## Properties
-
-Property APIs allow applictions to read and write property values from/to
-devices.
-
-/action/property
-
-Operations:
-
- - Write value: POST
- - Update value: PUT
- - Read value: GET
- - Delete value: DELETE 
-
-### Property API
-
-#### Writing a value {#write}
-
-Method: POST /action/property/
-
-Description: Writes a value to a property
-
-Parameters: None
-
-Request Body: 
-
- - an Object, as defined in {{objectdef}}
- - A propertyID to write to
- - A value to be written
- - optional parameters
-
-Example body writing a property:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "propertyID": "temperature",
-  "value": "dGVzdA==",
-  "forcedResponse": true
-}
-~~~~~
-{: #exwrite title="Example writing a property"}
-
-where-
-
- - "id", "type" and "technology" are part of the object definition (device
-   or group), as defined in {{objectdef}}
- - "propertyID" is the ID of a previously registered property mapping
- - "value" is the bytes to be written in base64 encoding
- - "forcedresponse" requests a specific response behavior of the device
-   that is not the default
-
-Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as the propertyID and the value written.
-
-Example of a write property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "propertyID": "temperature",
-  "value": "dGVzdA=="
-}
-~~~~~
-{: #exwrresp title="Example write property response"}
-
-where- 
-
- - "id", "requestID" and "technology" are part of the standard {{success}} definition 
- - "propertyID" is the ID of a previously registered property mapping
- - "value" is the bytes to be written in base64 encoding
- - "propertyID" is the ID of the property
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Updating a value {#update}
-
-Method: PUT /action/property
-
-Description: Updates a value of a property 
-
-Parameters: None
-
-Request Body: 
-
- - an Object, as defined in {{objectdef}}
- - A propertyID to write to
- - A value to be written
- - optional parameters
-
-Example body updating a property:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "propertyID": "temperature",
-  "value": "dGVzdA==",
-  "forcedResponse": true
-}
-~~~~~
-{: #exupd title="Example updating a property"}
-
-where-
-
- - "id", "type" and "technology" are part of the object definition (device
-   or group), as defined in {{objectdef}}
- - "propertyID" is the ID of a previously registered property mapping
- - "value" is the value to be updated in base64 encoding
- - "forcedresponse" requests a specific response behavior of the device
-   that is not the default
-
-Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as the propertyID and the value updated.
-
-Example of a write property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "propertyID": "temperature",
-  "value": "dGVzdA=="
-}
-~~~~~
-{: #exupresp title="Example update property response"}
-
-where- 
-
- - "id", "requestID" and "technology" are part of the standard {{success}} definition 
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Read a property 
-
-Method: GET /action/property/{property}
-
-Description: Read a property from a device
-
-Parameters, in path: 
-A propertyID {property} that needs to be read.
-
-Parameters, in query: 
-An id of a device on which the property has to be read.
-
-Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as the propertyID and the value read.
-
-Example of a read property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",                   
-  "id": "12345678-1234-5678-1234-56789abcdef4",                        
-  "propertyID": "temperature",
-  "value": "dGVzdA=="
-}
-~~~~~ 
-{: #exreresp title="Example read property response"}
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Delete a property value
-
-Method: DELETE /action/property/{property}
-
-Description: Delete a property value from a device
-
-Parameters, in path:
-A propertyID {property} that needs to be deleted..
-
-Parameters, in query:
-An id of a device on which the property has to be deleted.
-
-Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as the propertyID and the value deleted.
-
-Example of a delete property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "propertyID": "temperature",
-  "value": "dGVzdA=="
-}
-~~~~~
-{: #exdelresp title="Example delete property response"}
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-## Subscriptions
-
-/action/property/subscription
-
-Subscriptions are properties that deliver a data stream instead of a single
-value. The property subscription API allows an application to manage these 
-data streams.
-
-Operations:
-
- - Start a subscription data stream: POST
- - Get status of a subscription data stream: GET
- - Stop a subscription data stream: DELETE 
-
-### Property subscription API
-
-#### Starting a subscription data stream 
-
-Method: POST /action/property/subscription
-
-Description: Start a subcription data stream pertaining to a specific 
-property
-
-Parameters: None
-
-Request Body: 
-
- - an Object, as defined in {{objectdef}}
- - A propertyID for which to start the subscription 
- - optional parameters
-
-Example body for starting a subscription of a property:
-
-~~~~~
-{
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "technology": "ble",
-  "propertyID": "temperature",
-  "forcedAck": true
-}
-~~~~~
-{: #exstartsub title="Example starting a subscription for a property"}
-
-where-
-
- - "id", "type" and "technology" are part of the object definition (device
-   or group), as defined in {{objectdef}}
- - "propertyID" is the ID of a previously registered property mapping
- - "forcedAck" requests a specific response behavior of the device
-   that is not the default
-
-Response:
-Success responses is a standard success response when the
-subscription is started, as defined in {{success}}. 
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Get status of a subscription data stream
-
-Method: GET /action/property/subscription/{property}
-
-Description: Gets the status of a subscription data stream, success if
-active, failure if not active 
-
-Parameters, in path:
-A propertyID {property} for the subscription.
-
-Parameters, in query:
-An id of a device on which the subscription has to be started.
-
-Response:
-Success responses is a standard success response when the
-subscription is started, as defined in {{success}}.
-
-A failure to find the subscription will generate a standard failed response. 
-Please refer to {{failure}} definition of failed response.
-
-#### stop a subscription data stream
-
-Method: DELETE /action/property/subscription/{property}
-
-Description: stops a subscription data stream
-
-Parameters, in path:
-A propertyID {property} for the subscription.
-
-Parameters, in query:
-An id of a device on which the subscription has to be started.
-
-Response:
-Success response is a standard success response when the
-subscription is deleted, as defined in {{success}}.
-
-A failure to delete the subscription will generate a standard failed response.
-Please refer to {{failure}} definition of failed response.
 
 # NIPC Registrations
 
@@ -1746,6 +1264,865 @@ where a property-
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
 
+# NIPC APIs
+
+The primary goal of the NIPC APIs is to exchange data with a Non-IP device, by
+means of reading, writing or streaming NIPC properties to applications. 
+
+The NIPC APIs are divided into 3 categories:
+
+ - NIPC Property APIs: These APIs allow applications to get and update device 
+   properties.
+ - NIPC Event APIs: These APIs allow applications to enable or disable event reporting on devices.
+ - NIPC Action APIs: These APIs allow applications to perform actions on devices.
+ - NIPC Action APIs with embedded protocol mapping: These APIs allow applications to perform actions on devices, but do not use registered properties, events or actions.
+
+An SDF model must be registered for the device in order to use these NIPC Property, Event and Action APIs.
+The SDF model can be a top-level sdfThing with multiple sdfObjects or a top-level sdfObject.
+These APIs depend on the SDF affordance (i.e. sdfProperty, sdfEvent and sdfAction) objects defined in the SDF model and a device ID that is defined in {{I-D.ietf-scim-device-model}}.
+The SDF affordance can be referenced using the fragment identifier as described in {{I-D.ietf-asdf-sdf}}. In this case, the default namespace is assumed.
+If there are multiple properties/events/actions with the same fragment identifier, the global name of the SDF affordance in the SDF model can be used as defined in {{Section 4 of I-D.ietf-asdf-sdf}}.
+
+The SDF affordance name will be used against the registered SDF model to 
+determine the protocol-specific protocolMap that the NIPC API will operate on. 
+The fragment identifier or the global name must be percent-encoded to be used in the URL as per {{!RFC3986}}.
+
+## NIPC Property APIs
+
+These APIs allow applications to get and update device properties. 
+These operations may require a connection to the device to be established. 
+This connection can be established as part of the same API call implicitly.
+If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+
+### Write a value
+
+Method: `POST /{id}/property/{property}`
+
+Description: Writes a value to a property on a device
+
+Parameters: 
+
+ - id: the id of the device
+ - property: the property to write to
+
+Request Body:
+
+  - value: the bytes to be written in base64 encoding
+
+Response:
+
+Example of a write property response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+  "value": "dGVzdA=="
+}
+~~~~~
+{:json #exwrresp title="Example write property response"}
+
+where-
+
+ - "id" is the id of the device
+ - "property" is the property that was written to
+ - "value" is the bytes that were written in base64 encoding
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Read a value
+
+Method: `GET /{id}/property/{property}`
+
+Description: Reads a value from a property on a device
+
+Parameters: 
+
+ - id: the id of the device
+ - property: the property to read from
+
+Response:
+
+Example of a read property response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+  "value": "dGVzdA=="
+}
+~~~~~
+{:json #exreresp title="Example read property response"}
+
+where-
+
+ - "id" is the id of the device
+ - "property" is the property that was read from
+ - "value" is the bytes that were read in base64 encoding
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Write multiple values
+
+Method: `PUT /{id}/property`
+
+Description: Write values to one or more properties on a device
+
+Parameters: 
+
+ - id: the id of the device
+
+Request Body:
+
+  - an array of properties to update, each containing a property and a value
+
+Example body updating multiple properties:
+
+~~~~~
+{
+  "properties": [
+    {
+      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+      "value": "dGVzdA=="
+    },
+    {
+      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
+      "value": "eGVzdB=="
+    }
+  ]
+}
+~~~~~
+{:json #exupmprop title="Example updating multiple properties"}
+
+Response: 
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "properties": [
+    {
+      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+      "value": "dGVzdA=="
+    },
+    {
+      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
+      "value": "eGVzdB=="
+    }
+  ]
+}
+~~~~~
+{:json #exupmresp title="Example update multiple properties response"}
+
+where-
+
+ - "id" is the id of the device
+ - "properties" is an array of properties that were updated, each containing a property and a value
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Read multiple values
+
+Method: `GET /{id}/property`
+
+Description: Read values from one or more properties on a device
+
+Parameters: 
+
+ - id: the id of the device
+
+Query Parameters:
+
+ - property: a comma separated list of properties to read
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "properties": [
+    {
+      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+      "value": "dGVzdA=="
+    },
+    {
+      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
+      "value": "eGVzdB=="
+    }
+  ]
+}
+~~~~~
+{:json #exreadmresp title="Example read multiple properties response"}
+
+where-
+
+ - "id" is the id of the device
+ - "properties" is an array of properties that were read, each containing a property and a value
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+## NIPC Event APIs
+
+These APIs allow applications to enable or disable event reporting on devices.
+These operations may require a connection to the device to be established. This connection can be established as part of the same API call implicitly. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+
+The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
+This event is also used as the MQTT topic name.
+
+### Enable event reporting
+
+Method: `POST /{id}/event/{event}`
+
+Description: Enables an event on a specific device
+
+Parameters: 
+
+ - id: the id of the device
+ - event: the event to enable
+
+The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`. 
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+}
+~~~~~
+{:json #exenableresp title="Example enable event response"}
+
+where-
+
+ - "id" is the id of the device
+ - "event" is the event that was enabled
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Disable event reporting
+
+Method: `DELETE /{id}/event/{event}`
+
+Description: Disables an event on a specific device
+
+Parameters:
+
+  - id: the id of the device
+  - event: the event to disable
+
+The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+}
+~~~~~
+{:json #exdisableresp title="Example disable event response"}
+
+where-
+
+ - "id" is the id of the device
+ - "event" is the event that was disabled
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Get event status
+
+Method: `GET /{id}/event/{event}`
+
+Description: Get the status of an event on a specific device
+
+Parameters:
+
+  - id: the id of the device
+  - event: the event to get the status of
+
+The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+}
+~~~~~
+{:json #exgeteventresp title="Example get event status response"}
+
+where-
+
+ - "id" is the id of the device
+ - "event" is the event that was queried
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Get status of multiple events
+
+Method: `GET /{id}/event`
+
+Description: Get the status of one or more events on a specific device
+
+Parameters:
+
+  - id: the id of the device
+
+Query Parameters:
+
+  - event: a comma separated list of events to get the status of
+
+Response: 
+
+Example of a response:
+
+~~~~~
+{
+  "events": [
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+    }
+  ]
+}
+~~~~~
+{:json #exgetmresp title="Example get multiple events status response"}
+
+where-
+
+ - "id" is the id of the device
+ - "events" is an array of events that were queried
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+## NIPC Action APIs
+
+These APIs allow applications to perform actions on devices. These operations may require a connection to the device to be established. This connection can be established as part of the same API call implicitly. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+
+### Perform an action
+
+Method: `PUT /{id}/action/{action}`
+
+Description: Perform an action on a specific device
+
+Parameters:
+
+  - id: the id of the device
+  - action: the action to perform
+
+Request Body:
+
+  - value: the bytes to be written in base64 encoding
+
+Example body of an action:
+
+~~~~~
+{
+  "value": "dGVzdA=="
+}
+~~~~~
+{:json #exaction title="Example action"}
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "action": "#/sdfObject/healthsensor/sdfAction/start"
+}
+~~~~~
+{:json #exactionresp title="Example action response"}
+
+where-
+
+ - "id" is the id of the device
+ - "action" is the action that was performed
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+## NIPC Action APIs with embedded protocol mapping
+
+These APIs allow applications to perform actions on devices, but do not use registered properties, events or actions. These APIs do not perform an implicit connection, so a connection must be established before calling these APIs.
+
+### Connect to a device
+
+Method: `POST /{id}/action/connection`
+
+Description: Connect to a device
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+  - Connection retry parameters
+  - A protocol map object. In the case of BLE,if no protocol map is included, service discovery is 
+   performed to discover all supported properties when connecting to
+   a device. Optionally, service discovery may be limited to properties 
+   defined in the "ble" protocol extension. The services to be 
+   discovered can be added in an array. Property discover can be buffered
+   across connections, so the API also supports caching parameters. 
+
+Example body of a connection without specific discovery of properties:
+
+~~~~~
+{
+  "retries": 3,
+  "retryMultipleAPs": true
+}
+~~~~~
+{:json #exconn title="Example connection"}
+
+where-
+
+ - "retries" defines the number of retries in case the operations does not 
+   succeed
+ - "retryMultipleAPs" can be used in case there is an infrastructure with 
+   multiple access points or radios that can reach the device. If set to "true"
+   a different access point may be used for retries.
+
+In case the application would like to discover specific properties of a device,
+a protocol mapping can be added that defines what properties should be
+discovered.
+
+Example body of a BLE connection with specific discovery of properties:
+
+~~~~~
+{
+  "retries": 3,
+  "retryMultipleAPs": true,
+  "protocolMap": {
+    "ble": {
+      "services": [
+        {
+          "serviceID": "12345678-1234-5678-1234-56789abcdef4"
+        }
+      ],
+      "cached": false,
+      "cacheIdlePurge": 3600,
+      "autoUpdate": true,
+      "bonding": "default"
+    }
+  }
+}
+~~~~~
+{:json #exconnprp title="Example connection with explicit discovery of connections"}
+
+where in the BLE protocol object: 
+
+ - "services" is an array of services defined by their serviceIDs.
+ - "cached" refers to whether the services need to be cached for 
+   subsequent connects, in order not to perform service discovery on
+   each request.
+ - "cacheIdlepurge" defines how long the cache should be maintained 
+   before purging
+ - some devices support notifications on changes in services, 
+   "autoUpdate" allows the network to update services based on 
+   notification (on by default)
+ - "bonding" allows you to override the bonding method configured when 
+   onboarding the device
+
+Response:
+
+Success responses include a protocol mapping with an array of 
+discovered properties, as defined in the specific protocol.
+For example, for BLE, this is an array of supported services, which in turn
+contains an array of charateristics, which in turn contains an array of
+descriptors, as shown in {{BLEservices}}.
+
+~~~~~
+    services
+     - serviceID
+        |
+        |> characteristics
+            - charactericID
+            - flags
+               |
+               |> Descriptors
+                   - descriptorID
+~~~~~
+{: #BLEservices title="BLE Services"}
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "protocolMap": {
+    "ble": [
+      {
+        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "characteristics": [
+          {
+            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "flags": [
+              "read",
+              "write"
+            ],
+            "descriptors": [
+              {
+                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+~~~~~
+{:json #exconnresp title="Example connection response"}
+
+where-
+
+  - "id" is the id of the device
+   - "protocolMap" contains an Array of BLE services as shown in
+   {{BLEservices}}
+
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
+
+### Update a connection
+
+Method: `PUT /{id}/action/connection`
+
+Description: Update cached ServiceMap for a device. Full service discovery will be performed, unless specific services are described in the API body.
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+  - A protocol map object. In the case of BLE,if no protocol map is included, service discovery is 
+   performed to discover all supported properties when connecting to
+   a device. Optionally, service discovery may be limited to properties 
+   defined in the "ble" protocol extension. The services to be 
+   discovered can be added in an array. Property discover can be buffered
+   across connections, so the API also supports caching parameters.
+
+Example body of an update connection:
+
+~~~~~
+{
+  "protocolMap": {
+    "ble": {
+      "services": [
+        {
+          "serviceID": "12345678-1234-5678-1234-56789abcdef4"
+        }
+      ],
+      "cached": false,
+      "cacheIdlePurge": 3600,
+      "autoUpdate": true
+    }
+  }
+}
+~~~~~
+{:json #exupconn title="Example service discovery response"}
+
+where in the BLE protocol object: 
+
+ - "services" is an array of services defined by their serviceIDs.
+ - "cached" refers to whether the services need to be cached for 
+   subsequent connects, in order not to perform service discovery on
+   each request.
+ - "cacheIdlepurge" defines how long the cache should be maintained 
+   before purging
+ - some devices support notifications on changes in services, 
+   "autoUpdate" allows the network to update services based on 
+   notification (on by default)
+
+Response:
+
+Success responses include a protocol mapping with an array of 
+discovered properties, as defined in the specific protocol.
+For example, for BLE, this is an array of supported services, which in turn
+contains an array of charateristics, which in turn contains an array of
+descriptors, as shown in {{BLEservices}}.
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "protocolMap": {
+    "ble": [
+      {
+        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "characteristics": [
+          {
+            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "flags": [
+              "read",
+              "write"
+            ],
+            "descriptors": [
+              {
+                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+~~~~~
+{:json #exupconnresp title="Example connection response"}
+
+where-
+
+  - "id" is the id of the device
+   - "protocolMap" contains an Array of BLE services as shown in
+   {{BLEservices}}
+
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
+
+### Disconnect from a device
+
+Method: `DELETE /{id}/action/connection`
+
+Description: Disconnect from a device
+
+Parameters:
+
+  - id: the id of the device
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4"
+}
+~~~~~
+{:json #exdisconnresp title="Example disconnect response"}
+
+where-
+
+ - "id" is the id of the device
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Get connection status
+
+Method: `GET /{id}/action/connection`
+
+Description: Get connection status for a device. Success when device(s) is/are connected, includes service map for the device if available. Failure when a device is not connected
+
+Parameters:
+
+  - id: the id of the device
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "protocolMap": {
+    "ble": [
+      {
+        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "characteristics": [
+          {
+            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "flags": [
+              "read",
+              "write"
+            ],
+            "descriptors": [
+              {
+                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+~~~~~
+{:json #exconnstatresp title="Example connection status response"}
+
+where-
+
+  - "id" is the id of the device
+   - "protocolMap" contains an Array of BLE services as shown in
+   {{BLEservices}}
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Write a value using protocol mapping
+
+Method: `POST /{id}/action/property/write`
+
+Description: Writes a value to a property on a device using protocol mapping
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+  - value: the bytes to be written in base64 encoding
+  - protocolMap: the protocol mapping for the property
+
+Example body of a write property:
+
+~~~~~
+{
+  "value": "dGVzdA==",
+  "protocolMap": {
+    "ble": {
+      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+      "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+    }
+  }
+}
+~~~~~
+{:json #exwriteprop title="Example write property"}
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "value": "dGVzdA==",
+  "protocolMap": {
+    "ble": {
+      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+      "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+    }
+  }
+}
+~~~~~
+{:json #exwritepropresp title="Example write property response"}
+
+where-
+
+ - "id" is the id of the device
+ - "value" is the bytes that were written in base64 encoding
+ - "protocolMap" is the protocol mapping for the property
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Read a value using protocol mapping
+
+Method: `POST /{id}/action/property/read`
+
+Description: Reads a value from a property on a device using protocol mapping
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+  - protocolMap: the protocol mapping for the property
+
+Example body of a read property:
+
+~~~~~
+{
+  "protocolMap": {
+    "ble": {
+      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+      "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+    }
+  }
+}
+~~~~~
+{:json #exreadprop title="Example read property"}
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "value": "dGVzdA==",
+  "protocolMap": {
+    "ble": {
+      "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+      "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+    }
+  }
+}
+~~~~~
+{:json #exreadpropresp title="Example read property response"}
+
+where-
+
+ - "id" is the id of the device
+ - "value" is the bytes that were read in base64 encoding
+ - "protocolMap" is the protocol mapping for the property
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
+### Broadcast to a device
+
+Method: `POST /{id}/action/broadcast`
+
+Description: Broadcast a payload to a device. The broadcast is performed on the AP where the device was last seen
+
+Parameters:
+
+  - id: the id of the device
+
+Request Body:
+
+An example body of a broadcast:
+
+~~~~~
+{
+  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "protocolMap": {
+    "ble": {}
+  },
+  "cycle": "single",
+  "broadcastTime": 3000,
+  "broadcastInterval": 500,
+  "payload": "AgEaAgoMFv9MABAHch9BsDkgeA=="
+}
+~~~~~
+{:json #exbroadcast title="Example broadcast"}
+
+where-
+
+ - "id" is the id of the device
+ - "protocolMap" is the protocol mapping for the property to identify the protocol to be used
+ - "cycle" is the broadcast cycle, either "single" or "repeat"
+ - "broadcastTime" is the time in milliseconds for the broadcast to run
+ - "broadcastInterval" is the time in milliseconds between each broadcast
+ - "payload" is the bytes to be broadcast in base64 encoding
+
+Response:
+
+This API responds with a HTTP 200 OK status code and an empty body when successful.
+
+A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+
 # NIPC Extensibility
 
 NIPC is extensible in two ways:
@@ -2026,7 +2403,19 @@ The sequence of operations for this are:
 
 # Security Considerations
 
-TBD.
+## API authorization 
+
+In order to enable a network wishing to offer NIPC ALG functions, the network
+administrator authorizes application(s) to perform operations on the Gateway.
+This happens out of band and may be accomplished by means of exchanging tokens
+or public keys.
+Authorization can be role-based. The 3 primary roles are:  
+
+1. Onboarding: Authorize an onboarding application against a SCIM server
+   co-located with the gateway.  
+2. Control: Authorize applications that may control devices.
+3. Data: Authorize applications that may receive telemetry.  
+It is possible to further refine roles down to an API basis.
 
 # IANA Considerations
 
@@ -2038,6 +2427,8 @@ with {{!RFC8126}}.
 
 ## API extensions
 
+## well_known URI
+
 --- back
 
 # OpenAPI definition
@@ -2048,7 +2439,7 @@ the implementor.
 ~~~~~~
 <CODE BEGINS>
 file "openapi.yml"
-{::include nipc-openapi/NIPC_REST.yaml}
+{::include nipc-openapi/NIPC.yaml}
 <CODE ENDS>
 ~~~~~~
 {: #openAPI}

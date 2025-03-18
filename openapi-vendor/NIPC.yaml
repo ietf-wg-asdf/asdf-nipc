@@ -5,11 +5,11 @@ info:
     There has been an large influx of non-IP devices supporting processes in manufacturing, healthcare, hospitality, retail, the home, and the office.  At the same time, wireless access points have been deployed nearly everywhere, many of which have radios that can transmit and receive different frame types, such as BLE, Zigbee. To integrate multiple of these use cases leveraging a single wireless infrastructure and avoid the need for parallel infrastructure, a Non IP device gateway function is necessary.
     The gateway provides the following functions:
        - authentication and authorization of application clients that will communicate with devices
-       - API's that onboard a device on the network (out of scope for this specification, but covered in SCIM for devices)
-       - API's that allow an app to set up a connection with a device
-       - API's that allow an app to exchange data with a device
-       - API's that allow a device to create registrations in the network for a device
-    These collection of these API's, in combination with hte onboarding API (SCIM for devices) will allow an application to perform a complete set of operations on Non-IP devices.
+       - APIs that onboard a device on the network (out of scope for this specification, but covered in SCIM for devices)
+       - APIs that allow an app to set up a connection with a device
+       - APIs that allow an app to exchange data with a device
+       - APIs that allow a device to create registrations in the network for a device
+    These collection of these APIs, in combination with hte onboarding API (SCIM for devices) will allow an application to perform a complete set of operations on Non-IP devices.
   termsOfService: http://swagger.io/terms/
   contact:
     email: bbrinckm@cisco.com
@@ -28,11 +28,11 @@ servers:
         description: Gateway Host
 tags:
   - name: connectivity
-    description: API's that allow apps to manage device connections
+    description: APIs that allow apps to manage device connections
   - name: data
-    description: API's that allow apps to exchange data with non-IP devices
+    description: APIs that allow apps to exchange data with non-IP devices
   - name: registrations
-    description: API's that allow apps to make registrations in the network for devices
+    description: APIs that allow apps to make registrations in the network for devices
   - name: bulk
     description: compound API that allows apps to combine requests into a single call
 

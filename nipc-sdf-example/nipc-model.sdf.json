@@ -46,7 +46,7 @@
                         },
                         "protocolMap": {
                             "ble": {
-                                "type": "advertisement"
+                                "type": "advertisements"
                             }
                         }
                     }
