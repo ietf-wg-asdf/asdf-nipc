@@ -49,7 +49,14 @@ informative:
       -
         org: Connectivity Standards Alliance
     date: 2017
-
+  Gatt-REST-API:
+    title: A RESTful API used to access data in devices using the functionality
+ defined in the Bluetooth GATT profile
+    target: https://www.bluetooth.com/bluetooth-resources/gatt-rest-api/
+    author:
+      -
+        org: Bluetooth SIG
+    date: 2017
 
 --- abstract
 
@@ -90,21 +97,20 @@ communication to the non-IP protocol that the low-power device supports.
 
 There have been efforts to define Gateway functions for devices that support
 a particular protocol, such as a BLE GATT REST API for BLE Gateways
-({{https://www.bluetooth.com/bluetooth-resources/gatt-rest-api/}}), however 
-they have been limited to a single protocol or a particular use case. In
-absence of an open standard describing how applications on an IP network
-communicate with non-IP devices, bespoke and vendor-specific implementations
-have proliferated. This results in parallel infrastructure of both gateways 
-and non-IP networks being deployed on a case by case basis, each connecting
-separately into the IP network, with a distinct set of APIs. At the same time,
-wireless access points supporting IP-based wireless connectivity are deployed
-ubiquitiously. Many of these wireless access points are equipped with multiple
-wireless radios, of different types. These radios can transmit and receive
-different frame types, such as {{BLE53}} and {{Zigbee22}}. This specification
-aims to define a Gateway API for these Non-IP protocols that can be leveraged
-by this wireless infrastructure in order to connect Non-IP devices into IP
-networks. The specification aims to be extensible, in order to support existing
-and future non-IP protocols.
+({{Gatt-REST-API}}), however they have been limited to a single protocol or
+a particular use case. In absence of an open standard describing how
+applications on an IP network communicate with non-IP devices, bespoke and
+vendor-specific implementations have proliferated. This results in parallel
+infrastructure of both gateways and non-IP networks being deployed on a case
+by case basis, each connecting separately into the IP network, with a distinct
+set of APIs. At the same time, wireless access points supporting both IP-based 
+wireless connectivity as well as non-IP based wireless technologies are
+deployed ubiquitiously. Many of these wireless access points are equipped with
+radios that can transmit and receive different frame types, such as {{BLE53}}
+and {{Zigbee22}}. This specification aims to define a Gateway API for these 
+Non-IP protocols that can be leveraged by this wireless infrastructure in order
+to connect Non-IP devices into IP networks. The specification aims to be
+extensible, in order to support existing and future non-IP protocols.
 
 A standardized Non-IP Gateway interface has following benefits:
 
@@ -120,16 +126,15 @@ A non-IP gateway MUST provide at least following functions:
 
  - Authentication and authorization of application clients that
    will leverage the gateway API to communicate with Non-IP devices.
- - The ability to onboard Non-IP devices on the Non-IP Gateway. Onboarding 
-   ensures that the Non-IP Gateway can identify a device and has sufficient
-   context about the device to service gateway API requests. It also ensures
-   segmentation of devices that were onboarded by particular applications.
- - A persistent inventory of onboarded devices  mapping to the application
-   that onboarded them and the non-IP access point/radio that is serving them.
+ - Access to a database of onboarded devices. Onboarding ensures that 
+   the Non-IP Gateway can identify a specific device and has sufficient context
+   about the device to service gateway API requests.
+ - The ability to consume an interaction model for a class of devices. This 
+   allows the gateway to understand how to interact with a device.
  - An API that allows for bi-directional communication to non-IP devices.
  - One or more channels to process requests, responses, and asymmetric
    communications with the non-IP radio resources (Access Points)
-   in its inventory.
+   at its disposal.
  - The ability to stream telemetry received from non-IP devices in real-time
    to applications on the IP network.
 
@@ -138,8 +143,7 @@ can be provided by a provisioning interface such as {{!RFC7644}} leveraging
 {{!I-D.ietf-scim-device-model}}. NIPC performs operations on a device or group
 object, hence it requires device onboarding to be performed prior to performing
 a NIPC operation on a device. NIPC APIs will reference a device or group id 
-generated at the time of onboarding as a unique identifier. Apart from 
-onboarding, Non IP-Control (NIPC) supports all functions defined above.
+generated at the time of onboarding as a unique identifier. 
 
 The Application gateway is a network function, so its goal is to proxy payloads 
 between Non-IP and IP networks. It is not intended to be a middleware function
@@ -172,8 +176,9 @@ gateway and access point are deployed on an IP-Network. The AP supports a
 Non-IP interface, which it uses to communicate with the device.
 The Application is deployed in a different administrative domain than the
 network elements (ALG & AP).
-The role of the ALG is to provide a gateway function to applications wishing
-to communicate with non-IP devices in the network domain served by the ALG.
+The role of the application layer gateway is to provide a gateway functioni
+to applications wishing to communicate with non-IP devices in the network
+domain served by the gateway.
 Applications implementing Non-IP Control can leverage RESTful interfaces
 to communicate with Non-IP devices in the network domain and subscribe to
 events levering a CBOR-based pub/sub interface.
@@ -202,7 +207,7 @@ the NIPC API.
 2) Information about the interaction model: The Gateway must be able to perform
 protocol-neutral operations, and hence requires a mapping of protocol-neutral
 operations to protocol specific operations. These are supplied to the gateway
-by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
+by means of an SDF model, described in {{!I-D.ietf-adsf-sdf}. 
 
 ~~~~~
 
@@ -254,7 +259,7 @@ In order to do that, the SDF model must contain protocol mappings, mapping
 protocol-neutral SDF affordances to protocol-specific ones.
 The SDF afforndances supported by the device, as well as its protcol-mappings
 are provide to the gatewat by means of an SDF model registration. SDF models
-are described in {{!I-D.ietf-asdf-sdf}}.
+are described in {{!I-D.ietf-asdf-sdf}. 
 
 ### Data application registration
 
@@ -263,7 +268,7 @@ able to define which applications can receive streaming event data from the
 gateway. The data-app registration API allows mapping of an event to a data 
 app as well as a protocol.
 
-## NIPC Operations
+## NIPC Operations {#nipc-ops}
 
 NIPC operations are protocol-neutral operations on SDF affordances, more 
 specifically properties, actions & events. NIPC operations can happen against
@@ -284,16 +289,16 @@ on a device.
 ### Events
 
 Event APIs allow apps to enable or disable event reporting on devices. Events
-are reported over the events publish/subscribe interface.o
+are reported over the events publish/subscribe interface.
 
 ### Action APIs with embedded protocol mapping
 
 Action APIs with embedded protocol mapping are APIs that perform actions on
-devices, but do not use registered afforances. These APIs have embedded protocol
-mappings. They allow for explicit connection management, which is useful when 
-executing multiple property operations and/or actions. In this case implicit
-connections management may be less efficient. They also consist of other 
-operations such as broadcasts.
+devices, but do not use registered affordances. These APIs have embedded
+protocol mappings. They allow for explicit connection management, which is
+useful when executing multiple property operations and/or actions. In this case
+implicit connections management may be less efficient. They also consist of
+other operations such as broadcasts.
 
 ### Extensions
 
@@ -356,26 +361,60 @@ For example:
 
       "https://example.com/nipc/v1/{id}"
 
-## Schema
+The second parameter in the path refers to the NIPC operation that the API will
+perform on the device. This can be:
+ - property
+ - event
+ - action
+ - registration
+ - extension
 
-### Device schema
+These are described in {{nipc-ops}}.
 
-Most operations (except registations) are executed against a device or a group.
-NIPC operations refer to either of these as "Object" with an ID as an
-identifier. The common schema for Object is defined as follows:
+## Base Schema
+
+### Device 
+
+All NIPC operations are executed against a device or a group of devices.
+Devices or groups of devices are identified by a unique uuid.
 
 | Attribute     | Req |   Type  |          Example                     |
 +---------------+-----+---------+--------------------------------------|
 | id            |  T  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-{: #objectdef title="Definition of an Object"}
+{: #devicedef title="Definition of a device our group of devices"}
 
-where-
+Id is the unique uuid of the device. This id is generated when registering
+the device, for example against a SCIM server. As such this id is a common
+identifier, known both to the application as well as the NIPC Server. 
 
- - id is the unique uuid of the device. This is generated when registering
-   the device, for example against a SCIM server. As such this ID is known
-   both to the application as well as the NIPC Server. 
+### NIPC Operations
 
-### Protocol mapping {#protocolmap}
+NIPC operations happen against SDF affordances and are referenced with an
+sdfReference, which can either be the full path including the namespace, or 
+and abbreviated reference.
+
+The opererations are either Properties, Events or Actions and their references
+are of type string
+
+For example:
+
+| Attribute | Req |   Type  |          Example                               |
++-----------+-----+---------+------------------------------------------------|
+| Property  |  T  |  string | #/sdfObject/thermostat/sdfProperty/temperature |
+{: #nipcopsdef title="Definition of a NIPC operation on a property"}
+
+### SDF model registration
+
+In order to perform NIPC operations, an SDF model needs to be registered
+
+### Data app registration
+
+## Protocol mapping {#protocolmap}
+
+An SDF model can fully describe a thing, including all its SDF affordances. 
+To leverage an SDF model to perform protocol specific operations on an
+instance of that thing, a mapping of the SDF affordance to a protocol is
+required. 
 
 An object can support one or more communications protocols. Even though Non-IP
 communications protocols all perform operations on properties, implementations
@@ -997,7 +1036,7 @@ definition of failed response.
 /registration/property
   
 The property registration API allows an application to register a property
-mapping against a protocol-specific property as decribed in {{protocolmap}}
+mapping against a protocol-specific property as decribed in {{propertymap}}
 
 Operations:
 
@@ -1040,7 +1079,7 @@ where-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{protocolmap}}
+   {{propertymap}}
 
 Response:
 Success responses include standard success response properties
@@ -1070,7 +1109,7 @@ where-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{protocolmap}}
+   {{propertymap}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1107,7 +1146,7 @@ where-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{protocolmap}}
+   {{propertymap}}
 
 Response:
 Success responses include standard success response properties
@@ -1137,7 +1176,7 @@ where-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{protocolmap}}
+   {{propertymap}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1198,7 +1237,7 @@ where a property-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{protocolmap}}
+   {{propertymap}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1259,7 +1298,7 @@ where a property-
  - "propertyID" is the propertyID that will be used in action APIs to refer
    to this property mapping
  - A protocol object with a protocol-specific property map, as decribed in
-   {{protocolmap}}
+   {{propertymap}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -2134,7 +2173,7 @@ NIPC is extensible in two ways:
  
 ## Protocol extensions
 
-As described in {{protocolmap}} NIPC supports mapping protocol specific
+As described in {{propertymap}} NIPC supports mapping protocol specific
 mapping to NIPC properties. BLE and Zigbee are used as examples, but protocol
 mapping is extensible to other protocols, so now non-IP protocols can be 
 supported by NIPC without a schema change.
@@ -2159,7 +2198,7 @@ As shown in {{extprotmap}}, a protocol mapping can be added by adding
 a new technology specific extension to the schema. 
 
 This is performed by adding the new protocol to the technology enum in
-the base object definition {{objectdef}}
+the base object definition {{devicedef}}
 
 Furthermore, the protocol objects need to be extended with the new
 protocol as well. Protocol objects will be extended as follows:
@@ -2272,7 +2311,7 @@ Each message also has a subscription choice group that will define the
 type of data that is being published.
 
 ~~~~ CDDL
-{::include cddl/data_subscription.cddl}
+{::include data_subscription.cddl}
 ~~~~
 {:cddl}
 
