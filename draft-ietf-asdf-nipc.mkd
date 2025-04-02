@@ -248,17 +248,16 @@ to contain all nessary attributes and extensions to support NIPC.
 
 NIPC registration APIs allow applications to declare information that is not
 related to a device instance. Registrations can be information about an
-interaction model of a device or group of devices, or information about an
-application that is required to interact with the gateway.
+interaction model for a class of devices, or information about an application
+that is required to interact with the gateway.
 
 ### SDF model registrations
 
-The SDF model for a device or group of devices determines how a gateway may
-interact with a device or group of devices in a protocol-neutral way. 
-In order to do that, the SDF model must contain protocol mappings, mapping 
-protocol-neutral SDF affordances to protocol-specific ones.
-The SDF afforndances supported by the device, as well as its protcol-mappings
-are provide to the gatewat by means of an SDF model registration. SDF models
+The SDF model for a class of devices determines how a gateway may interact with
+these devices in a protocol-neutral way. In order to do that, the SDF model
+must contain protocol mappings, mapping protocol-neutral SDF affordances
+to protocol-specific ones. The SDF afforndances supported by the device, as
+well as its protcol-mappings are provide to the gateway by means of an SDF model registration. SDF models
 are described in {{!I-D.ietf-asdf-sdf}. 
 
 ### Data application registration
