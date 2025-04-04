@@ -256,9 +256,9 @@ that is required to interact with the gateway.
 The SDF model for a class of devices determines how a gateway may interact with
 these devices in a protocol-neutral way. In order to do that, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
-to protocol-specific ones. The SDF afforndances supported by the device, as
-well as its protcol-mappings are provide to the gateway by means of an SDF model registration. SDF models
-are described in {{!I-D.ietf-asdf-sdf}. 
+to protocol-specific ones. The SDF affordances supported by the device, as
+well as its protcol-mappings, are provide to the gateway by means of an SDF
+model registration. SDF models are described in {{!I-D.ietf-asdf-sdf}. 
 
 ### Data application registration
 
@@ -267,13 +267,87 @@ able to define which applications can receive streaming event data from the
 gateway. The data-app registration API allows mapping of an event to a data 
 app as well as a protocol.
 
+## Protocol mapping {#protocolmap}
+
+An SDF model can fully describe a thing, including all its SDF affordances. 
+To leverage an SDF model to perform protocol specific operations on an
+instance of that thing, a mapping of the SDF affordance to a protocol-specific
+attribute is required. In NIPC, this is achieved through protocol mapping. 
+
+Protocol mapping is required to map a protocol agnostic affordance to a 
+protocol-specific operation, as implementations of the same affordance will
+differ between protocols. For example BLE will address a property as a service
+characteristic, while a property in Zigbee is addressed as a property in a
+cluster of an endpoint. 
+
+protocol mapping allows for integration of new protocols in NIPC, new mappings 
+can be created without the need to update the base schema.
+
+~~~~~
+
+     - protocolmap
+        |
+        |> ble
+        |     - BLE property
+        |
+        |> zigbee
+              - Zigbee property
+
+~~~~~
+{: #propmap title="Property Mapping"}
+
+As shown in {{propmap}}, protocol-specific properties must be embedded in a
+protocolmap object, for example a "ble" or a "zigbee" object.
+
+
+| Attribute | Req |   Type  |          Example                         |
++-----------+-----+---------+------------------------------------------|
+| ble       |  T  |  object | an object with BLE-specific attributes   |
+| zigbee    |  T  |  object | an object with Zigbee-specific attributes|
+{: #proobj title="Protocol objects"}
+
+where-
+
+ - "ble" is an object containing properties that are specific to the BLE
+   protocol.
+ - "zigbee" is an object containing properties that are specific to the
+   Zigbee protocol.
+ - Other protocol mapping objects can be added by creating a new protocol
+   object
+
+Example property mapping:
+
+~~~~~    
+"sdfObject": {
+        "healthsensor": {
+            "sdfProperty": {
+                "heartrate": {
+                    "description": "The current measured heart rate",
+                    "type": "number",
+                    "unit": "beat/min",
+                    "observable": false,
+                    "writable": false,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+                            "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+                        }
+                    }
+                }
+}
+~~~~~
+{: #expropmap title="Example property mapping"}
+
+A protocol map is provided as part of the SDF model, in the SDF affordance 
+definition. Alternatively, it can be provided directly in a NIPC API.
+
 ## NIPC Operations {#nipc-ops}
 
 NIPC operations are protocol-neutral operations on SDF affordances, more 
 specifically properties, actions & events. NIPC operations can happen against
 affordances that were registered in an SDF model. If connection management is
 required to execute a NIPC operation, it is assumed that the gateway implictly
-establishes and tears down required connections.
+establishes and tears down required connections. 
 
 ### Properties APIs
 
@@ -290,19 +364,31 @@ on a device.
 Event APIs allow apps to enable or disable event reporting on devices. Events
 are reported over the events publish/subscribe interface.
 
+### Connection management for NIPC Operations
+
+For protocols that require connection management before executing an operation,
+a NIPC gateway can perform implicit connection management. When executing a 
+NIP operation, a NIPC Gateway can set up a connection with a device as well as
+tear down the connection after the operation has completed. A NIPC Gateway
+should support explicit connection management as well. Explicit connection
+management can be used by an app that wants to perform multiple NIPC operations
+in a single connection. Explicit connection management can be performed by 
+calling the /{id}/action/connection action API. When after establishing an
+explicit connection to a device, an application calls a NIPC Operation, the
+Gateway will leverage the exissting connection and will also not tear the
+connection down after the operation completes. The app will have to explicitly
+close the connection. 
+
 ### Action APIs with embedded protocol mapping
 
 Action APIs with embedded protocol mapping are APIs that perform actions on
 devices, but do not use registered affordances. These APIs have embedded
-protocol mappings. They allow for explicit connection management, which is
-useful when executing multiple property operations and/or actions. In this case
-implicit connections management may be less efficient. They also consist of
-other operations such as broadcasts.
+protocol mappings. They require explicit connection management.
 
 ### Extensions
 
 Extensions are not part of the core NIPC API specification, but 
-extensions. Extensions are compound APIs. They leverage basic NIPC operations
+extensions to it. Extensions are compound APIs. They leverage basic NIPC operations
 but combine multiple operations in to one API call for efficiency.
 An example of this is the the bulk operation, allowing to send multiple
 operations in one operation. Extensions can be generic, IANA registered 
@@ -312,7 +398,8 @@ extentions, or vendor specific extensions.
 
 Events are published on a publish/subscribe interface. Events can be of
 different types:
-- Streaming data from devices
+- Streaming data from devices: Streaming data is activated/deactivated with the
+  NIPC events API
 - Broadcasts from devices
 - Connection events: Devices connecting & disconnecting
 
@@ -338,6 +425,8 @@ delivered over either:
 
 ## Paths
 
+### General
+
 The NIPC HTTP protocol is described in terms of a path relative to a Base URI.
 The Base URI MUST NOT contain a query string, as clients MAY append additional 
 path information and query parameters as part of forming the request.  The base
@@ -354,7 +443,18 @@ Additionally a version number may be added, for example:
 
       "https://example.com/nipc/v1/"
 
-Every NIPC API pertains to either a device or group of devices, identified by
+### NIPC Registrations
+
+Registrations leverage the base bath + /registration. NIPC supports SDF model
+registrations and data-app registrations.
+
+paths:
+- /registration/model
+- /registration/data-app
+
+### NIPC Operations
+
+Every NIPC Operations API pertains to either a device or group of devices, identified by
 an id, hence the id will be reflected as the first parameter in the path. 
 For example:
 
@@ -365,188 +465,9 @@ perform on the device. This can be:
  - property
  - event
  - action
- - registration
  - extension
 
 These are described in {{nipc-ops}}.
-
-## Base Schema
-
-### Device 
-
-All NIPC operations are executed against a device or a group of devices.
-Devices or groups of devices are identified by a unique uuid.
-
-| Attribute     | Req |   Type  |          Example                     |
-+---------------+-----+---------+--------------------------------------|
-| id            |  T  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-{: #devicedef title="Definition of a device our group of devices"}
-
-Id is the unique uuid of the device. This id is generated when registering
-the device, for example against a SCIM server. As such this id is a common
-identifier, known both to the application as well as the NIPC Server. 
-
-### NIPC Operations
-
-NIPC operations happen against SDF affordances and are referenced with an
-sdfReference, which can either be the full path including the namespace, or 
-and abbreviated reference.
-
-The opererations are either Properties, Events or Actions and their references
-are of type string
-
-For example:
-
-| Attribute | Req |   Type  |          Example                               |
-+-----------+-----+---------+------------------------------------------------|
-| Property  |  T  |  string | #/sdfObject/thermostat/sdfProperty/temperature |
-{: #nipcopsdef title="Definition of a NIPC operation on a property"}
-
-### SDF model registration
-
-In order to perform NIPC operations, an SDF model needs to be registered
-
-### Data app registration
-
-## Protocol mapping {#protocolmap}
-
-An SDF model can fully describe a thing, including all its SDF affordances. 
-To leverage an SDF model to perform protocol specific operations on an
-instance of that thing, a mapping of the SDF affordance to a protocol is
-required. 
-
-An object can support one or more communications protocols. Even though Non-IP
-communications protocols all perform operations on properties, implementations
-differ between protocols. For example BLE will address a property as a service
-characteristic, while a property in Zigbee is addressed as a property in a 
-cluster of an endpoint. 
-
-In order for NIPC to support protocol-agnostic APIs, a property mapping is
-required between a NIPC property and a protocol-specific property. A property
-mapping can be done by means of a property registration API.
-
-Property mapping allows for integration of new protocols in NIPC, new mappings 
-can be created without the need to update the base schema.
-
-~~~~~
-
-     - property
-        |
-        |> BLE
-        |     - BLE property
-        |
-        |> Zigbee
-              - Zigbee property
-
-~~~~~
-{: #propmap title="Property Mapping"}
-
-As shown in {{propmap}}, protocol-specific properties must be described in a
-protocol object, for example a "ble" or a "zigbee" object.
-
-
-| Attribute | Req |   Type  |          Example                         |
-+-----------+-----+---------+------------------------------------------|
-| ble       |  T  |  object | an object with BLE-specific attributes   |
-| zigbee    |  T  |  object | an object with Zigbee-specific attributes|
-{: #proobj title="Protocol objects"}
-
-where-
-
- - "ble" is an object containing properties that are specific to the BLE
-   protocol.
- - "zigbee" is an object containing properties that are specific to the
-   Zigbee protocol.
- - Other protocol mapping objects can be added by creating a new protocol
-   object
-
-Example property mapping:
-
-~~~~~
-{
-  "propertyID": "temperature",
-  "ble": {
-    "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-    "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-    "long": false
-  }
-}
-~~~~~
-{: #expropmap title="Example property mapping"}
-
-Protocol mapping allows applications to perform a one-time registration to
-a propertyID for a property, and leverage the propertyID in all API calls 
-that perform an operation on this property. It might be useful for applications
-to directly use protocol objects in action APIs as well, therefore there are 
-a limited set of APIs available that have protocol objects directly embedded 
-in the API, in order to perform operations on properties without having to 
-first register them.
-
-### Response
-
-As most operations have a common base schema, based on a device ID and a
-property, so do responses. Every NIPC API returns a status in the response, as
-well as a requestID, which allows for tracking and logging of requests and 
-responses. If the operation was performed on a device or group, the ID is also
-returned. If the operation is to read or write a property, the resulting value
-is also returned. 
-
-Success response:
-
-| Attribute     | Req |   Type  |           Example                    |
-+---------------+-----+---------+--------------------------------------|
-| status        |  T  |  enum   | SUCCESS                              |
-| id            |  F  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-| requestID     |  F  |  uuid   | abcd0987-1234-5678-1234-56789abcdef4 |
-{: #success title="Success response"}
-
-Example success response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-}
-~~~~~
-{: #exsuccess title="Example success response"}
-
-Failure responses additionally include an error code and optionally a reason,
-which contains a textual explanation of the error.
-
-Failure response:
-
-| Attribute     | Req |   Type  |           Example                    |
-+---------------+-----+---------+--------------------------------------|
-| status        |  T  |  enum   | SUCCESS                              |
-| id            |  F  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-| requestID     |  F  |  uuid   | abcd0987-1234-5678-1234-56789abcdef4 |
-| errorCode     |  T  |  int    | 12                                   |
-| reason        |  T  |  string | "Not Found"                          |
-{: #failure title="Failure response"}
-
-where-
-
- - status is the status of the request, either "SUCCESS" or "FAILURE". 
-   In case of failure an error code and reason are added.
- - id is the id the operation was executed against, found in the request
- - requestID is a correlation ID that can be used for end-to-end 
-   tracing.  
- - errorCode is a numerical value representing the error. The various 
-   codes are defined in {{errorhandling}}.
- - reason is a human readable explanation of why the error occurred.
-
-Example failure response:
-
-~~~~~
-{
-  "status": "FAILURE",
-  "reason": "Not Found",
-  "errorCode": 12,
-  "requestID": "12345678-5678-1234-5578-abcdef1234"
-}
-~~~~~
-{: #exfail title="Example failure response"}
 
 # NIPC Registrations
 
@@ -1345,7 +1266,7 @@ Parameters:
 
 Request Body:
 
-  - value: the bytes to be written in base64 encoding
+ - value: the bytes to be written in base64 encoding
 
 Response:
 
