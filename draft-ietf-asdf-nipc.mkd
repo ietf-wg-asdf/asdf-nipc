@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-IP device control (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-03
+docname: draft-ietf-asdf-nipc-04
 submissionType: IETF
 category: std
 
@@ -1903,7 +1903,7 @@ The sequence of operations for this are:
     }
     ~~~~~
 
-## Enabling Event
+## Enabling an Event
 
 In this example, we will onboard a device, and setup an advertisement
 subscription event for that device.
