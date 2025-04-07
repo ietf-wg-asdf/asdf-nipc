@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-IP device control (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-03
+docname: draft-ietf-asdf-nipc-04
 submissionType: IETF
 category: std
 
@@ -49,7 +49,13 @@ informative:
       -
         org: Connectivity Standards Alliance
     date: 2017
-
+  Gatt-REST-API:
+    title: A RESTful API used to access data in devices using the functionality defined in the Bluetooth GATT profile
+    target: https://www.bluetooth.com/bluetooth-resources/gatt-rest-api/
+    author:
+      -
+        org: Bluetooth SIG
+    date: 2017
 
 --- abstract
 
@@ -90,21 +96,20 @@ communication to the non-IP protocol that the low-power device supports.
 
 There have been efforts to define Gateway functions for devices that support
 a particular protocol, such as a BLE GATT REST API for BLE Gateways
-({{https://www.bluetooth.com/bluetooth-resources/gatt-rest-api/}}), however 
-they have been limited to a single protocol or a particular use case. In
-absence of an open standard describing how applications on an IP network
-communicate with non-IP devices, bespoke and vendor-specific implementations
-have proliferated. This results in parallel infrastructure of both gateways 
-and non-IP networks being deployed on a case by case basis, each connecting
-separately into the IP network, with a distinct set of APIs. At the same time,
-wireless access points supporting IP-based wireless connectivity are deployed
-ubiquitiously. Many of these wireless access points are equipped with multiple
-wireless radios, of different types. These radios can transmit and receive
-different frame types, such as {{BLE53}} and {{Zigbee22}}. This specification
-aims to define a Gateway API for these Non-IP protocols that can be leveraged
-by this wireless infrastructure in order to connect Non-IP devices into IP
-networks. The specification aims to be extensible, in order to support existing
-and future non-IP protocols.
+({{Gatt-REST-API}}), however they have been limited to a single protocol or
+a particular use case. In absence of an open standard describing how
+applications on an IP network communicate with non-IP devices, bespoke and
+vendor-specific implementations have proliferated. This results in parallel
+infrastructure of both gateways and non-IP networks being deployed on a case
+by case basis, each connecting separately into the IP network, with a distinct
+set of APIs. At the same time, wireless access points supporting both IP-based 
+wireless connectivity as well as non-IP based wireless technologies are
+deployed ubiquitiously. Many of these wireless access points are equipped with
+radios that can transmit and receive different frame types, such as {{BLE53}}
+and {{Zigbee22}}. This specification aims to define a Gateway API for these 
+Non-IP protocols that can be leveraged by this wireless infrastructure in order
+to connect Non-IP devices into IP networks. The specification aims to be
+extensible, in order to support existing and future non-IP protocols.
 
 A standardized Non-IP Gateway interface has following benefits:
 
@@ -120,16 +125,15 @@ A non-IP gateway MUST provide at least following functions:
 
  - Authentication and authorization of application clients that
    will leverage the gateway API to communicate with Non-IP devices.
- - The ability to onboard Non-IP devices on the Non-IP Gateway. Onboarding 
-   ensures that the Non-IP Gateway can identify a device and has sufficient
-   context about the device to service gateway API requests. It also ensures
-   segmentation of devices that were onboarded by particular applications.
- - A persistent inventory of onboarded devices  mapping to the application
-   that onboarded them and the non-IP access point/radio that is serving them.
+ - Access to a database of onboarded devices. Onboarding ensures that 
+   the Non-IP Gateway can identify a specific device and has sufficient context
+   about the device to service gateway API requests.
+ - The ability to consume an interaction model for a class of devices. This 
+   allows the gateway to understand how to interact with a device.
  - An API that allows for bi-directional communication to non-IP devices.
  - One or more channels to process requests, responses, and asymmetric
    communications with the non-IP radio resources (Access Points)
-   in its inventory.
+   at its disposal.
  - The ability to stream telemetry received from non-IP devices in real-time
    to applications on the IP network.
 
@@ -138,8 +142,7 @@ can be provided by a provisioning interface such as {{!RFC7644}} leveraging
 {{!I-D.ietf-scim-device-model}}. NIPC performs operations on a device or group
 object, hence it requires device onboarding to be performed prior to performing
 a NIPC operation on a device. NIPC APIs will reference a device or group id 
-generated at the time of onboarding as a unique identifier. Apart from 
-onboarding, Non IP-Control (NIPC) supports all functions defined above.
+generated at the time of onboarding as a unique identifier. 
 
 The Application gateway is a network function, so its goal is to proxy payloads 
 between Non-IP and IP networks. It is not intended to be a middleware function
@@ -172,8 +175,9 @@ gateway and access point are deployed on an IP-Network. The AP supports a
 Non-IP interface, which it uses to communicate with the device.
 The Application is deployed in a different administrative domain than the
 network elements (ALG & AP).
-The role of the ALG is to provide a gateway function to applications wishing
-to communicate with non-IP devices in the network domain served by the ALG.
+The role of the application layer gateway is to provide a gateway functioni
+to applications wishing to communicate with non-IP devices in the network
+domain served by the gateway.
 Applications implementing Non-IP Control can leverage RESTful interfaces
 to communicate with Non-IP devices in the network domain and subscribe to
 events levering a CBOR-based pub/sub interface.
@@ -202,7 +206,7 @@ the NIPC API.
 2) Information about the interaction model: The Gateway must be able to perform
 protocol-neutral operations, and hence requires a mapping of protocol-neutral
 operations to protocol specific operations. These are supplied to the gateway
-by means of an SDF model, described in {{!I-D.ietf-adsf-sdf}. 
+by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 
 ~~~~~
 
@@ -243,18 +247,17 @@ to contain all nessary attributes and extensions to support NIPC.
 
 NIPC registration APIs allow applications to declare information that is not
 related to a device instance. Registrations can be information about an
-interaction model of a device or group of devices, or information about an
-application that is required to interact with the gateway.
+interaction model for a class of devices, or information about an application
+that is required to interact with the gateway.
 
 ### SDF model registrations
 
-The SDF model for a device or group of devices determines how a gateway may
-interact with a device or group of devices in a protocol-neutral way. 
-In order to do that, the SDF model must contain protocol mappings, mapping 
-protocol-neutral SDF affordances to protocol-specific ones.
-The SDF afforndances supported by the device, as well as its protcol-mappings
-are provide to the gatewat by means of an SDF model registration. SDF models
-are described in {{!I-D.ietf-asdf-sdf}. 
+The SDF model for a class of devices determines how a gateway may interact with
+these devices in a protocol-neutral way. In order to do that, the SDF model
+must contain protocol mappings, mapping protocol-neutral SDF affordances
+to protocol-specific ones. The SDF affordances supported by the device, as
+well as its protcol-mappings, are provide to the gateway by means of an SDF
+model registration. SDF models are described in {{!I-D.ietf-asdf-sdf}}. 
 
 ### Data application registration
 
@@ -263,148 +266,37 @@ able to define which applications can receive streaming event data from the
 gateway. The data-app registration API allows mapping of an event to a data 
 app as well as a protocol.
 
-## NIPC Operations
+## Protocol mapping {#protocolmap}
 
-NIPC operations are protocol-neutral operations on SDF affordances, more 
-specifically properties, actions & events. NIPC operations can happen against
-affordances that were registered in an SDF model. If connection management is
-required to execute a NIPC operation, it is assumed that the gateway implictly
-establishes and tears down required connections.
+An SDF model can fully describe a thing, including all its SDF affordances. 
+To leverage an SDF model to perform protocol specific operations on an
+instance of that thing, a mapping of the SDF affordance to a protocol-specific
+attribute is required. In NIPC, this is achieved through protocol mapping. 
 
-### Properties APIs
-
-Property APIs allow applications perform operations on properties, such as to
-read or write values to them.
-
-### Actions
-
-Action APIs perform actions on devices, such as enabling or disabling a feature
-on a device.
-
-### Events
-
-Event APIs allow apps to enable or disable event reporting on devices. Events
-are reported over the events publish/subscribe interface.o
-
-### Action APIs with embedded protocol mapping
-
-Action APIs with embedded protocol mapping are APIs that perform actions on
-devices, but do not use registered afforances. These APIs have embedded protocol
-mappings. They allow for explicit connection management, which is useful when 
-executing multiple property operations and/or actions. In this case implicit
-connections management may be less efficient. They also consist of other 
-operations such as broadcasts.
-
-### Extensions
-
-Extensions are not part of the core NIPC API specification, but 
-extensions. Extensions are compound APIs. They leverage basic NIPC operations
-but combine multiple operations in to one API call for efficiency.
-An example of this is the the bulk operation, allowing to send multiple
-operations in one operation. Extensions can be generic, IANA registered 
-extentions, or vendor specific extensions.
-
-## Events publish subscribe interface
-
-Events are published on a publish/subscribe interface. Events can be of
-different types:
-- Streaming data from devices
-- Broadcasts from devices
-- Connection events: Devices connecting & disconnecting
-
-## Protocols
-
-### NIPC APIs
-
-NIPC is a protocol that is based on RESTful HTTP {{!RFC9114}}. Along with HTTP
-headers and URIs, NIPC uses JSON {{!RFC7159}} payloads to convey NIPC 
-operations, such as registrations, actions, event and property operations. This
-is the case for both request and response parameters, as well as errors.
-NIPC uses the standard JSON media type "application/json", except for the SDF 
-model registration APIs, where the media type reflects the content as an SDF 
-model, and hence is media type "application/sdf+json".
-
-### NIPC publish/subscribe events
-
-NIPC publish/subscribe events are encoded in CBOR ({{!RFC8949}}) and can be
-delivered over either:
-- MQTT
-- Webhook
-- Websocket
-
-## Paths
-
-The NIPC HTTP protocol is described in terms of a path relative to a Base URI.
-The Base URI MUST NOT contain a query string, as clients MAY append additional 
-path information and query parameters as part of forming the request.  The base
-URI is a URL that most often consists of the "https" protocol scheme, a domain
-name, and an initial path {{!RFC3986}}.  That initial path for NIPC is 
-recommended to be /nipc.
-For example:
-
-      "https://example.com/nipc/"
-
-Based on this a well_known URI {{!RFC8615}} of nipc can be defined.
-
-Additionally a version number may be added, for example: 
-
-      "https://example.com/nipc/v1/"
-
-Every NIPC API pertains to either a device or group of devices, identified by
-an id, hence the id will be reflected as the first parameter in the path. 
-For example:
-
-      "https://example.com/nipc/v1/{id}"
-
-## Schema
-
-### Device schema
-
-Most operations (except registations) are executed against a device or a group.
-NIPC operations refer to either of these as "Object" with an ID as an
-identifier. The common schema for Object is defined as follows:
-
-| Attribute     | Req |   Type  |          Example                     |
-+---------------+-----+---------+--------------------------------------|
-| id            |  T  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-{: #objectdef title="Definition of an Object"}
-
-where-
-
- - id is the unique uuid of the device. This is generated when registering
-   the device, for example against a SCIM server. As such this ID is known
-   both to the application as well as the NIPC Server. 
-
-### Protocol mapping {#protocolmap}
-
-An object can support one or more communications protocols. Even though Non-IP
-communications protocols all perform operations on properties, implementations
+Protocol mapping is required to map a protocol agnostic affordance to a 
+protocol-specific operation, as implementations of the same affordance will
 differ between protocols. For example BLE will address a property as a service
-characteristic, while a property in Zigbee is addressed as a property in a 
+characteristic, while a property in Zigbee is addressed as a property in a
 cluster of an endpoint. 
 
-In order for NIPC to support protocol-agnostic APIs, a property mapping is
-required between a NIPC property and a protocol-specific property. A property
-mapping can be done by means of a property registration API.
-
-Property mapping allows for integration of new protocols in NIPC, new mappings 
+protocol mapping allows for integration of new protocols in NIPC, new mappings 
 can be created without the need to update the base schema.
 
 ~~~~~
 
-     - property
+     - protocolmap
         |
-        |> BLE
+        |> ble
         |     - BLE property
         |
-        |> Zigbee
+        |> zigbee
               - Zigbee property
 
 ~~~~~
 {: #propmap title="Property Mapping"}
 
-As shown in {{propmap}}, protocol-specific properties must be described in a
-protocol object, for example a "ble" or a "zigbee" object.
+As shown in {{propmap}}, protocol-specific properties must be embedded in a
+protocolmap object, for example a "ble" or a "zigbee" object.
 
 
 | Attribute | Req |   Type  |          Example                         |
@@ -425,849 +317,447 @@ where-
 Example property mapping:
 
 ~~~~~
-{
-  "propertyID": "temperature",
-  "ble": {
-    "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-    "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-    "long": false
+"sdfObject": {
+  "healthsensor": {
+    "sdfProperty": {
+      "heartrate": {
+        "description": "The current measured heart rate",
+        "type": "number",
+        "unit": "beat/min",
+        "observable": false,
+        "writable": false,
+        "protocolMap": {
+          "ble": {
+            "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+            "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+          }
+        }
+      }
+    }
   }
 }
 ~~~~~
 {: #expropmap title="Example property mapping"}
 
-Protocol mapping allows applications to perform a one-time registration to
-a propertyID for a property, and leverage the propertyID in all API calls 
-that perform an operation on this property. It might be useful for applications
-to directly use protocol objects in action APIs as well, therefore there are 
-a limited set of APIs available that have protocol objects directly embedded 
-in the API, in order to perform operations on properties without having to 
-first register them.
+A protocol map is provided as part of the SDF model, in the SDF affordance 
+definition. Alternatively, it can be provided directly in a NIPC API.
 
-### Response
+## NIPC Operations {#nipc-ops}
 
-As most operations have a common base schema, based on a device ID and a
-property, so do responses. Every NIPC API returns a status in the response, as
-well as a requestID, which allows for tracking and logging of requests and 
-responses. If the operation was performed on a device or group, the ID is also
-returned. If the operation is to read or write a property, the resulting value
-is also returned. 
+NIPC operations are protocol-neutral operations on SDF affordances, more 
+specifically properties, actions & events. NIPC operations can happen against
+affordances that were registered in an SDF model. If connection management is
+required to execute a NIPC operation, it is assumed that the gateway implictly
+establishes and tears down required connections. 
 
-Success response:
+### Properties APIs
 
-| Attribute     | Req |   Type  |           Example                    |
-+---------------+-----+---------+--------------------------------------|
-| status        |  T  |  enum   | SUCCESS                              |
-| id            |  F  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-| requestID     |  F  |  uuid   | abcd0987-1234-5678-1234-56789abcdef4 |
-{: #success title="Success response"}
+Property APIs allow applications perform operations on properties, such as to
+read or write values to them.
 
-Example success response:
+### Actions
+
+Action APIs perform actions on devices, such as enabling or disabling a feature
+on a device.
+
+### Events
+
+Event APIs allow apps to enable or disable event reporting on devices. Events
+are reported over the events publish/subscribe interface.
+
+### Connection management for NIPC Operations
+
+For protocols that require connection management before executing an operation,
+a NIPC gateway can perform implicit connection management. When executing a 
+NIP operation, a NIPC Gateway can set up a connection with a device as well as
+tear down the connection after the operation has completed. A NIPC Gateway
+should support explicit connection management as well. Explicit connection
+management can be used by an app that wants to perform multiple NIPC operations
+in a single connection. Explicit connection management can be performed by 
+calling the /{id}/action/connection action API. When after establishing an
+explicit connection to a device, an application calls a NIPC Operation, the
+Gateway will leverage the exissting connection and will also not tear the
+connection down after the operation completes. The app will have to explicitly
+close the connection. 
+
+### Action APIs with embedded protocol mapping
+
+Action APIs with embedded protocol mapping are APIs that perform actions on
+devices, but do not use registered affordances. These APIs have embedded
+protocol mappings. They require explicit connection management.
+
+### Extensions
+
+Extensions are not part of the core NIPC API specification, but 
+extensions to it. Extensions are compound APIs. They leverage basic NIPC operations
+but combine multiple operations in to one API call for efficiency.
+An example of this is the the bulk operation, allowing to send multiple
+operations in one operation. Extensions can be generic, IANA registered 
+extentions, or vendor specific extensions.
+
+## Events publish subscribe interface
+
+Events are published on a publish/subscribe interface. Events can be of
+different types:
+
+- Streaming data from devices: Streaming data is activated/deactivated with the
+  NIPC events API
+- Broadcasts from devices
+- Connection events: Devices connecting & disconnecting
+
+## Protocols
+
+### NIPC APIs
+
+NIPC is a protocol that is based on RESTful HTTP {{!RFC9114}}. Along with HTTP
+headers and URIs, NIPC uses JSON {{!RFC7159}} payloads to convey NIPC 
+operations, such as registrations, actions, event and property operations. This
+is the case for both request and response parameters, as well as errors.
+NIPC uses the standard JSON media type "application/json", except for the SDF 
+model registration APIs, where the media type reflects the content as an SDF 
+model, and hence is media type "application/sdf+json".
+
+### NIPC publish/subscribe events
+
+NIPC publish/subscribe events are encoded in CBOR ({{!RFC8949}}) and can be
+delivered over either:
+
+- MQTT
+- Webhook
+- Websocket
+
+## Paths
+
+### General
+
+The NIPC HTTP protocol is described in terms of a path relative to a Base URI.
+The Base URI MUST NOT contain a query string, as clients MAY append additional 
+path information and query parameters as part of forming the request.  The base
+URI is a URL that most often consists of the "https" protocol scheme, a domain
+name, and an initial path {{!RFC3986}}.  That initial path for NIPC is 
+recommended to be /nipc.
+For example:
+
+      "https://example.com/nipc/"
+
+Based on this a well_known URI {{!RFC8615}} of nipc can be defined.
+
+Additionally a version number may be added, for example: 
+
+      "https://example.com/nipc/v1/"
+
+### NIPC Registrations
+
+Registrations leverage the base path + /registration. NIPC supports SDF model
+registrations and data-app registrations.
+
+paths:
+
+- /registration/model
+- /registration/data-app
+
+### NIPC Operations
+
+Every NIPC Operations API pertains to either a device or group of devices, identified by
+an id, hence the id will be reflected as the first parameter in the path. 
+For example:
+
+      "https://example.com/nipc/v1/{id}"
+
+The second parameter in the path refers to the NIPC operation that the API will
+perform on the device. This can be:
+
+ - property
+ - event
+ - action
+ - extension
+
+These are described in {{nipc-ops}}.
+
+Every NIPC API response has a `X-Request-ID` header, which is a unique 
+identifier for the request. Each successful response will have a HTTP 
+status code of 200 OK. 
+
+A failure response will consist of a HTTP status code of 4xx or 5xx, and 
+will contain an error code and reason field. The error codes and the 
+appropriate error codes are described in {{errorhandling}}.
+
+Failure response: 
+
+Example of a failure response:
 
 ~~~~~
 {
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "errorCode": 2000,
+  "reason": "Generic error message"
 }
 ~~~~~
-{: #exsuccess title="Example success response"}
-
-Failure responses additionally include an error code and optionally a reason,
-which contains a textual explanation of the error.
-
-Failure response:
-
-| Attribute     | Req |   Type  |           Example                    |
-+---------------+-----+---------+--------------------------------------|
-| status        |  T  |  enum   | SUCCESS                              |
-| id            |  F  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
-| requestID     |  F  |  uuid   | abcd0987-1234-5678-1234-56789abcdef4 |
-| errorCode     |  T  |  int    | 12                                   |
-| reason        |  T  |  string | "Not Found"                          |
-{: #failure title="Failure response"}
+{: #failure title="Example failure response"}
 
 where-
 
- - status is the status of the request, either "SUCCESS" or "FAILURE". 
-   In case of failure an error code and reason are added.
- - id is the id the operation was executed against, found in the request
- - requestID is a correlation ID that can be used for end-to-end 
-   tracing.  
- - errorCode is a numerical value representing the error. The various 
-   codes are defined in {{errorhandling}}.
- - reason is a human readable explanation of why the error occurred.
-
-Example failure response:
-
-~~~~~
-{
-  "status": "FAILURE",
-  "reason": "Not Found",
-  "errorCode": 12,
-  "requestID": "12345678-5678-1234-5578-abcdef1234"
-}
-~~~~~
-{: #exfail title="Example failure response"}
+ - "errorCode" is error code that indicates the type of error, 
+   as described in {{errorcodes}}
+ - "reason" is a human-readable error message
 
 # NIPC Registrations
 
-NIPC allows an application to register properties to use in action APIs. NIPC
-supports 2 types of registrations: Registrations for properties and 
-registrations for events.
+NIPC allows an application to register an SDF model for a class of devices,
+as well as a data application that will receive streaming data from the 
+gateway.
 
-## Event registration
+## SDF model registration APIs
 
-/registration/event
+These APIs allow applications to register an SDF model for a class of devices.
+These APIs use the `application/sdf+json` media type, as described in 
+{{Section 7.1 of I-D.ietf-asdf-sdf}}.
 
-The event registration API allows an application to register an event for a
-data application to a specified property. This event is mapped to an MQTT
-pub/sub topic. By activating a subscription on one or more device(s) for that
-property, streaming data will get published to the associated pub/sub topic
-on MQTT.
+### Register an sdf model
 
-Operations:
+Method: `POST /registration/model`
 
- - Register an event: POST
- - Update an event: PUT
- - Get configuration of one or more events: GET
- - Delete an event: DELETE
-
-### Event registration API
-
-#### Registering an event
-
-Method: POST /registration/event
-
-Description: Register an event to a property 
-
-Parameters: None
+Description: Registers an SDF model for a class of devices
 
 Request Body:
 
- - An event name that matches to an MQTT pub/sub topic
- - The data format the event should be delivered in
- - The device or group id the event is valid for
- - Whether the event needs to be cached for replay
- - the data applications that can consume the events
-
-Example body registering an event:
-
-~~~~~
-{
-  "event": "enterprise/hospital/pulse_oximeter",
-  "eventFormat": "default",
-  "replay": false,
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "dataApps": [
-    {
-      "dataAppID": "12345678-1234-5678-1234-56789abcdef4",
-      "mqtt": {
-        "brokerURI": "mqtt.broker.com:8883",
-        "username": "user1",
-        "password": "password1",
-        "brokerCACert": "string"
-      }
-    }
-  ],
-  "propertyID": "temperature"
-}
-~~~~~
-{: #exregeve title="Example registering an event"}
-
-where-
-
- - "event" is the event identifier, which also maps to the MQTT topic name
- - "eventFormat" is the format the data stream is delivered in, either default
-   (decorated with id and property) or just the payload 
- - "replay" defines whether the event should be cached for replay or not
- - "id" is the id of the device or group the event is valid for
- - "type" is the type if the id, either device or group
- - "dataApps" is an array of data applications that can subscribe to the event
- - "propertyID" is the propertyID that will be used in action APIs to activate
-   this event
-
-The dataApps array consists of following-
-
- - "dataAppID" is the identity of the data application either configured 
-   administratively or through SCIM.
- - "mqtt" optional MQTT broker connection parameters, in case an external MQTT
-   needs to be configured
+ - an SDF model in JSON format, similar to the example in {{thermometer-sdf}}.
 
 Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as all the attributes that were configured
-from the request.
 
-Example of a register event response:
+Example of a response:
 
 ~~~~~
 {
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "event": "enterprise/hospital/pulse_oximeter",
-  "eventFormat": "default",
-  "replay": false,
-  "type": "device",
-  "dataApps": [
-    {
-      "dataAppID": "12345678-1234-5678-1234-56789abcdef4",
-      "mqtt": {
-        "brokerURI": "mqtt.broker.com:8883",
-        "username": "user1",
-        "password": "password1",
-        "brokerCACert": "string"
-      }
-    }
-  ],
-  "propertyID": "temperature"
+  "sdfRef": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
-{: #exregeveresp title="Example register event response"}
+{:json #exregresp title="Example register sdf model response"}
 
 where-
 
- - "id", "requestID" and "technology" are part of the standard {{success}} definition
- - "event" is the event identifier, which also maps to the MQTT topic name
- - "eventFormat" is the format the data stream is delivered in, either default 
-   (decorated with id and property) or just the payload
- - "replay" defines whether the event should be cached for replay or not
- - "dataApps" is an array of data applications that can subscribe to the event
- - "propertyID" is the propertyID that will be used in action APIs to activate
-   this event
+ - "sdfRef" is the reference to the top-level sdfThing or sdfObject 
+    in the SDF model
+ - "id" is the id of the sdf model
 
-The dataApps array consists of following-
+### Get all sdf models
 
- - "dataAppID" is the identity of the data application either configured 
-   administratively or through SCIM.
- - "mqtt" optional MQTT broker connection parameters, in case an external MQTT
-   needs to be configured
+Method: `GET /registration/model`
 
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
+Description: Gets all sdf models registered with the gateway
 
-#### Updating a topic
+Response:
 
-Method: PUT /registration/event
+Example of a response:
 
-Description: Update an existing event 
+~~~~~
+[
+  {
+    "sdfRef": "https://example.com/heartrate#/sdfObject/healthsensor"
+  }
+]
+~~~~~
+{:json #exgetallresp title="Example get all sdf models response"}
 
-Parameters: None
+where-
+
+ - "sdfRef" is the reference to the top-level sdfThing or sdfObject 
+    in the SDF model
+ - "id" is the id of the sdf model
+
+### Get an sdf model
+
+Method: `GET /registration/model/{sdfRef}`
+
+Description: Gets an sdf model registered with the gateway
+
+Parameters: 
+
+ - sdfRef: the reference to the top-level sdfThing or sdfObject 
+    in the SDF model. This is a percent-encoded URL string.
+
+Response:
+
+The sdf model is returned in JSON format, similar to the example in 
+{{thermometer-sdf}}.
+
+### Delete an sdf model
+
+Method: `DELETE /registration/model/{sdfRef}`
+
+Description: Deletes an sdf model registered with the gateway
+
+Parameters: 
+
+ - sdfRef: the reference to the top-level sdfThing or sdfObject 
+    in the SDF model. This is a percent-encoded URL string.
+
+Response:
+
+Example of a response:
+
+~~~~~
+{
+  "sdfRef": "https://example.com/heartrate#/sdfObject/healthsensor"
+}
+~~~~~
+{:json #exdelresp title="Example delete sdf model response"}
+
+where-
+
+ - "sdfRef" is the reference to the top-level sdfThing or sdfObject 
+    in the SDF model
+ - "id" is the id of the sdf model
+
+### Update an sdf model
+
+Method: `PUT /registration/model/{sdfRef}`
+
+Description: Updates an sdf model registered with the gateway
+
+Parameters: 
+
+ - sdfRef: the reference to the top-level sdfThing or sdfObject 
+    in the SDF model. This is a percent-encoded URL string.
 
 Request Body:
 
- - An event name that matches to an MQTT pub/sub topic
- - The data format the event should be delivered in
- - The device or group id the event is valid for
- - Whether the event needs to be cached for replay
- - the data applications that can consume the events
-
-Example body updating an event:
-
-~~~~~
-{
-  "event": "enterprise/hospital/pulse_oximeter",
-  "eventFormat": "default",
-  "replay": false,
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "type": "device",
-  "dataApps": [
-    {
-      "dataAppID": "12345678-1234-5678-1234-56789abcdef4",
-      "mqtt": {
-        "brokerURI": "mqtt.broker.com:8883",
-        "username": "user1",
-        "password": "password1",
-        "brokerCACert": "string"
-      }
-    }
-  ],
-  "propertyID": "temperature"
-  "ble": {
-    "type": "gatt",
-    "serviceID": "12345678-1234-5678-1234-56789abcdef0",
-    "characteristicID": "12345678-1234-5678-1234-56789abcdef1"
-  }
-}
-~~~~~
-{: #exupdeve title="Example updating an event"}
-
-where-
-
- - "event" is the event identifier, which also maps to the MQTT topic name
- - "eventFormat" is the format the data stream is delivered in, either default
-   (decorated with id and property) or just the payload
- - "replay" defines whether the event should be cached for replay or not
- - "id" is the id of the device or group the event is valid for
- - "type" is the type if the id, either device or group
- - "dataApps" is an array of data applications that can subscribe to the event
- - "propertyID" is the propertyID that will be used in action APIs to activate
-   this event
-
-The dataApps array consists of following-
-
- - "dataAppID" is the identity of the data application either configured
-   administratively or through SCIM.
- - "mqtt" optional MQTT broker connection parameters, in case an external MQTT
-   needs to be configured
-
-The propertyID gets mapped to a protocol-specific property with a 
-property mapping, through a protocol object-
+ - an SDF model in JSON format, similar to the example in {{thermometer-sdf}}.
 
 Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as all the attributes that were configured
-from the request.
 
-Example of an update register event response:
+Example of a response:
 
 ~~~~~
 {
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "id": "12345678-1234-5678-1234-56789abcdef4",
-  "event": "enterprise/hospital/pulse_oximeter",
-  "eventFormat": "default",
-  "replay": false,
-  "type": "device",
-  "dataApps": [
-    {
-      "dataAppID": "12345678-1234-5678-1234-56789abcdef4",
-      "mqtt": {
-        "brokerURI": "mqtt.broker.com:8883",
-        "username": "user1",
-        "password": "password1",
-        "brokerCACert": "string"
-      }
-    }
-  ],
-  "propertyID": "temperature"
-  "ble": {
-    "type": "gatt",
-    "serviceID": "12345678-1234-5678-1234-56789abcdef0",
-    "characteristicID": "12345678-1234-5678-1234-56789abcdef1"
-  }
+  "sdfRef": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
-{: #exupdeveresp title="Example update event response"}
+{:json #exupresp title="Example update sdf model response"}
 
 where-
 
- - "id", "requestID" and "technology" are part of the standard {{success}} 
-   definition
- - "event" is the event identifier, which also maps to the MQTT topic name
- - "eventFormat" is the format the data stream is delivered in, either default
-   (decorated with id and property) or just the payload
- - "replay" defines whether the event should be cached for replay or not
- - "dataApps" is an array of data applications that can subscribe to the event
- - "propertyID" is the propertyID that will be used in action APIs to activate
-   this event
+ - "sdfRef" is the reference to the top-level sdfThing or sdfObject 
+    in the SDF model
+ - "id" is the id of the sdf model
 
-The dataApps array consists of following-
+## Data application registration APIs
 
- - "dataAppID" is the identity of the data application either configured
-   administratively or through SCIM.
- - "mqtt" optional MQTT broker connection parameters, in case an external MQTT
-   needs to be configured
+These APIs allow applications to register a data application that will receive
+streaming data from the gateway. These APIs operate on a data app ID.
+This ID corresponds to the endpoint app ID of the telemetry endpoint app 
+that is registered with the SCIM server. The endpoint app is defined in 
+{{Section 6 of I-D.ietf-scim-device-model}}. 
 
-The propertyID gets mapped to a protocol-specific property with a
-property mapping, through a protocol object-
+### Register a data application
 
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
+Method: `POST /registration/data-app/{data-app-id}`
 
-#### Get configuration of one or more events
+Description: Registers a data application with the gateway
 
-Method: GET /registration/event
+Parameters: 
 
-Description: Gets the configuration of one or more events
+ - data-app-id: the id of the data application
 
-Parameters: An event name. Multiple events can be added by comma-separated
-attributes. If no parameters are present, all events are returned.
+Request Body:
 
-Response: A success response as in {{success}} with a "events" object
-containing an array of returned event names with attributes defined in
-{{exupdeve}}.
+ - events: a list of events that the data application wants to receive
+   streaming data for.
 
-Example of a get event response:
+The request body also contains one of the following: 
+
+ - mqttClient: an empty object that denotes that the data application
+   is an MQTT client that will receive streaming data over MQTT
+ - mqttBroker: an object that contains the MQTT broker information
+   where the broker will publish the streaming data. 
+ - webhook: an object that contains a webhook URL along with any 
+    credentials that are required to authenticate the webhook. 
+    The webhook URL is the endpoint where the streaming data will be sent.
+ - websocket: an object that contains a websocket URL along with any 
+   credentials that are required to authenticate the websocket. 
+   The websocket URL is the endpoint where the streaming data will be sent.
+
+Example of a request body:
 
 ~~~~~
 {
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
   "events": [
-    {
-      "ble": {
-        "type": "gatt",
-        "serviceID": "12345678-1234-5678-1234-56789abcdef0",
-        "characteristicID": "12345678-1234-5678-1234-56789abcdef1"
-      },
-      "event": "enterprise/hospital/pulse_oximeter",
-      "propertyID": "temperature",
-      "eventFormat": "default",
-      "replay": false,
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "type": "device",
-      "dataApps": [
-        {
-          "dataAppID": "12345678-1234-5678-1234-56789abcdef4",
-          "mqtt": {
-            "brokerURI": "mqtt.broker.com:8883",
-            "username": "user1",
-            "password": "password1",
-            "brokerCACert": "string"
-          }
-        }
-      ],
-      "technology": "ble"
-    },
-    {
-      "zigbee": {
-        "endpointID": 1,
-        "clusterID": 6,
-        "propertyID": 16,
-        "type": 1
-      },
-      "event": "enterprise/hospital/pulse_oximeter",
-      "propertyID": "temperature",
-      "eventFormat": "default",
-      "replay": false,
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "type": "device",
-      "dataApps": [
-        {
-          "dataAppID": "12345678-1234-5678-1234-56789abcdef4",
-          "mqtt": {
-            "brokerURI": "mqtt.broker.com:8883",
-            "username": "user1",
-            "password": "password1",
-            "brokerCACert": "string"
-          }
-        }
-      ],
-      "technology": "ble"
-    }
-  ]
+    "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+  ],
+  "mqttClient": {}
 }
 ~~~~~
-{: #exgeteveresp title="Example get event response"}
+{:json #exregmqttclientrsp title="Example with mqttClient"}
 
-where-
-
- - "id", "requestID" and "technology" are part of the standard {{success}}
-   definition
- - "events" is an array of events
-
-where an event-
-
- - "event" is the event identifier, which also maps to the MQTT topic name
- - "eventFormat" is the format the data stream is delivered in, either default
-   (decorated with id and property) or just the payload
- - "replay" defines whether the event should be cached for replay or not
- - "id" is the id of the device or group the event is valid for
- - "type" is the type if the id, either device or group
- - "dataApps" is an array of data applications that can subscribe to the event
- - "propertyID" is the propertyID that will be used in action APIs to activate
-   this event
-
-The dataApps array consists of following-
-
- - "dataAppID" is the identity of the data application either configured
-   administratively or through SCIM.
- - "mqtt" optional MQTT broker connection parameters, in case an external MQTT
-   needs to be configured
-
-The propertyID gets mapped to a protocol-specific property with a
-property mapping, through a protocol object-
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Delete one or more topics
-
-Method: DELETE /registration/event
-
-Description: Delete one or more events
-
-Parameters: An event name. Multiple events can be added by comma-separated
-attributes. If no parameters are present, all events are returned.
-
-Response: A success response as in {{success}} with a "events" object
-containing an array of returned event names with attributes defined in
-{{exupdeve}}.
-
-Example of a delete event response:
+Example of a request body for a data application that is an MQTT broker:
 
 ~~~~~
 {
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
   "events": [
-    {
-      "ble": {
-        "type": "gatt",
-        "serviceID": "12345678-1234-5678-1234-56789abcdef0",
-        "characteristicID": "12345678-1234-5678-1234-56789abcdef1"
-      },
-      "event": "enterprise/hospital/pulse_oximeter",
-      "propertyID": "temperature",
-      "eventFormat": "default",
-      "replay": false,
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "type": "device",
-      "dataApps": [
-        {
-          "dataAppID": "12345678-1234-5678-1234-56789abcdef4",
-          "mqtt": {
-            "brokerURI": "mqtt.broker.com:8883",
-            "username": "user1",
-            "password": "password1",
-            "brokerCACert": "string"
-          }
-        }
-      ],
-      "technology": "ble"
-    },
-    {
-      "zigbee": {
-        "endpointID": 1,
-        "clusterID": 6,
-        "propertyID": 16,
-        "type": 1
-      },
-      "event": "enterprise/hospital/pulse_oximeter",
-      "propertyID": "temperature",
-      "eventFormat": "default",
-      "replay": false,
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "type": "device",
-      "dataApps": [
-        {
-          "dataAppID": "12345678-1234-5678-1234-56789abcdef4",
-          "mqtt": {
-            "brokerURI": "mqtt.broker.com:8883",
-            "username": "user1",
-            "password": "password1",
-            "brokerCACert": "string"
-          }
-        }
-      ],
-      "technology": "ble"
-    }
-  ]
-}
-~~~~~
-{: #exdeleveresp title="Example delete event response"}
-
-where-
-
- - "id", "requestID" and "technology" are part of the standard {{success}}
-   definition
- - "events" is an array of events
-
-where an event-
-
- - "event" is the event identifier, which also maps to the MQTT topic name
- - "eventFormat" is the format the data stream is delivered in, either default
-   (decorated with id and property) or just the payload
- - "replay" defines whether the event should be cached for replay or not
- - "id" is the id of the device or group the event is valid for
- - "type" is the type if the id, either device or group
- - "dataApps" is an array of data applications that can subscribe to the event
- - "propertyID" is the propertyID that will be used in action APIs to activate
-   this event
-
-The dataApps array consists of following-
-
- - "dataAppID" is the identity of the data application either configured
-   administratively or through SCIM.
- - "mqtt" optional MQTT broker connection parameters, in case an external MQTT
-   needs to be configured
-
-The propertyID gets mapped to a protocol-specific property with a
-property mapping, through a protocol object-
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-## Property registration
-
-/registration/property
-  
-The property registration API allows an application to register a property
-mapping against a protocol-specific property as decribed in {{propertymap}}
-
-Operations:
-
- - Register a property: POST
- - Update a property: PUT
- - Get a property: GET
- - Delete a property: DELETE
-
-### Property registration API
-
-#### Registering a property
-
-Method: POST /registration/property
-
-Description: Register a property mapping to a protocol-specific property
-
-Parameters: None
-
-Request Body:
-
- - a property ID
- - a protocol object containing a protocol mapping
-
-Example body registering a property:
-
-~~~~~
-{
-  "propertyID": "temperature",
-  "ble": {
-    "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-    "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-    "long": false
+    "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+  ],
+  "mqttBroker": {
+    "URI": "mqtt.example.com:1883",
+    "username": "user",
+    "password": "password"
   }
 }
 ~~~~~
-{: #exregprop title="Example registering a property"}
-
-where-
-
- - "propertyID" is the propertyID that will be used in action APIs to refer
-   to this property mapping
- - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+{:json #exregmqttbrokerrsp title="Example with mqttBroker"}
 
 Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as all the attributes that were configured
-from the request.
 
-Example of a register property response:
+If successful, the response will be identical to the request body. 
 
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "propertyID": "temperature",
-  "ble": {
-    "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-    "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-    "long": false
-  }
-}
-~~~~~
-{: #exregpropresp title="Example register property response"}
+### Update a data application
 
-where-
+Method: `PUT /registration/data-app/{data-app-id}`
 
- - "id", "requestID" and "technology" are part of the standard {{success}}
-   definition
- - "propertyID" is the propertyID that will be used in action APIs to refer
-   to this property mapping
- - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+Description: Updates a data application with the gateway
 
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
+Parameters: 
 
-#### Updating a property
+ - data-app-id: the id of the data application
 
-Method: PUT /registration/property
+Request Body: Same as the request body for the register data application API.
 
-Description: Update a property mapping to a protocol-specific property
+Response: 
 
-Parameters: None
+If successful, the response will be identical to the request body.
 
-Request Body:
+### Get a data application
 
- - a property ID
- - a protocol object containing a protocol mapping
+Method: `GET /registration/data-app/{data-app-id}`
 
-Example body updating a property:
+Description: Gets a data application registered with the gateway
 
-~~~~~
-{
-  "propertyID": "temperature",
-  "ble": {
-    "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-    "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-    "long": false
-  }
-}
-~~~~~
-{: #exupdprop title="Example registering a property"}
+Parameters: 
 
-where-
-
- - "propertyID" is the propertyID that will be used in action APIs to refer
-   to this property mapping
- - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+ - data-app-id: the id of the data application
 
 Response:
-Success responses include standard success response properties
-as defined in {{success}} as well as all the attributes that were configured
-from the request.
 
-Example of an update property response:
+The response will be identical to the request body for the register data
+application API.
 
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "propertyID": "temperature",
-  "ble": {
-    "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-    "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-    "long": false
-  }
-}
-~~~~~
-{: #exupdpropresp title="Example register property response"}
+### Delete a data application
 
-where-
+Method: `DELETE /registration/data-app/{data-app-id}`
 
- - "id", "requestID" and "technology" are part of the standard {{success}}
-   definition
- - "propertyID" is the propertyID that will be used in action APIs to refer
-   to this property mapping
- - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
+Description: Deletes a data application registered with the gateway
 
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
+Parameters: 
 
-#### Get property mapping of one or more properties
+ - data-app-id: the id of the data application
 
-Method: GET /registration/property
+Response:
 
-Description: Gets the property mapping of one or more properties
-
-Parameters: A property name. Multiple properties can be added by
-comma-separated parameters. If no parameters are present, all properties
-are returned.
-
-Response: A success response as in {{success}} with an array of properties,
-containing propertyID with protocol object containing a protocol-specific 
-property mapping
-
-Example of a get property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "properties": [
-    {
-      "ble": {
-        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-        "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-        "long": false
-      },
-      "propertyID": "temperature"
-    },
-    {
-      "zigbee": {
-        "endpointID": 1,
-        "clusterID": 6,
-        "propertyID": 16,
-        "type": 1
-      },
-      "propertyID": "temperature"
-    }
-  ]
-}
-~~~~~
-{: #exgetpropresp title="Example get property response"}
-
-where-
-
- - "id", "requestID" and "technology" are part of the standard {{success}}
-   definition
- - "properties" is an array of properties
-
-where a property-
-
- - "id", "requestID" and "technology" are part of the standard {{success}}
-   definition
- - "propertyID" is the propertyID that will be used in action APIs to refer
-   to this property mapping
- - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-#### Delete property mapping of one or more properties
-
-Method: DELETE /registration/property
-
-Description: Deletes the property mapping of one or more properties
-
-Parameters: A property name. Multiple properties can be added by 
-comma-separated parameters. If no parameters are present, all properties
-are deleted.
-
-Response: A success response as in {{success}} with an array of properties, 
-containing propertyID with protocol object containing a protocol-specific   
-property mapping
-
-Example of a delete property response:
-
-~~~~~
-{
-  "status": "SUCCESS",
-  "requestID": "12345678-5678-1234-5578-abcdef1234",
-  "properties": [
-    {
-      "ble": {
-        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-        "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
-        "long": false
-      },
-      "propertyID": "temperature"
-    },
-    {
-      "zigbee": {
-        "endpointID": 1,
-        "clusterID": 6,
-        "propertyID": 16,
-        "type": 1
-      },
-      "propertyID": "temperature"
-    }
-  ]
-}
-~~~~~
-{: #exdelpropresp title="Example delete property response"}
-
-where-
-
- - "id", "requestID" and "technology" are part of the standard {{success}}
-   definition
- - "properties" is an array of properties
-
-where a property-
-
- - "id", "requestID" and "technology" are part of the standard {{success}}
-   definition
- - "propertyID" is the propertyID that will be used in action APIs to refer
-   to this property mapping
- - A protocol object with a protocol-specific property map, as decribed in
-   {{propertymap}}
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
+The response will be identical to the request body for the register data
+application API.
 
 # NIPC APIs
 
 The primary goal of the NIPC APIs is to exchange data with a Non-IP device, by
-means of reading, writing or streaming NIPC properties to applications. 
+means of reading, writing or streaming NIPC properties to applications.
 
 The NIPC APIs are divided into 3 categories:
 
@@ -1280,12 +770,11 @@ The NIPC APIs are divided into 3 categories:
 An SDF model must be registered for the device in order to use these NIPC Property, Event and Action APIs.
 The SDF model can be a top-level sdfThing with multiple sdfObjects or a top-level sdfObject.
 These APIs depend on the SDF affordance (i.e. sdfProperty, sdfEvent and sdfAction) objects defined in the SDF model and a device ID that is defined in {{I-D.ietf-scim-device-model}}.
-The SDF affordance can be referenced using the fragment identifier as described in {{I-D.ietf-asdf-sdf}}. In this case, the default namespace is assumed.
-If there are multiple properties/events/actions with the same fragment identifier, the global name of the SDF affordance in the SDF model can be used as defined in {{Section 4 of I-D.ietf-asdf-sdf}}.
+The SDF affordance can be referenced using the global name of the SDF affordance as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
-The SDF affordance name will be used against the registered SDF model to 
+The SDF global name will be used against the registered SDF model to 
 determine the protocol-specific protocolMap that the NIPC API will operate on. 
-The fragment identifier or the global name must be percent-encoded to be used in the URL as per {{!RFC3986}}.
+The global name must be percent-encoded to be used in the URL as per {{!RFC3986}}.
 
 ## NIPC Property APIs
 
@@ -1307,7 +796,7 @@ Parameters:
 
 Request Body:
 
-  - value: the bytes to be written in base64 encoding
+ - value: the bytes to be written in base64 encoding
 
 Response:
 
@@ -1316,7 +805,7 @@ Example of a write property response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+  "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
   "value": "dGVzdA=="
 }
 ~~~~~
@@ -1348,7 +837,7 @@ Example of a read property response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+  "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
   "value": "dGVzdA=="
 }
 ~~~~~
@@ -1382,11 +871,11 @@ Example body updating multiple properties:
 {
   "properties": [
     {
-      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+      "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
       "value": "dGVzdA=="
     },
     {
-      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
+      "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/humidity",
       "value": "eGVzdB=="
     }
   ]
@@ -1403,11 +892,11 @@ Example of a response:
   "id": "12345678-1234-5678-1234-56789abcdef4",
   "properties": [
     {
-      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+      "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
       "value": "dGVzdA=="
     },
     {
-      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
+      "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/humidity",
       "value": "eGVzdB=="
     }
   ]
@@ -1445,11 +934,11 @@ Example of a response:
   "id": "12345678-1234-5678-1234-56789abcdef4",
   "properties": [
     {
-      "property": "#/sdfObject/thermostat/sdfProperty/temperature",
+      "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
       "value": "dGVzdA=="
     },
     {
-      "property": "#/sdfObject/thermostat/sdfProperty/humidity",
+      "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/humidity",
       "value": "eGVzdB=="
     }
   ]
@@ -1469,8 +958,17 @@ A failure will generate a standard failed response. Please refer to {{failure}} 
 These APIs allow applications to enable or disable event reporting on devices.
 These operations may require a connection to the device to be established. This connection can be established as part of the same API call implicitly. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
 
-The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
-This event is also used as the MQTT topic name.
+The event is a global name reference to an `sdfEvent`. 
+If the data application registered for this event is an MQTT broker or 
+client, the event will be used as the MQTT topic as well. 
+When used as a topic, the event will be percent-encoded as per 
+{{!RFC3986}} since '/' and '#' have special meaning in MQTT.
+
+The ID in the path is the id of the device or group of devices.
+An event can be enabled on a group of devices if it is supported by the
+underlying protocol. For example, if the underlying protocol is BLE, 
+the event can be enabled on a group of devices if the event is an 
+advertisement event or connection status event.
 
 ### Enable event reporting
 
@@ -1480,7 +978,7 @@ Description: Enables an event on a specific device
 
 Parameters: 
 
- - id: the id of the device
+ - id: the id of the device or group of devices
  - event: the event to enable
 
 The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`. 
@@ -1492,14 +990,14 @@ Example of a response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
 }
 ~~~~~
 {:json #exenableresp title="Example enable event response"}
 
 where-
 
- - "id" is the id of the device
+ - id: the id of the device or group of devices
  - "event" is the event that was enabled
 
 A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
@@ -1512,7 +1010,7 @@ Description: Disables an event on a specific device
 
 Parameters:
 
-  - id: the id of the device
+  - id: the id of the device or group of devices
   - event: the event to disable
 
 The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
@@ -1524,14 +1022,14 @@ Example of a response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
 }
 ~~~~~
 {:json #exdisableresp title="Example disable event response"}
 
 where-
 
- - "id" is the id of the device
+ - id: the id of the device or group of devices
  - "event" is the event that was disabled
 
 A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
@@ -1544,7 +1042,7 @@ Description: Get the status of an event on a specific device
 
 Parameters:
 
-  - id: the id of the device
+  - id: the id of the device or group of devices
   - event: the event to get the status of
 
 The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
@@ -1556,14 +1054,14 @@ Example of a response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
 }
 ~~~~~
 {:json #exgeteventresp title="Example get event status response"}
 
 where-
 
- - "id" is the id of the device
+ - id: the id of the device or group of devices
  - "event" is the event that was queried
 
 A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
@@ -1576,7 +1074,7 @@ Description: Get the status of one or more events on a specific device
 
 Parameters:
 
-  - id: the id of the device
+ - id: the id of the device or group of devices
 
 Query Parameters:
 
@@ -1591,7 +1089,7 @@ Example of a response:
   "events": [
     {
       "id": "12345678-1234-5678-1234-56789abcdef4",
-      "event": "https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fhealthsensor%2FsdfEvent%2FfallDetected"
+      "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
     }
   ]
 }
@@ -1600,7 +1098,7 @@ Example of a response:
 
 where-
 
- - "id" is the id of the device
+ - "id" is the id of the device or group of devices
  - "events" is an array of events that were queried
 
 A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
@@ -1622,7 +1120,10 @@ Parameters:
 
 Request Body:
 
-  - value: the bytes to be written in base64 encoding
+  - value: the bytes to be written in base64 encoding.
+
+The request body is optional and can be empty if the underlying protocol 
+allows an action without a value.
 
 Example body of an action:
 
@@ -1640,7 +1141,7 @@ Example of a response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "action": "#/sdfObject/healthsensor/sdfAction/start"
+  "action": "https://example.com/heartrate#/sdfObject/healthsensor/sdfAction/start"
 }
 ~~~~~
 {:json #exactionresp title="Example action response"}
@@ -2134,34 +1635,12 @@ NIPC is extensible in two ways:
  
 ## Protocol extensions
 
-As described in {{propertymap}} NIPC supports mapping protocol specific
+As described in {{protocolmap}} NIPC supports mapping protocol specific
 mapping to NIPC properties. BLE and Zigbee are used as examples, but protocol
 mapping is extensible to other protocols, so now non-IP protocols can be 
 supported by NIPC without a schema change.
 
-~~~~~
-
-     -  property
-        |
-        |> BLE
-        |     - BLE  properties
-        |
-        |> Zigbee
-        |     - Zigbee properties
-        |
-        |> New protocol 
-        |     -  New protocol properties
-
-~~~~~
-{: #extprotmap title="Extended protocol mapping"}
-
-As shown in {{extprotmap}}, a protocol mapping can be added by adding
-a new technology specific extension to the schema. 
-
-This is performed by adding the new protocol to the technology enum in
-the base object definition {{objectdef}}
-
-Furthermore, the protocol objects need to be extended with the new
+The protocol objects need to be extended with the new
 protocol as well. Protocol objects will be extended as follows:
 
 | Attribute  | Req |   Type |          Example                         |
@@ -2185,7 +1664,7 @@ Extension APIs must leverage the basic NIPC defined APIs and combine them in
 compound statements in order to streamline application operation against
 devices, make operations more expediant and convenient in one API call.
 In principle they do not add any basic functionality. In
-the OpenAPI model {{openAPI}} below, we have defined a few example 
+the OpenAPI model {{NIPCextensions}} below, we have defined a few example 
 extensions.  
 
 # NIPC Error Handling
@@ -2194,54 +1673,43 @@ extensions.
 The error codes in the NIPC APIs can be generic or specific to the API. 
 The generic error codes reuse the HTTP status codes defined in {{!RFC9110}}.
 The error codes for the action APIs are divided into the following
-categories:  
+categories:
 
- - 1000-1099: Errors related to Connection APIs
- - 1100-1199: Errors related to Property APIs
- - 1200-1299: Errors related to Subscription APIs
- - 1300-1399: Errors related to Broadcast APIs
-
-The error codes for the registration APIs are further divided into the following
-categories:  
-
- - 1400-1499: Errors related to Event Registration APIs
- - 1500-1599: Errors related to Property Registration APIs
-
-For errors that are not specific to any API, the error codes have a 
-value of 2000 or higher.
-
-The error codes are also categorized according to the technology:  
-
- - xx00 - xx09: Generic
- - xx10 - xx19: BLE
- - xx20 - xx29: Zigbee
- - xx30 - xx99: Reserved for future use
+  - 1000-1099 (Generic): Broadly applicable errors, including 
+    authorization, invalid identifiers, and generic failures.
+  - 1100-1199 (Property APIs): Errors related to property APIs
+    (read/write).
+  - 1200-1299 (Event APIs): Errors related to event APIs
+    (enable/disable).
+  - 1300-1399 (BLE-Specific): Errors specific to BLE operations,
+    including connection management and service discovery.
+  - 1400-1499 (Zigbee-Specific): Errors specific to Zigbee operations.
+  - 1500-1599 (Broadcast APIs): Errors related to broadcasting data.
 
 The specific error codes are defined in the table below:
 
-| Error Code | Description                                  | Category  |
-|------------|----------------------------------------------|-----------|
-| 1000       | Device already connected                     | action/connection |
-| 1001       | No connection found for device               | action/connection |
-| 1010       | BLE connection timeout                       | action/connection/ble |
-| 1011       | BLE bonding failed                           | action/connection/ble |
-| 1012       | BLE connection failed                        | action/connection/ble |
-| 1013       | BLE service discovery failed                 | action/connection/ble |
-| 1020       | Zigbee connection timeout                    | action/connection/zigbee |
-| 1100       | Property not writeable                       | action/property |
-| 1101       | Property not readable                        | action/property |
-| 1110       | Invalid BLE service or characteristic ID     | action/property/ble |
-| 1120       | Invalid Zigbee endpoint or cluster ID        | action/property/zigbee |
-| 1200       | Subscription not found                       | action/subscription |
-| 1201       | Subscription already started                 | action/subscription |
-| 1210       | Invalid BLE service or characteristic ID     | action/subscription/ble |
-| 1220       | Invalid Zigbee endpoint or cluster ID        | action/subscription/zigbee |
-| 1300       | Invalid broadcast data                       | action/broadcast |
-| 1400       | Invalid event identifier                     | registration/event |
-| 1500       | Invalid property identifier                  | registration/property |
-| 2000       | Generic catch-all error code for any API     | generic   |
-| 2001       | Invalid device ID or gateway doesn't recognize the ID | generic   |
-| 2002       | Property not found                           | generic   |
+| Error Code | Description                                  | Category                  |
+|------------|----------------------------------------------|---------------------------|
+| 1000       | Generic catch-all error code for any API      | Generic                   |
+| 1001       | Application not authorized to access the device | Generic                |
+| 1002       | Invalid device ID or gateway doesn't recognize the ID | Generic          |
+| 1003       | Invalid SDF URL or SDF affordance not found   | Generic                   |
+| 1004       | Operation was not executed since the previous operation failed | Generic |
+| 1100       | Property not readable                         | Property APIs             |
+| 1101       | Property not writable                         | Property APIs             |
+| 1200       | Event already enabled                         | Event APIs                |
+| 1201       | Event not enabled                             | Event APIs                |
+| 1202       | Event not registered for any data application | Event APIs               |
+| 1300       | Device already connected                      | BLE-Specific              |
+| 1301       | No connection found for device                | BLE-Specific              |
+| 1302       | BLE connection timeout                        | BLE-Specific              |
+| 1303       | BLE bonding failed                            | BLE-Specific              |
+| 1304       | BLE connection failed                         | BLE-Specific              |
+| 1305       | BLE service discovery failed                  | BLE-Specific              |
+| 1306       | Invalid BLE service or characteristic ID      | BLE-Specific              |
+| 1400       | Zigbee connection timeout                     | Zigbee-Specific           |
+| 1401       | Invalid Zigbee endpoint or cluster ID         | Zigbee-Specific           |
+| 1500       | Invalid broadcast data                        | Broadcast APIs            |
 {: #errorcodes title="Error Codes"}
 
 The appropriate HTTP status code is returned in the response. 
@@ -2250,7 +1718,7 @@ The appropriate HTTP status code is returned in the response.
 
 The publish/subscribe interface, or data streaming interface, is an MQTT
 publishing interface. Pub/sub topics can be created and managed by means
-of the /registration/event NIPC element.
+of the /registration/data-app API.
 
 In this memo, we propose the data format to be CBOR {{!RFC8949}}.
 
@@ -2271,8 +1739,11 @@ included but these fields can expose the underlying network topology.
 Each message also has a subscription choice group that will define the
 type of data that is being published.
 
+Each MQTT message can be a collection of DataSubscription structs. This
+collection is represented as DataBatch in the CDDL. 
+
 ~~~~ CDDL
-{::include data_subscription.cddl}
+{::include cddl/data_subscription.cddl}
 ~~~~
 {:cddl}
 
@@ -2282,7 +1753,8 @@ This section contains a few examples of the DataSubscription struct
 depicted in CBOR diagnostic notation.
 
 ~~~
-{
+[
+  {
     "data": h'02011A020A0C16FF4C001007721F41B0392078',
     "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
     "timestamp": 1727484393,
@@ -2290,24 +1762,28 @@ depicted in CBOR diagnostic notation.
         "macAddress": "C1:5C:00:00:00:01",
         "rssi": -25
     }
-}
+  }
+]
 ~~~
 {: title="Onboarded BLE Device Advertisement" }
 
 ~~~
-{
+[
+  {
     "data": h'02011A020A0C16FF4C001007721F41B0392078',
     "timestamp": 1727484393,
     "bleAdvertisement": {
         "macAddress": "C1:5C:00:00:00:01",
         "rssi": -25
     }
-}
+  }
+]
 ~~~
 {: title="Non-onboarded BLE Device Advertisement" }
 
 ~~~
-{
+[
+  {
     "data": h'434630374346303739453036',
     "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
     "timestamp": 1727484393,
@@ -2315,24 +1791,28 @@ depicted in CBOR diagnostic notation.
         "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
         "characteristicID": "c4c1f6e2-4be5-11e5-885d-feff819cdc9f"
     }
-}
+  }
+]
 ~~~
 {: title="BLE GATT Notification" }
 
 ~~~
-{
+[
+  {
     "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
     "timestamp": 1727484393,
     "bleConnectionStatus": {
         "macAddress": "C1:5C:00:00:00:01",
         "connected": true
     }
-}
+  }
+]
 ~~~
 {: title="BLE Connection status event" }
 
 ~~~
-{
+[
+  {
     "data": h'434630374346303739453036',
     "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
     "timestamp": 1727484393,
@@ -2342,7 +1822,8 @@ depicted in CBOR diagnostic notation.
         "attributeID": 12,
         "type": 1
     }
-}
+  }
+]
 ~~~
 {: title="Zigbee Attribute Notification" }
 
@@ -2351,55 +1832,302 @@ depicted in CBOR diagnostic notation.
 This section contains a few examples on how applications can leverage 
 NIPC operations to communicate with BLE and Zigbee devices.
 
-## BLE Advertisement
+## Property Read/Write
+
+In this example, we will connect to a device and read and write from a
+property.
+
+The sequence of operations for this are:  
+
+  - Onboard a device using the SCIM Interface (out of scope of this
+    memo)
+  - Register an SDF model for the device
+
+    ~~~~~
+    POST /registration/model
+    Content-Type: application/sdf+json
+    Accept: application/json
+    Host: localhost
+    
+    { ... }
+
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 1f1c5a37-e21c-4edc-aeb0-65b9d747fe07
+
+    {
+      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer"
+    }
+    ~~~~~
+
+    Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
+
+  - Read a property from the BLE device
+
+    ~~~~~
+    GET /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
+    Accept: application/json
+    Host: localhost
+    
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 7b821223-2ef4-4b7e-8802-efab7e1801ea
+    
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "value": "dGVzdA==",
+      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name"
+    }
+    ~~~~~
+ 
+  - Write to a property on the BLE device
+
+    ~~~~~
+    PUT /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
+    Content-Type: application/json
+    Accept: application/json
+    Host: localhost
+    
+    {
+      "value": "dGVzdA=="
+    }
+    
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 7b821223-2ef4-4b7e-8802-efab7e1801ea
+    
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "value": "dGVzdA==",
+      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name"
+    }
+    ~~~~~
+
+## Enabling an Event
 
 In this example, we will onboard a device, and setup an advertisement
 subscription event for that device.
 
 The sequence of operations for this are:  
 
- - Onboard a device using the SCIM Interface (out of scope of this
+  - Onboard a device and endpoint app using the SCIM Interface (out of scope of this
    memo)
- - Register an event with the device id to subscribe to advertisements
-   POST /register/event 
- - Subscribe to the topic from the data receiver app 
-   MQTT subscribe topic
+  - Register an SDF model for the device
 
-## BLE Property Read/Write
+    ~~~~~
+    POST /registration/model
+    Content-Type: application/sdf+json
+    Accept: application/json
+    Host: localhost
+    
+    { ... }
 
-In this example, we will connect to a BLE device and read and write from a
-property.
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 1f1c5a37-e21c-4edc-aeb0-65b9d747fe07
 
+    {
+      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer"
+    }
+    ~~~~~
+
+    Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
+    
+  - Register the data app with the event 
+
+    ~~~~~
+    POST /registration/data-app/23456789-1234-5678-1234-56789abcdef4
+    Content-Type: application/json
+    Accept: application/json
+    Host: localhost
+
+    {
+      "events": [
+        "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+      ],
+      "mqttClient": {}
+    }
+
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 3a7d9ad6-562e-44ac-b119-cfe1d0e7b74e
+
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "events": [
+        "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+      ]
+    }
+    ~~~~~
+
+  - Enable the advertisement event
+
+    ~~~~
+    POST /12345678-1234-5678-1234-56789abcdef4/event/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FisPresent
+    Content-Type: application/json
+    Accept: application/json
+    Host: localhost
+    Content-Length: 0
+    
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 1f1c5a37-e21c-4edc-aeb0-65b9d747fe07
+
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+    }
+    ~~~~
+
+## Property read/write with explicit connection
+
+In this example, we will connect to a device explicitly and read and 
+write from a property.
 The sequence of operations for this are:  
 
- - Onboard a device using the SCIM Interface (out of scope of this
-   memo)
- - Connect to the BLE device
-   POST /action/connection 
- - Read a property from the BLE device
-   GET  /action/property
- - Write to a property on the BLE device
-   POST /action/property 
- - Disconnect from the BLE device
-   DELETE /action/connection 
+  - Onboard a device using the SCIM Interface (out of scope of this
+    memo)
+  - Connect to the device
 
-## Zigbee Property Read/Write
+    ~~~~~
+    POST /12345678-1234-5678-1234-56789abcdef4/action/connection
+    Content-Type: application/json
+    Accept: application/json
+    Host: localhost
+    
+    {
+      "retries": 3,
+      "retryMultipleAPs": true,
+      "protocolMap": {
+        "ble": {
+          "services": [
+            {
+              "serviceID": "1800"
+            },
+            {
+              "serviceID": "1801"
+            }
+          ],
+          "cached": false,
+          "cacheIdlePurge": 3600,
+          "autoUpdate": true,
+          "bonding": "default"
+        }
+      }
+    }
 
-In this example, we will connect a zigbee device to a Zigbee mesh
-and read and write from a property
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 7b821223-2ef4-4b7e-8802-efab7e1801ea
+    
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "protocolMap": {
+        "ble": [
+          {
+            "serviceID": "1800",
+            "characteristics": [
+              {
+                "characteristicID": "2A00",
+                "flags": [
+                  "read",
+                  "write"
+                ],
+                "descriptors": [
+                  {
+                    "descriptorID": "2901"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+    ~~~~~
 
-The sequence of operations for this are:  
+  - Read a property from the BLE device
 
- - Onboard a device using the SCIM Interface (out of scope of this
-   memo)
- - Connect the Zigbee device
-   POST /action/connection 
- - Read a property from the Zigbee device
-   GET  /action/property  
- - Write to a property on the Zigbee device
-   POST  /action/property  
- - Disconnect from the Zigbee device
-   DELETE /action/connection 
+    ~~~~~
+    POST /12345678-1234-5678-1234-56789abcdef4/action/property/read
+    Content-Type: application/json
+    Accept: application/json
+    Host: localhost
+
+    {
+      "protocolMap": {
+        "ble": {
+          "serviceID": "1800",
+          "characteristicID": "2A00"
+        }
+      }
+    }
+    
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 7b821223-2ef4-4b7e-8802-efab7e1801ea
+    
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "value": "dGVzdA==",
+      "protocolMap": {
+        "ble": {
+          "serviceID": "1800",
+          "characteristicID": "2A00"
+        }
+      }
+    }
+    ~~~~~
+
+  - Write to a property on the BLE device
+
+    ~~~~~
+    POST /12345678-1234-5678-1234-56789abcdef4/action/property/write
+    Content-Type: application/json
+    Accept: application/json
+    Host: localhost
+    
+    {
+      "value": "dGVzdA==",
+      "protocolMap": {
+        "ble": {
+          "serviceID": "1800",
+          "characteristicID": "2A00"
+        }
+      }
+    }
+    
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 7b821223-2ef4-4b7e-8802-efab7e1801ea
+    
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4",
+      "value": "dGVzdA==",
+      "protocolMap": {
+        "ble": {
+          "serviceID": "1800",
+          "characteristicID": "2A00"
+        }
+      }
+    }
+    ~~~~~
+
+  - Disconnect from the device
+
+    ~~~~~
+    DELETE /12345678-1234-5678-1234-56789abcdef4/action/connection
+    Accept: application/json
+    Host: localhost
+    
+    HTTP/1.1 200 OK
+    content-type: application/json
+    x-request-id: 7b821223-2ef4-4b7e-8802-efab7e1801ea
+    
+    {
+      "id": "12345678-1234-5678-1234-56789abcdef4"
+    }
+    ~~~~~
 
 # Security Considerations
 
@@ -2443,3 +2171,106 @@ file "openapi.yml"
 <CODE ENDS>
 ~~~~~~
 {: #openAPI}
+
+# Protocol mapping
+
+NIPC requires that a protocol mapping be provided as part of the sdf
+model for a device or have one provided using the NIPC action APIs with 
+embedded protocol mapping. The protocol mapping is a JSON object that 
+describes the underlying technology used to communicate with the device 
+along with any additional information needed to communicate with the 
+device.
+
+The JSON format of the protocol mapping is provided as a non-normative
+OpenAPI model for the convenience of the implementor. 
+
+## Protocol mapping OpenAPI model
+
+~~~~~~
+<CODE BEGINS>
+file "ProtocolMap.yaml"
+{::include nipc-openapi/protocolmaps/ProtocolMap.yaml}
+<CODE ENDS>
+~~~~~~
+{: #protocolmapmodel}
+
+## Protocol map for BLE
+
+~~~~~
+<CODE BEGINS>
+file "ProtocolMap-BLE.yaml"
+{::include nipc-openapi/protocolmaps/ProtocolMap-BLE.yaml}
+<CODE ENDS>
+~~~~~~
+{: #protocolmapble}
+
+## Protocol map for Zigbee
+
+~~~~~
+<CODE BEGINS>
+file "ProtocolMap-Zigbee.yaml"
+{::include nipc-openapi/protocolmaps/ProtocolMap-Zigbee.yaml}
+<CODE ENDS>
+~~~~~~
+{: #protocolmapzigbee}
+
+# NIPC API extensions {#NIPCextensions}
+
+The following OpenAPI models define a few example extensions to the 
+NIPC API.
+
+## NIPC API write binary blob extension
+
+~~~~~
+<CODE BEGINS>
+file "Extension-Blob.yaml"
+{::include nipc-openapi/extensions/Extension-Blob.yaml}
+<CODE ENDS>
+~~~~~
+
+## NIPC API bulk operations extension
+
+~~~~~
+<CODE BEGINS>
+file "Extension-Bulk.yaml"
+{::include nipc-openapi/extensions/Extension-Bulk.yaml}
+<CODE ENDS>
+~~~~~
+
+## NIPC API write file extension
+
+~~~~~
+<CODE BEGINS>
+file "Extension-File.yaml"
+{::include nipc-openapi/extensions/Extension-File.yaml}
+<CODE ENDS>
+~~~~~
+
+## NIPC API firmware update extension
+
+~~~~~
+<CODE BEGINS>
+file "Extension-Firmware.yaml"
+{::include nipc-openapi/extensions/Extension-Firmware.yaml}
+<CODE ENDS>
+~~~~~
+
+## NIPC API conditional read extension
+
+~~~~~
+<CODE BEGINS>
+file "Extension-ReadConditional.yaml"
+{::include nipc-openapi/extensions/Extension-ReadConditional.yaml}
+<CODE ENDS>
+~~~~~
+
+# Example SDF model with protocol mappings for BLE 
+{: #thermometer-sdf}
+
+~~~~~
+<CODE BEGINS>
+file "thermometer.sdf.json"
+{::include nipc-sdf-example/thermometer.sdf.json}
+<CODE ENDS>
+~~~~~
+{: title="Example SDF model with protocol mappings for BLE"}

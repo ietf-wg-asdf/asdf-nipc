@@ -1,15 +1,15 @@
 openapi: 3.0.3
 info:
-  title: Non IP Device Control (NIPC) API write file extension
+  title: Non IP Device Control (NIPC) API bulk extension
   description: |-
-    Non IP Device Control (NIPC) API write file extension
+    Non IP Device Control (NIPC) API bulk extension
   termsOfService: http://swagger.io/terms/
   contact:
     email: bbrinckm@cisco.com
   license:
     name: TBD
     url: TBD
-  version: 0.4.5
+  version: 0.5.0
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
@@ -47,6 +47,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Extension-Bulk'
+            examples:
+              bulkRequest:
+                $ref: '#/components/examples/bulkRequest'
         required: true
       responses:
         '200':
@@ -60,8 +63,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Extension-BulkResponse'
+              examples:
+                bulkResponse:
+                  $ref: '#/components/examples/bulkResponse'
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
+                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
+              examples:
+                errorBulkResponse:
+                  $ref: '#/components/examples/errorBulkResponse'
         '401':
           description: Unauthorized
         '405':
@@ -74,9 +89,6 @@ paths:
                 anyOf:
                   - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
                   - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
-                  - $ref: '../NIPC.yaml#/components/schemas/EventErrorCodes'
-                  - $ref: '../NIPC.yaml#/components/schemas/ConnectionErrorCodes'
-                  - $ref: '../NIPC.yaml#/components/schemas/BroadcastErrorCodes'
 
 components:
   schemas:
@@ -93,57 +105,33 @@ components:
 ## Extension that defines an operation in a bulk API
     Extension-BulkOperation:
       required:
-        - operation
+        - method
+        - path
       allOf:
         - type: object
           properties:
-            path:
-              type: string
-              enum:
-                - /property
-                - /event
-                - /connection
-                - /broadcast
             method:
               type: string
               enum:
                - POST
                - PUT
-               - DELETE
                - GET
-          oneOf:
-            - $ref: '../NIPC.yaml#/components/schemas/PropertyValueArray'
-            - $ref: '../NIPC.yaml#/components/schemas/Event'
-            - $ref: '../NIPC.yaml#/components/schemas/Connection'
-            - $ref: '../NIPC.yaml#/components/schemas/Broadcast'
-          discriminator:
-            propertyName: operation
-            mapping:
-              PUT /property:
-                '../NIPC.yaml#/components/schemas/PropertyValueArray'
-              GET /property:
-                '../NIPC.yaml#/components/schemas/PropertyValueArray'
-              POST /event:
-                '../NIPC.yaml#/components/schemas/Event'
-              DELETE /event:
-                '../NIPC.yaml#/components/schemas/Event'
-              GET /event:
-                '../NIPC.yaml#/components/schemas/Event'
-              POST /connection:
-                '../NIPC.yaml#/components/schemas/Connection'
-              PUT /connection:
-                '../NIPC.yaml#/components/schemas/Connection'
-              DELETE /connection:
-                '../NIPC.yaml#/components/schemas/Connection'
-              GET /connection:
-                '../NIPC.yaml#/components/schemas/Connection'
-              POST /broadcast:
-                '../NIPC.yaml#/components/schemas/Broadcast'
+            path:
+              type: string
+              enum:
+                - /{id}/property/{property}
+                - /{id}/action/{action}
+                - /{id}/extension/property/{property}/read/conditional
+              example: /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            data:
+              type: object
+              oneOf:
+                - $ref: '../NIPC.yaml#/components/schemas/Value'
+                - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-ConditionalRead'
+
 
 ## Multiple returns for a bulk operation
     Extension-BulkResponse:
-      allOf:
-        - $ref: '../NIPC.yaml#/components/schemas/Id'
       type: object
       properties:
         operations:
@@ -153,36 +141,104 @@ components:
 
 ## Return for an operation
     Extension-OperationResponse:
-      required:
-        - operation
       allOf:
         - type: object
           properties:
-            operation:
-              type: string
-            path:
-              type: string
-              enum:
-                - /property
-                - /event
-                - /connection
-                - /broadcast
             method:
               type: string
               enum:
                - POST
                - PUT
-               - DELETE
                - GET
-          anyOf:
-            - $ref: '../NIPC.yaml#/components/schemas/SuccessResponse'
-            - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
-            - $ref: '../NIPC.yaml#/components/schemas/PropertyValueResponseArray'
-            - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
-            - $ref: '../NIPC.yaml#/components/schemas/Event'
-            - $ref: '../NIPC.yaml#/components/schemas/EventErrorCodes'
-            - $ref: '../NIPC.yaml#/components/schemas/ProtocolMap-ServiceMap'
-            - $ref: '../NIPC.yaml#/components/schemas/ConnectionErrorCodes'
-            - $ref: '../NIPC.yaml#/components/schemas/ProtocolMap-ErrorCodes'
-            - $ref: '../NIPC.yaml#/components/schemas/BroadcastErrorCodes'
+            path:
+              type: string
+              enum:
+                - /{id}/property/{property}
+                - /{id}/action/{action}
+                - /{id}/extension/property/{property}/read/conditional'
+              example: /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            response:
+              anyOf:
+                - allOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: '../NIPC.yaml#/components/schemas/PropertyValue'
+                - allOf: 
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: '../NIPC.yaml#/components/schemas/ActionValue'
+                - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+                - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
 
+  examples:
+    bulkRequest:
+      summary: Bulk request example
+      value:
+        operations:
+          - method: GET
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+          - method: PUT
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            data:
+              value: dGVzdA==
+          - method: POST
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/extension/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            data:
+              value: dGVzdA==
+              maxRepeat: 5
+              frequency: 1
+    bulkResponse:
+      summary: Bulk response example
+      value:
+        operations:
+          - method: GET
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            response:
+              id: 12345678-1234-5678-1234-56789abcdef4
+              property: >-
+                https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+              value: dGVzdA==
+          - method: PUT
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            response:
+              id: 12345678-1234-5678-1234-56789abcdef4
+              property: >-
+                https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+              value: dGVzdA==
+          - method: POST
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/extension/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            response:
+              id: 12345678-1234-5678-1234-56789abcdef4
+              property: >-
+                https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+              value: dGVzdA==
+    errorBulkResponse:
+      summary: Error Bulk response example
+      value:
+        operations:
+          - method: GET
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            response:
+              reason: Property not readable
+              errorCode: 1100
+          - method: PUT
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            response:
+              reason: >-
+                Operation was not executed since the previous 
+                operation failed
+              errorCode: 1004
+          - method: POST
+            path: >-
+              /12345678-1234-5678-1234-56789abcdef4/extension/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            response:
+              reason: >-
+                Operation was not executed since the previous 
+                operation failed
+              errorCode: 1004

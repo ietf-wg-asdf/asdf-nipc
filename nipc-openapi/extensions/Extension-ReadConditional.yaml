@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: Non IP Device Control (NIPC) API write binary blob extension
+  title: Non IP Device Control (NIPC) API read conditional extension
   description: |-
-    Non IP Device Control (NIPC) API write binary blob extension
+    Non IP Device Control (NIPC) API read conditional extension
   termsOfService: http://swagger.io/terms/
   contact:
     email: bbrinckm@cisco.com
@@ -26,14 +26,13 @@ tags:
 
 paths:
 ### Extensions
-  /{id}/extension/property/{property}/blob:
-    put:
+  /{id}/extension/property/{property}/read/conditional:
+    post:
       tags:
         - NIPC API extensions
-      summary: Write a binary blob to a property on a device
-      description: |-
-        Write a binary blob to a property on a device. Will chunk up the binary blob and perform multiple writes. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
-      operationId: writeBlob
+      summary: Conditional read of a property
+      description: Conditional read of a property
+      operationId: conditionalRead
       parameters:
       - name: id
         in: path
@@ -49,12 +48,12 @@ paths:
         required: true
         schema:
           type: string
-          example: "bin_blob"
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Extension-Blob'
+              $ref: '#/components/schemas/Extension-ConditionalRead'
         required: true
       responses:
         '200':
@@ -67,9 +66,9 @@ paths:
           content:
             application/json:
               schema:
-                allOf: 
+                allOf:
                   - $ref: '../NIPC.yaml#/components/schemas/Id'
-                  - $ref: '../NIPC.yaml#/components/schemas/Property'
+                  - $ref: '../NIPC.yaml#/components/schemas/PropertyValue'
         '400':
           description: Bad request
         '401':
@@ -81,21 +80,26 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
+                anyOf:
                   - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
                   - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
 
 components:
   schemas:
 # Extensions
-## A binary blob Extension
-    Extension-Blob:
-      required:
-        - blob
-      type: object
-      properties:
-        blob:
-          type: string
-          format: byte
-        chunksize:
-          type: integer
+    Extension-ConditionalRead:
+      allOf:
+        - $ref: '../NIPC.yaml#/components/schemas/Value'
+        - type: object
+          properties:
+            maxRepeat:
+              description: |-
+                maximum time the conditional read should repeat
+                (default 5, max 60)
+              type: integer
+              example: 5
+            frequency:
+              description: |-
+                time between reads in seconds (default 1, max 60)
+              type: integer
+              example: 1
