@@ -1,0 +1,105 @@
+openapi: 3.0.3
+info:
+  title: Non IP Device Control (NIPC) API read conditional extension
+  description: |-
+    Non IP Device Control (NIPC) API read conditional extension
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: bbrinckm@cisco.com
+  license:
+    name: TBD
+    url: TBD
+  version: 0.4.5
+externalDocs:
+  description: NIPC IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
+servers:
+  - url: "{gw_host}/nipc/draft-04"
+    variables:
+      gw_host:
+        default: localhost
+        description: Gateway Host
+tags:
+  - name:  NIPC API extensions
+    description: |-
+      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
+
+paths:
+### Extensions
+  /{id}/extension/property/{property}/read/conditional:
+    post:
+      tags:
+        - NIPC API extensions
+      summary: Conditional read of a property
+      description: Conditional read of a property
+      operationId: conditionalRead
+      parameters:
+      - name: id
+        in: path
+        description: device id that need to be filtered, group id is not allowed
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: property
+        in: path
+        description: property that needs to be filtered
+        required: true
+        schema:
+          type: string
+          example: "#/sdfObject/thermostat/sdfProperty/temperature"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Extension-ConditionalRead'
+        required: true
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-Request-ID:
+              schema:
+                type: integer
+              description: Unique Request ID
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: '../NIPC.yaml#/components/schemas/PropertyValue'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '405':
+          description: Invalid request
+        '500':
+          description: Server-side failure
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
+                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
+
+components:
+  schemas:
+# Extensions
+    Extension-ConditionalRead:
+      allOf:
+        - $ref: '../NIPC.yaml#/components/schemas/Value'
+        - type: object
+          properties:
+            maxRepeat:
+              description: |-
+                maximum time the conditional read should repeat
+                (default 5, max 60)
+              type: integer
+              example: 5
+            frequency:
+              description: |-
+                time between reads in seconds (default 1, max 60)
+              type: integer
+              example: 1

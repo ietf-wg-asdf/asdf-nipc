@@ -1,3 +1,5 @@
+DataBatch = [* DataSubscription]
+
 DataSubscription = {
   ? data: bytes,
   timestamp: float, ; epoch in seconds

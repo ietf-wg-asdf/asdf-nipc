@@ -1,0 +1,176 @@
+{
+    "namespace": {
+        "thermometer": "https://example.com/thermometer"
+    },
+    "defaultNamespace": "thermometer",
+    "sdfThing": {
+        "thermometer": {
+            "sdfObject": {
+                "health_thermometer": {
+                    "description": "Health Thermometer",
+                    "sdfProperty": {
+                        "temperature_type": {
+                            "description": "Temperature Type",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "1809",
+                                    "characteristicID": "2A1D"
+                                }
+                            }
+                        },
+                        "measurement_interval": {
+                            "description": "Measurement Interval",
+                            "observable": false,
+                            "writable": false,
+                            "readable": true,
+                            "protocolMap": {
+                                "ble": {
+                                    "serviceID": "1809",
+                                    "characteristicID": "2A21"
+                                }
+                            }
+                        }
+                    },
+                    "sdfEvent": {
+                        "temperature_measurement": {
+                            "description": "Temperature Measurement",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "1809",
+                                        "characteristicID": "2A1C"
+                                    }
+                                }
+                            }
+                        },
+                        "intermediate_temperature": {
+                            "description": "Intermediate Temperature",
+                            "sdfOutputData": {
+                                "protocolMap": {
+                                    "ble": {
+                                        "type": "gatt",
+                                        "serviceID": "1809",
+                                        "characteristicID": "2A1E"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "description": "Generic Access, Device Information",
+            "sdfProperty": {
+                "device_name": {
+                    "description": "Device Name",
+                    "observable": false,
+                    "writable": true,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "1800",
+                            "characteristicID": "2A00"
+                        }
+                    }
+                },
+                "appearance": {
+                    "description": "Appearance",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "1800",
+                            "characteristicID": "2A01"
+                        }
+                    }
+                },
+                "manufacturer_name_string": {
+                    "description": "Manufacturer Name String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A29"
+                        }
+                    }
+                },
+                "model_number_string": {
+                    "description": "Model Number String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A24"
+                        }
+                    }
+                },
+                "hardware_revision_string": {
+                    "description": "Hardware Revision String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A27"
+                        }
+                    }
+                },
+                "firmware_revision_string": {
+                    "description": "Firmware Revision String",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A26"
+                        }
+                    }
+                },
+                "system_id": {
+                    "description": "System ID",
+                    "observable": false,
+                    "writable": false,
+                    "readable": true,
+                    "protocolMap": {
+                        "ble": {
+                            "serviceID": "180A",
+                            "characteristicID": "2A23"
+                        }
+                    }
+                }
+            },
+            "sdfEvent": {
+                "isPresent": {
+                    "description": "BLE advertisements",
+                    "sdfOutputData": {
+                        "protocolMap": {
+                            "ble": {
+                                "type": "advertisements"
+                            }
+                        }
+                    }
+                },
+                "isConnected": {
+                    "description": "BLE connection events",
+                    "sdfOutputData": {
+                        "protocolMap": {
+                            "ble": {
+                                "type": "connection_events"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
