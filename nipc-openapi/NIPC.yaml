@@ -921,8 +921,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
+
     get:
       tags:
         - NIPC registration APIs
@@ -957,8 +957,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
 
 
   /registration/model/{sdfRef}:
@@ -1008,8 +1007,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
  
     delete:
       tags:
@@ -1051,8 +1049,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
 
     get:
       tags:
@@ -1094,8 +1091,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
 
   /registration/data-app/{data-app}:
     post:
@@ -1145,8 +1141,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
 
     put:
       tags:
@@ -1195,8 +1190,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
                   
     delete:
       tags:
@@ -1239,8 +1233,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
   
     get:
       tags:
@@ -1283,8 +1276,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/RegistrationErrorCodes'
+                  - $ref: '#/components/schemas/FailureResponse'
 
 components:
   schemas:
@@ -1628,71 +1620,51 @@ components:
       properties:
         reason:
           type: string
-          example: Not Found
+          example: Bad request
         errorCode:
           type: integer
           format: int32
           enum: 
-            - 2000 # Generic catch-all error code for any API
-            - 2001 # Invalid device ID or gateway doesn't recognize the ID
-            - 2002 # Group ID not allowed
-    
-    ConnectionErrorCodes:
-      type: object
-      properties:
-        errorCode:
-          type: integer
-          format: int32
-          enum:
-            - 1000 # Device already connected
-            - 1001 # No connection found for device
-            - 1002 # Connection timeout
-            - 1003 # Connection failed
+            - 1000 # Generic catch-all error code for any API
+            - 1001 # Application not authorized to access the device
+            - 1002 # Invalid device ID or gateway doesn't recognize the ID
+            - 1003 # Invalid SDF URL or SDF affordance not found
+            - 1004 # Operation was not executed since the previous operation failed
 
     PropertyErrorCodes:
-      type: object
-      properties:
-        errorCode:
-          type: integer
-          format: int32
-          enum:
-            - 1100 # Property not found
-            - 1101 # Property not writeable
-            - 1102 # Property not readable
-            - 1103 # Invalid protocol mapping
+      type: integer
+      format: int32
+      enum:
+        - 1100 # Property not readable
+        - 1101 # Property not writable
 
     EventErrorCodes:
-      type: object
-      properties:
-        errorCode:
-          type: integer
-          format: int32
-          enum:
-            - 1200 # Event not found
-            - 1201 # Event already started
-            - 1202 # Event already stopped
-            - 1203 # Invalid protocol mapping
+      type: integer
+      format: int32
+      enum:
+        - 1200 # Event already enabled
+        - 1201 # Event not enabled
+        - 1202 # Event not registered for any data application
+
+    ConnectionErrorCodes:
+      type: integer
+      format: int32
+      enum:
+        - 1300 # Device already connected
+        - 1301 # No connection found for device
+        - 1302 # BLE connection timeout
+        - 1303 # BLE bonding failed
+        - 1304 # BLE connection failed
+        - 1305 # BLE service discovery failed
+        - 1306 # Invalid BLE service or characteristic ID
+        - 1400 # Zigbee connection timeout
+        - 1401 # Invalid Zigbee endpoint or cluster ID
 
     BroadcastErrorCodes:
-      type: object
-      properties:
-        errorCode:
-          type: integer
-          format: int32
-          enum:
-            - 1300 # Invalid broadcast data
-
-    RegistrationErrorCodes:
-      type: object
-      properties:
-        errorCode:
-          type: integer
-          format: int32
-          enum:
-            - 1400 # Invalid schema
-            - 1401 # Invalid property identifier
-            - 1402 # Invalid event identifier
-            - 1403 # Invalid action identifier
+      type: integer
+      format: int32
+      enum:
+        - 1500 # Invalid broadcast data        
 
 ## Property operations responses
     

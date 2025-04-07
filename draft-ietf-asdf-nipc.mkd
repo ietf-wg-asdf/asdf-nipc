@@ -1640,25 +1640,6 @@ mapping to NIPC properties. BLE and Zigbee are used as examples, but protocol
 mapping is extensible to other protocols, so now non-IP protocols can be 
 supported by NIPC without a schema change.
 
-~~~~~
-
-     -  property
-        |
-        |> BLE
-        |     - BLE  properties
-        |
-        |> Zigbee
-        |     - Zigbee properties
-        |
-        |> New protocol 
-        |     -  New protocol properties
-
-~~~~~
-{: #extprotmap title="Extended protocol mapping"}
-
-As shown in {{extprotmap}}, a protocol mapping can be added by adding
-a new technology specific extension to the schema. 
-
 The protocol objects need to be extended with the new
 protocol as well. Protocol objects will be extended as follows:
 
@@ -1709,26 +1690,26 @@ The specific error codes are defined in the table below:
 
 | Error Code | Description                                  | Category                  |
 |------------|----------------------------------------------|---------------------------|
-| 1000       | Generic catch-all error code for any API     | Generic                   |
+| 1000       | Generic catch-all error code for any API      | Generic                   |
 | 1001       | Application not authorized to access the device | Generic                |
 | 1002       | Invalid device ID or gateway doesn't recognize the ID | Generic          |
-| 1003       | Invalid SDF URL or SDF affordance not found  | Generic                   |
+| 1003       | Invalid SDF URL or SDF affordance not found   | Generic                   |
 | 1004       | Operation was not executed since the previous operation failed | Generic |
-| 1100       | Property not readable                        | Property APIs             |
-| 1101       | Property not writable                        | Property APIs             |
-| 1200       | Event already enabled                        | Event APIs                |
-| 1201       | Event not enabled                            | Event APIs                |
+| 1100       | Property not readable                         | Property APIs             |
+| 1101       | Property not writable                         | Property APIs             |
+| 1200       | Event already enabled                         | Event APIs                |
+| 1201       | Event not enabled                             | Event APIs                |
 | 1202       | Event not registered for any data application | Event APIs               |
-| 1300       | Device already connected                     | BLE-Specific              |
-| 1301       | No connection found for device               | BLE-Specific              |
-| 1302       | BLE connection timeout                       | BLE-Specific              |
-| 1303       | BLE bonding failed                           | BLE-Specific              |
-| 1304       | BLE connection failed                        | BLE-Specific              |
-| 1305       | BLE service discovery failed                 | BLE-Specific              |
-| 1306       | Invalid BLE service or characteristic ID     | BLE-Specific              |
-| 1400       | Zigbee connection timeout                    | Zigbee-Specific           |
-| 1401       | Invalid Zigbee endpoint or cluster ID        | Zigbee-Specific           |
-| 1500       | Invalid broadcast data                       | Broadcast APIs            |
+| 1300       | Device already connected                      | BLE-Specific              |
+| 1301       | No connection found for device                | BLE-Specific              |
+| 1302       | BLE connection timeout                        | BLE-Specific              |
+| 1303       | BLE bonding failed                            | BLE-Specific              |
+| 1304       | BLE connection failed                         | BLE-Specific              |
+| 1305       | BLE service discovery failed                  | BLE-Specific              |
+| 1306       | Invalid BLE service or characteristic ID      | BLE-Specific              |
+| 1400       | Zigbee connection timeout                     | Zigbee-Specific           |
+| 1401       | Invalid Zigbee endpoint or cluster ID         | Zigbee-Specific           |
+| 1500       | Invalid broadcast data                        | Broadcast APIs            |
 {: #errorcodes title="Error Codes"}
 
 The appropriate HTTP status code is returned in the response. 
@@ -1772,7 +1753,8 @@ This section contains a few examples of the DataSubscription struct
 depicted in CBOR diagnostic notation.
 
 ~~~
-{
+[
+  {
     "data": h'02011A020A0C16FF4C001007721F41B0392078',
     "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
     "timestamp": 1727484393,
@@ -1780,24 +1762,28 @@ depicted in CBOR diagnostic notation.
         "macAddress": "C1:5C:00:00:00:01",
         "rssi": -25
     }
-}
+  }
+]
 ~~~
 {: title="Onboarded BLE Device Advertisement" }
 
 ~~~
-{
+[
+  {
     "data": h'02011A020A0C16FF4C001007721F41B0392078',
     "timestamp": 1727484393,
     "bleAdvertisement": {
         "macAddress": "C1:5C:00:00:00:01",
         "rssi": -25
     }
-}
+  }
+]
 ~~~
 {: title="Non-onboarded BLE Device Advertisement" }
 
 ~~~
-{
+[
+  {
     "data": h'434630374346303739453036',
     "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
     "timestamp": 1727484393,
@@ -1805,24 +1791,28 @@ depicted in CBOR diagnostic notation.
         "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
         "characteristicID": "c4c1f6e2-4be5-11e5-885d-feff819cdc9f"
     }
-}
+  }
+]
 ~~~
 {: title="BLE GATT Notification" }
 
 ~~~
-{
+[
+  {
     "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
     "timestamp": 1727484393,
     "bleConnectionStatus": {
         "macAddress": "C1:5C:00:00:00:01",
         "connected": true
     }
-}
+  }
+]
 ~~~
 {: title="BLE Connection status event" }
 
 ~~~
-{
+[
+  {
     "data": h'434630374346303739453036',
     "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
     "timestamp": 1727484393,
@@ -1832,7 +1822,8 @@ depicted in CBOR diagnostic notation.
         "attributeID": 12,
         "type": 1
     }
-}
+  }
+]
 ~~~
 {: title="Zigbee Attribute Notification" }
 
@@ -1912,7 +1903,7 @@ The sequence of operations for this are:
     }
     ~~~~~
 
-## BLE Advertisement
+## Enabling Event
 
 In this example, we will onboard a device, and setup an advertisement
 subscription event for that device.
@@ -1988,7 +1979,7 @@ The sequence of operations for this are:
     }
     ~~~~
 
-## BLE connection management and property read/write
+## Property read/write with explicit connection
 
 In this example, we will connect to a device explicitly and read and 
 write from a property.
@@ -2137,101 +2128,6 @@ The sequence of operations for this are:
       "id": "12345678-1234-5678-1234-56789abcdef4"
     }
     ~~~~~
-
-## BLE GATT notification
-
-In this example, we will register an event for a GATT notification.
-
-The sequence of operations for this are:  
-
-  - Onboard a device using the SCIM Interface (out of scope of this
-    memo)
-  - Register an SDF model for the device
-
-    ~~~~~
-    POST /registration/model
-    Content-Type: application/sdf+json
-    Accept: application/json
-    Host: localhost
-    
-    { ... }
-
-    HTTP/1.1 200 OK
-    content-type: application/json
-    x-request-id: 1f1c5a37-e21c-4edc-aeb0-65b9d747fe07
-
-    {
-      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer"
-    }
-    ~~~~~
-
-    Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
-    
-  - Register the data app with the event 
-
-    ~~~~~
-    POST /registration/data-app/23456789-1234-5678-1234-56789abcdef4
-    Content-Type: application/json
-    Accept: application/json
-    Host: localhost
-
-    {
-      "events": [
-        "https://example.com/thermometer#/sdfThing/thermometer/sdfObject/health_thermometer/sdfEvent/temperature_measurement"
-      ],
-      "mqttClient": {}
-    }
-
-    HTTP/1.1 200 OK
-    content-type: application/json
-    x-request-id: 3a7d9ad6-562e-44ac-b119-cfe1d0e7b74e
-
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "events": [
-        "https://example.com/thermometer#/sdfThing/thermometer/sdfObject/health_thermometer/sdfEvent/temperature_measurement"
-      ]
-    }
-    ~~~~~
-
-  - Enable the GATT notification event
-  
-    ~~~~
-    POST /12345678-1234-5678-1234-56789abcdef4/event/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfObject%2Fhealth_thermometer%2FsdfEvent%2Ftemperature_measurement
-    Content-Type: application/json
-    Accept: application/json
-    Host: localhost
-    Content-Length: 0
-    
-    HTTP/1.1 200 OK
-    content-type: application/json
-    x-request-id: 1f1c5a37-e21c-4edc-aeb0-65b9d747fe07
-
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfObject/health_thermometer/sdfEvent/temperature_measurement"
-    }
-    ~~~~
-
-  - Disable the GATT notification event
-
-    ~~~~
-    DELETE /12345678-1234-5678-1234-56789abcdef4/event/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfObject%2Fhealth_thermometer%2FsdfEvent%2Ftemperature_measurement
-    Content-Type: application/json
-    Accept: application/json
-    Host: localhost
-    Content-Length: 0
-    
-    HTTP/1.1 200 OK
-    content-type: application/json
-    x-request-id: 1f1c5a37-e21c-4edc-aeb0-65b9d747fe07
-
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfObject/health_thermometer/sdfEvent/temperature_measurement"
-    }
-    ~~~~
-
 
 # Security Considerations
 
