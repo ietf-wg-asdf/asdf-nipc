@@ -830,7 +830,7 @@ paths:
     post:
       tags:
         - NIPC action APIs with embedded protocol mapping
-      summary: Write a value to an property using protocol mapping
+      summary: Read a value to an property using protocol mapping
       description: |-
         Read a value from an unregistered property, embedding property protocol mapping in the API, this does not require
         property registration. You cannot read from a group id.
@@ -1420,6 +1420,10 @@ components:
       properties: 
         mqttBroker:
           type: object
+          required:
+            - URI
+            - username
+            - password
           properties: 
             URI: 
               type: string
@@ -1430,8 +1434,13 @@ components:
             password: 
               type: string
               example: password1
-            brokerCACert: 
-              type: string         
+            brokerCACert:
+              description: PEM encoded CA certificate
+              type: string
+            customTopic:
+              type: string
+              description: custom MQTT topic to publish to
+              example: custom/topic
       
     DataAppWebhook:
       type: object
@@ -1442,9 +1451,12 @@ components:
             URI: 
               type: string
               example: webhook.com:443
-            apiKey:
-              type: string
-              example: fjelk-3dl33f-2wdsd
+            headers:
+              type: object
+              additionalProperties:
+                type: string
+              example:
+                x-api-key: fjelk-3dl33f-2wdsd
             serverCACert: 
               type: string 
           
@@ -1457,9 +1469,12 @@ components:
             URI: 
               type: string
               example: websocket.com:443
-            apiKey:
-              type: string
-              example: fjelk-3dl33f-2wdsd
+            headers:
+              type: object
+              additionalProperties:
+                type: string
+              example:
+                x-api-key: fjelk-3dl33f-2wdsd
             serverCACert: 
               type: string 
 
@@ -1630,6 +1645,7 @@ components:
             - 1002 # Invalid device ID or gateway doesn't recognize the ID
             - 1003 # Invalid SDF URL or SDF affordance not found
             - 1004 # Operation was not executed since the previous operation failed
+            - 1005 # SDF model already registered
 
     PropertyErrorCodes:
       type: integer
