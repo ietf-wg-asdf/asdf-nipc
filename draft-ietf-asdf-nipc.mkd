@@ -1704,7 +1704,19 @@ compound statements in order to streamline application operation against
 devices, make operations more expediant and convenient in one API call.
 In principle they do not add any basic functionality. In
 the OpenAPI model {{NIPCextensions}} below, we have defined a few example 
-extensions.  
+extensions.
+
+The extensions can contain long running operations, such as firmware updates,
+or other bulk operations that can be performed on a device. For long 
+running operations, the extension API will return a 202 Accepted status 
+code and a location header with the URL to check the status of the operation.
+The status of the operation can be checked by calling the status extension API
+with the same device ID. The status extension API will return a 200 OK status code
+when the operation is in progress. When the operation is complete, 
+the status extension API will return a 303 See Other status code with a 
+location header with the URL to check the status of the operation.
+The GET operation on the extension API will return a 200 OK status code
+with the actual response once the operation is complete.
 
 # NIPC Error Handling
 {: #errorhandling}

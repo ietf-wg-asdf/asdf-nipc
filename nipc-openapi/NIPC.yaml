@@ -74,7 +74,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -126,7 +126,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -178,7 +178,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -231,7 +231,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -285,7 +285,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -338,7 +338,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -390,7 +390,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -446,7 +446,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -504,7 +504,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -556,7 +556,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
         '400':
           description: Bad request
@@ -604,7 +604,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -656,7 +656,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -702,7 +702,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -746,7 +746,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -802,7 +802,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -856,7 +856,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -902,7 +902,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -936,7 +936,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -988,7 +988,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -1030,7 +1030,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -1072,7 +1072,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -1122,7 +1122,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -1171,7 +1171,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -1214,7 +1214,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -1257,7 +1257,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
@@ -1648,39 +1648,51 @@ components:
             - 1005 # SDF model already registered
 
     PropertyErrorCodes:
-      type: integer
-      format: int32
-      enum:
-        - 1100 # Property not readable
-        - 1101 # Property not writable
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+          enum:
+            - 1100 # Property not readable
+            - 1101 # Property not writable
 
     EventErrorCodes:
-      type: integer
-      format: int32
-      enum:
-        - 1200 # Event already enabled
-        - 1201 # Event not enabled
-        - 1202 # Event not registered for any data application
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+          enum:
+            - 1200 # Event already enabled
+            - 1201 # Event not enabled
+            - 1202 # Event not registered for any data application
 
     ConnectionErrorCodes:
-      type: integer
-      format: int32
-      enum:
-        - 1300 # Device already connected
-        - 1301 # No connection found for device
-        - 1302 # BLE connection timeout
-        - 1303 # BLE bonding failed
-        - 1304 # BLE connection failed
-        - 1305 # BLE service discovery failed
-        - 1306 # Invalid BLE service or characteristic ID
-        - 1400 # Zigbee connection timeout
-        - 1401 # Invalid Zigbee endpoint or cluster ID
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+          enum:
+            - 1300 # Device already connected
+            - 1301 # No connection found for device
+            - 1302 # BLE connection timeout
+            - 1303 # BLE bonding failed
+            - 1304 # BLE connection failed
+            - 1305 # BLE service discovery failed
+            - 1306 # Invalid BLE service or characteristic ID
+            - 1400 # Zigbee connection timeout
+            - 1401 # Invalid Zigbee endpoint or cluster ID
 
     BroadcastErrorCodes:
-      type: integer
-      format: int32
-      enum:
-        - 1500 # Invalid broadcast data        
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+          enum:
+            - 1500 # Invalid broadcast data        
 
 ## Property operations responses
     
