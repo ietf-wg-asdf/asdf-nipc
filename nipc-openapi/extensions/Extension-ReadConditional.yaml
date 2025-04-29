@@ -67,6 +67,7 @@ paths:
               schema:
                 type: string
               description: URL to get the conditional read status
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/property/temperature/read/conditional/status?requestId=12345678-1234-5678-1234-56789abcdef4
             Retry-After:
               schema:
                 type: integer
@@ -140,6 +141,14 @@ paths:
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
+      - name: requestId
+        in: query
+        description: Request ID of the conditional read operation
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
           description: Success
@@ -191,6 +200,14 @@ paths:
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
+      - name: requestId
+        in: query
+        description: Request ID of the conditional read operation
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
           description: OK
@@ -212,6 +229,7 @@ paths:
               schema:
                 type: string
               description: URL to get the conditional read response
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/property/temperature/read/conditional?requestId=12345678-1234-5678-1234-56789abcdef4
           content:
             application/json:
               schema:

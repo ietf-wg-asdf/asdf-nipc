@@ -64,6 +64,7 @@ paths:
               schema:
                 type: string
               description: Location of the resource
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/firmware/status?requestId=12345678-1234-5678-1234-56789abcdef4
         '400':
           description: Bad request
         '401':
@@ -86,9 +87,11 @@ paths:
                 content:
                   application/json:
                     schema:
-                      allOf:
+                      anyOf:
                         - $ref: '../NIPC.yaml#/components/schemas/Id'
-                        - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-StatusResponse'
+                        - allOf:
+                          - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+                          - $ref: '#/components/schemas/ExtensionErrorCodes'
               responses:
                 '200':
                   description: OK
@@ -116,6 +119,13 @@ paths:
         schema:
           type: string
           format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: requestId
+        in: query
+        description: Request ID of the firmware upgrade operation
+        required: false
+        schema:
+          type: string
           example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
@@ -145,7 +155,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
+                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+                  - $ref: '#/components/schemas/ExtensionErrorCodes'
   /{id}/extension/firmware/status:
     get:
       tags:
@@ -162,6 +173,13 @@ paths:
         schema:
           type: string
           format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: requestId
+        in: query
+        description: Request ID of the firmware upgrade operation
+        required: false
+        schema:
+          type: string
           example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
@@ -184,7 +202,7 @@ paths:
               schema:
                 type: string
               description: URL to get the firmware response
-              example: /12345678-1234-5678-1234-56789abcdef4/extension/firmware
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/firmware?requestId=12345678-1234-5678-1234-56789abcdef4
           content:
             application/json:
               schema:
@@ -215,6 +233,16 @@ components:
           enum:
             - nordic
             - silabs
+
+    ExtensionErrorCodes:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+          format: int32
+          enum:
+            - 1600 # Firmware rollback
+            - 1601 # Firmware update failed
 
 
 

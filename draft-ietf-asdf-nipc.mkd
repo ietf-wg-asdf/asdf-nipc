@@ -1736,6 +1736,7 @@ categories:
     including connection management and service discovery.
   - 1400-1499 (Zigbee-Specific): Errors specific to Zigbee operations.
   - 1500-1599 (Broadcast APIs): Errors related to broadcasting data.
+  - 1600-1699 (Extension APIs): Errors related to extension APIs.
 
 The specific error codes are defined in the table below:
 
@@ -1762,6 +1763,8 @@ The specific error codes are defined in the table below:
 | 1400       | Zigbee connection timeout                     | Zigbee-Specific           |
 | 1401       | Invalid Zigbee endpoint or cluster ID         | Zigbee-Specific           |
 | 1500       | Invalid broadcast data                        | Broadcast APIs            |
+| 1600       | Firmware rollback                             | Extension APIs            |
+| 1601       | Firmware update failed                        | Extension APIs            |
 {: #errorcodes title="Error Codes"}
 
 The appropriate HTTP status code is returned in the response. 

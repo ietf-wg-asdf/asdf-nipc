@@ -63,7 +63,7 @@ paths:
               schema:
                 type: string
               description: URL to get the bulk status response
-              example: /12345678-1234-5678-1234-56789abcdef4/extension/bulk/status
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/bulk/status?requestId=12345678-1234-5678-1234-56789abcdef4
         '401':
           description: Unauthorized
         '405':
@@ -115,6 +115,14 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
+      - name: requestId
+        in: query
+        description: Request ID of the bulk operation
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
           description: OK
@@ -159,6 +167,14 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
+      - name: requestId
+        in: query
+        description: Request ID of the bulk operation
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
           description: OK
@@ -180,7 +196,7 @@ paths:
               schema:
                 type: string
               description: URL to get the bulk response
-              example: /12345678-1234-5678-1234-56789abcdef4/extension/bulk
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/bulk?requestId=12345678-1234-5678-1234-56789abcdef4
           content:
             application/json:
               schema:
