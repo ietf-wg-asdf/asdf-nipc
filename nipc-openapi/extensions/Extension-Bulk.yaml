@@ -52,17 +52,91 @@ paths:
                 $ref: '#/components/examples/bulkRequest'
         required: true
       responses:
-        '200':
-          description: Success
+        '202':
+          description: Accepted
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
+              description: Unique Request ID
+            Location:
+              schema:
+                type: string
+              description: URL to get the bulk status response
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/bulk/status?requestId=12345678-1234-5678-1234-56789abcdef4
+        '401':
+          description: Unauthorized
+        '405':
+          description: Invalid request
+        '500':
+          description: Server-side failure
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
+                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
+      callbacks:
+        bulkEvent:
+          '{$request.body#/callback.url}':
+            post:
+              description: Callback for bulk response
+              operationId: bulkCallback
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      allOf:
+                        - $ref: '../NIPC.yaml#/components/schemas/Id'
+                        - $ref: '#/components/schemas/Extension-BulkResponse'
+              responses:
+                '200':
+                  description: OK
+                '400':
+                  description: Bad request
+                '401':
+                  description: Unauthorized
+                '405':
+                  description: Invalid request
+                '500':
+                  description: Server-side failure
+    get:
+      tags:
+        - NIPC API extensions
+      summary: Get Bulk response
+      description: Get Bulk response
+      operationId: getBulkResponse
+      parameters:
+      - name: id
+        in: path
+        description: device id that need to be filtered, group id is not allowed
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: requestId
+        in: query
+        description: Request ID of the bulk operation
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
               description: Unique Request ID
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Extension-BulkResponse'
+                allOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: '#/components/schemas/Extension-BulkResponse'
               examples:
                 bulkResponse:
                   $ref: '#/components/examples/bulkResponse'
@@ -77,30 +151,84 @@ paths:
               examples:
                 errorBulkResponse:
                   $ref: '#/components/examples/errorBulkResponse'
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+  /{id}/extension/bulk/status:
+    get:
+      tags:
+        - NIPC API extensions
+      summary: Get Bulk status
+      description: Get Bulk status
+      operationId: getBulkStatus
+      parameters:
+      - name: id
+        in: path
+        description: device id that need to be filtered, group id is not allowed
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: requestId
+        in: query
+        description: Request ID of the bulk operation
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+              description: Unique Request ID
           content:
             application/json:
               schema:
-                anyOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
-                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
+                allOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-StatusResponse'
+        '303':
+          description: See Other
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL to get the bulk response
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/bulk?requestId=12345678-1234-5678-1234-56789abcdef4
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-StatusResponse'
+              examples:
+                successExample:
+                  summary: Success
+                  value:
+                    id: 12345678-1234-5678-1234-56789abcdef4
+                    status: SUCCESS
+                failedResponse:
+                  summary: Failed
+                  value:
+                    id: 12345678-1234-5678-1234-56789abcdef4
+                    status: FAILED
+
 
 components:
   schemas:
 # Extensions
 ## Bulk schema Extension
     Extension-Bulk:
-      type: object
-      properties:
-        operations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Extension-BulkOperation'
+      allOf:
+        - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-Callback'
+        - type: object
+          properties:
+            operations:
+              type: array
+              items:
+                $ref: '#/components/schemas/Extension-BulkOperation'
 
 ## Extension that defines an operation in a bulk API
     Extension-BulkOperation:
@@ -187,7 +315,7 @@ components:
             data:
               value: dGVzdA==
               maxRepeat: 5
-              frequency: 1
+              retryTime: 1
     bulkResponse:
       summary: Bulk response example
       value:
@@ -231,7 +359,7 @@ components:
               /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               reason: >-
-                Operation was not executed since the previous 
+                Operation was not executed since the previous
                 operation failed
               errorCode: 1004
           - method: POST
@@ -239,6 +367,6 @@ components:
               /12345678-1234-5678-1234-56789abcdef4/extension/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
             response:
               reason: >-
-                Operation was not executed since the previous 
+                Operation was not executed since the previous
                 operation failed
               errorCode: 1004
