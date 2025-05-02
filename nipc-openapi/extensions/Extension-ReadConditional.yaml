@@ -238,15 +238,10 @@ paths:
                   - $ref: '#/components/schemas/Extension-StatusResponse'
               examples:
                 successExample:
-                  summary: Success
+                  summary: Completed
                   value:
                     id: 12345678-1234-5678-1234-56789abcdef4
-                    status: SUCCESS
-                failedResponse:
-                  summary: Failed
-                  value:
-                    id: 12345678-1234-5678-1234-56789abcdef4
-                    status: FAILED
+                    status: COMPLETED
 
 components:
   schemas:
@@ -279,12 +274,10 @@ components:
         status:
           description: |-
             Status of the callback
-            (default is success)
           type: string
           enum:
             - IN_PROGRESS
-            - SUCCESS
-            - FAILED
+            - COMPLETED
 
     Extension-ConditionalRead:
       allOf:
