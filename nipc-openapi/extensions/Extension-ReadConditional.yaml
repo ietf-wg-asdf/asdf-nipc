@@ -144,7 +144,7 @@ paths:
       - name: requestId
         in: query
         description: Request ID of the conditional read operation
-        required: false
+        required: true
         schema:
           type: string
           format: uuid
@@ -203,7 +203,7 @@ paths:
       - name: requestId
         in: query
         description: Request ID of the conditional read operation
-        required: false
+        required: true
         schema:
           type: string
           format: uuid

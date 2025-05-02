@@ -118,7 +118,7 @@ paths:
       - name: requestId
         in: query
         description: Request ID of the bulk operation
-        required: false
+        required: true
         schema:
           type: string
           format: uuid
@@ -162,7 +162,7 @@ paths:
       - name: requestId
         in: query
         description: Request ID of the bulk operation
-        required: false
+        required: true
         schema:
           type: string
           format: uuid
