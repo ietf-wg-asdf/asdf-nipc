@@ -123,7 +123,7 @@ paths:
       - name: requestId
         in: query
         description: Request ID of the firmware upgrade operation
-        required: false
+        required: true
         schema:
           type: string
           example: 12345678-1234-5678-1234-56789abcdef4
@@ -177,7 +177,7 @@ paths:
       - name: requestId
         in: query
         description: Request ID of the firmware upgrade operation
-        required: false
+        required: true
         schema:
           type: string
           example: 12345678-1234-5678-1234-56789abcdef4
@@ -211,15 +211,10 @@ paths:
                   - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-StatusResponse'
               examples:
                 successExample:
-                  summary: Success
+                  summary: Completed
                   value:
                     id: 12345678-1234-5678-1234-56789abcdef4
-                    status: SUCCESS
-                failedResponse:
-                  summary: Failed
-                  value:
-                    id: 12345678-1234-5678-1234-56789abcdef4
-                    status: FAILED
+                    status: COMPLETED
 
 components:
   schemas:

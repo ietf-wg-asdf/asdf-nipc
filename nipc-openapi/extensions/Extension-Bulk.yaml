@@ -118,7 +118,7 @@ paths:
       - name: requestId
         in: query
         description: Request ID of the bulk operation
-        required: false
+        required: true
         schema:
           type: string
           format: uuid
@@ -140,17 +140,9 @@ paths:
               examples:
                 bulkResponse:
                   $ref: '#/components/examples/bulkResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                anyOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
-                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
-              examples:
                 errorBulkResponse:
                   $ref: '#/components/examples/errorBulkResponse'
+                
   /{id}/extension/bulk/status:
     get:
       tags:
@@ -170,7 +162,7 @@ paths:
       - name: requestId
         in: query
         description: Request ID of the bulk operation
-        required: false
+        required: true
         schema:
           type: string
           format: uuid
@@ -208,13 +200,7 @@ paths:
                   summary: Success
                   value:
                     id: 12345678-1234-5678-1234-56789abcdef4
-                    status: SUCCESS
-                failedResponse:
-                  summary: Failed
-                  value:
-                    id: 12345678-1234-5678-1234-56789abcdef4
-                    status: FAILED
-
+                    status: COMPLETED
 
 components:
   schemas:
