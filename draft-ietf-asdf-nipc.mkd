@@ -175,7 +175,7 @@ gateway and access point are deployed on an IP-Network. The AP supports a
 Non-IP interface, which it uses to communicate with the device.
 The Application is deployed in a different administrative domain than the
 network elements (ALG & AP).
-The role of the application layer gateway is to provide a gateway functioni
+The role of the application layer gateway is to provide a gateway function
 to applications wishing to communicate with non-IP devices in the network
 domain served by the gateway.
 Applications implementing Non-IP Control can leverage RESTful interfaces
@@ -268,7 +268,7 @@ app as well as a protocol.
 
 ## Protocol mapping {#protocolmap}
 
-An SDF model can fully describe a thing, including all its SDF affordances. 
+An SDF model fully describes a thing, including all its SDF affordances. 
 To leverage an SDF model to perform protocol specific operations on an
 instance of that thing, a mapping of the SDF affordance to a protocol-specific
 attribute is required. In NIPC, this is achieved through protocol mapping. 
@@ -293,9 +293,9 @@ can be created without the need to update the base schema.
               - Zigbee property
 
 ~~~~~
-{: #propmap title="Property Mapping"}
+{: #protmap title="Property Mapping"}
 
-As shown in {{propmap}}, protocol-specific properties must be embedded in a
+As shown in {{protmap}}, protocol-specific properties must be embedded in a
 protocolmap object, for example a "ble" or a "zigbee" object.
 
 
@@ -314,7 +314,7 @@ where-
  - Other protocol mapping objects can be added by creating a new protocol
    object
 
-Example property mapping:
+Example protocol mapping:
 
 ~~~~~
 "sdfObject": {
@@ -337,7 +337,7 @@ Example property mapping:
   }
 }
 ~~~~~
-{: #expropmap title="Example property mapping"}
+{: #exprotmap title="Example property mapping"}
 
 A protocol map is provided as part of the SDF model, in the SDF affordance 
 definition. Alternatively, it can be provided directly in a NIPC API.
@@ -389,8 +389,8 @@ protocol mappings. They require explicit connection management.
 ### Extensions
 
 Extensions are not part of the core NIPC API specification, but 
-extensions to it. Extensions are compound APIs. They leverage basic NIPC operations
-but combine multiple operations in to one API call for efficiency.
+extensions to it. Extensions are compound APIs. They leverage basic NIPC
+operations but combine multiple operations in to one API call for efficiency.
 An example of this is the the bulk operation, allowing to send multiple
 operations in one operation. Extensions can be generic, IANA registered 
 extentions, or vendor specific extensions.
@@ -487,7 +487,7 @@ the operations will be performed on.
 
 The SDF model can be registered by means of a registration API POST with 
 the SDF model in the body of hte request. A registered SDF model can be 
-fetched by a registration API GET with an SDFReference.
+fetched by a registration API GET with an sdfReference.
 
 ### NIPC Operations
 
@@ -735,8 +735,8 @@ The request body also contains one of the following:
  - mqttBroker: an object that contains the MQTT broker information
    where the broker will publish the streaming data. 
  - webhook: an object that contains a webhook URL along with any 
-    credentials that are required to authenticate the webhook. 
-    The webhook URL is the endpoint where the streaming data will be sent.
+   credentials that are required to authenticate the webhook. 
+   The webhook URL is the endpoint where the streaming data will be sent.
  - websocket: an object that contains a websocket URL along with any 
    credentials that are required to authenticate the websocket. 
    The websocket URL is the endpoint where the streaming data will be sent.
@@ -828,14 +828,21 @@ The NIPC APIs are divided into 3 categories:
 
  - NIPC Property APIs: These APIs allow applications to get and update device 
    properties.
- - NIPC Event APIs: These APIs allow applications to enable or disable event reporting on devices.
- - NIPC Action APIs: These APIs allow applications to perform actions on devices.
- - NIPC Action APIs with embedded protocol mapping: These APIs allow applications to perform actions on devices, but do not use registered properties, events or actions.
+ - NIPC Event APIs: These APIs allow applications to enable or disable event
+   reporting on devices.
+ - NIPC Action APIs: These APIs allow applications to perform actions on
+   devices.
+ - NIPC Action APIs with embedded protocol mapping: These APIs allow
+   applications to perform actions on devices, but do not use registered
+   properties, events or actions.
 
-An SDF model must be registered for the device in order to use these NIPC Property, Event and Action APIs.
-The SDF model can be a top-level sdfThing with multiple sdfObjects or a top-level sdfObject.
-These APIs depend on the SDF affordance (i.e. sdfProperty, sdfEvent and sdfAction) objects defined in the SDF model and a device ID that is defined in {{I-D.ietf-scim-device-model}}.
-The SDF affordance can be referenced using the global name of the SDF affordance as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
+An SDF model must be registered for the device in order to use these NIPC
+Property, Event and Action APIs. The SDF model can be a top-level sdfThing with
+multiple sdfObjects or a top-level sdfObject. These APIs depend on the SDF 
+affordance (i.e. sdfProperty, sdfEvent and sdfAction) objects defined in
+the SDF model and a device ID that is defined in {{I-D.ietf-scim-device-model}}.
+The SDF affordance can be referenced using the global name of the SDF affordance
+as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
 The SDF global name will be used against the registered SDF model to 
 determine the protocol-specific protocolMap that the NIPC API will operate on. 
@@ -846,7 +853,8 @@ The global name must be percent-encoded to be used in the URL as per {{!RFC3986}
 These APIs allow applications to get and update device properties. 
 These operations may require a connection to the device to be established. 
 This connection can be established as part of the same API call implicitly.
-If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+If a connection is already active for this device, the existing connection willi
+be leveraged without modifying it.
 
 ### Write a value
 
@@ -882,7 +890,8 @@ where-
  - "property" is the property that was written to
  - "value" is the bytes that were written in base64 encoding
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Read a value
 
@@ -914,7 +923,8 @@ where-
  - "property" is the property that was read from
  - "value" is the bytes that were read in base64 encoding
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Write multiple values
 
@@ -972,9 +982,11 @@ Example of a response:
 where-
 
  - "id" is the id of the device
- - "properties" is an array of properties that were updated, each containing a property and a value
+ - "properties" is an array of properties that were updated, each containing
+   a property and a value
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Read multiple values
 
@@ -1014,14 +1026,19 @@ Example of a response:
 where-
 
  - "id" is the id of the device
- - "properties" is an array of properties that were read, each containing a property and a value
+ - "properties" is an array of properties that were read, each containing
+   a property and a value
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ## NIPC Event APIs
 
 These APIs allow applications to enable or disable event reporting on devices.
-These operations may require a connection to the device to be established. This connection can be established as part of the same API call implicitly. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+These operations may require a connection to the device to be established. This
+connection can be established as part of the same API call implicitly. If a
+connection is already active for this device, the existing connection will be
+leveraged without modifying it.
 
 The event is a global name reference to an `sdfEvent`. 
 If the data application registered for this event is an MQTT broker or 
@@ -1046,7 +1063,8 @@ Parameters:
  - id: the id of the device or group of devices
  - event: the event to enable
 
-The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`. 
+The event is a URL encoded string that is the absolute URI that is a global
+name reference to an `sdfEvent`. 
 
 Response:
 
@@ -1065,7 +1083,8 @@ where-
  - id: the id of the device or group of devices
  - "event" is the event that was enabled
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Disable event reporting
 
@@ -1078,7 +1097,8 @@ Parameters:
   - id: the id of the device or group of devices
   - event: the event to disable
 
-The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
+The event is a URL encoded string that is the absolute URI that is a global
+name reference to an `sdfEvent`.
 
 Response:
 
@@ -1097,7 +1117,8 @@ where-
  - id: the id of the device or group of devices
  - "event" is the event that was disabled
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Get event status
 
@@ -1110,7 +1131,8 @@ Parameters:
   - id: the id of the device or group of devices
   - event: the event to get the status of
 
-The event is a URL encoded string that is the absolute URI that is a global name reference to an `sdfEvent`.
+The event is a URL encoded string that is the absolute URI that is a global
+name reference to an `sdfEvent`.
 
 Response:
 
@@ -1129,7 +1151,8 @@ where-
  - id: the id of the device or group of devices
  - "event" is the event that was queried
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Get status of multiple events
 
@@ -1166,11 +1189,16 @@ where-
  - "id" is the id of the device or group of devices
  - "events" is an array of events that were queried
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ## NIPC Action APIs
 
-These APIs allow applications to perform actions on devices. These operations may require a connection to the device to be established. This connection can be established as part of the same API call implicitly. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+These APIs allow applications to perform actions on devices. These operations
+may require a connection to the device to be established. This connection can
+be established as part of the same API call implicitly. If a connection is
+already active for this device, the existing connection will be leveraged
+without modifying it.
 
 ### Perform an action
 
@@ -1216,11 +1244,14 @@ where-
  - "id" is the id of the device
  - "action" is the action that was performed
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ## NIPC Action APIs with embedded protocol mapping
 
-These APIs allow applications to perform actions on devices, but do not use registered properties, events or actions. These APIs do not perform an implicit connection, so a connection must be established before calling these APIs.
+These APIs allow applications to perform actions on devices, but do not use
+registered properties, events or actions. These APIs do not perform an implicit
+connection, so a connection must be established before calling these APIs.
 
 ### Connect to a device
 
@@ -1235,12 +1266,12 @@ Parameters:
 Request Body:
 
   - Connection retry parameters
-  - A protocol map object. In the case of BLE,if no protocol map is included, service discovery is 
-   performed to discover all supported properties when connecting to
-   a device. Optionally, service discovery may be limited to properties 
-   defined in the "ble" protocol extension. The services to be 
-   discovered can be added in an array. Property discover can be buffered
-   across connections, so the API also supports caching parameters. 
+  - A protocol map object. In the case of BLE, if no protocol map is included,
+    service discovery is performed to discover all supported properties when
+    connecting to a device. Optionally, service discovery may be limited to
+    properties defined in the "ble" protocol extension. The services to be 
+    discovered can be added in an array. Property discover can be buffered
+    across connections, so the API also supports caching parameters. 
 
 Example body of a connection without specific discovery of properties:
 
@@ -1365,7 +1396,8 @@ definition of failed response.
 
 Method: `PUT /{id}/action/connection`
 
-Description: Update cached ServiceMap for a device. Full service discovery will be performed, unless specific services are described in the API body.
+Description: Update cached ServiceMap for a device. Full service discovery will
+be performed, unless specific services are described in the API body.
 
 Parameters:
 
@@ -1373,12 +1405,12 @@ Parameters:
 
 Request Body:
 
-  - A protocol map object. In the case of BLE,if no protocol map is included, service discovery is 
-   performed to discover all supported properties when connecting to
-   a device. Optionally, service discovery may be limited to properties 
-   defined in the "ble" protocol extension. The services to be 
-   discovered can be added in an array. Property discover can be buffered
-   across connections, so the API also supports caching parameters.
+  - A protocol map object. In the case of BLE, if no protocol map is included,
+    service discovery is performed to discover all supported properties when
+    connecting to a device. Optionally, service discovery may be limited to
+    properties defined in the "ble" protocol extension. The services to be 
+    discovered can be added in an array. Property discover can be buffered
+    across connections, so the API also supports caching parameters. 
 
 Example body of an update connection:
 
@@ -1402,10 +1434,10 @@ Example body of an update connection:
 
 where in the BLE protocol object: 
 
- - "services" is an array of services defined by their serviceIDs.
+ - "services" is an array of services defined by their serviceIDs
  - "cached" refers to whether the services need to be cached for 
    subsequent connects, in order not to perform service discovery on
-   each request.
+   each request
  - "cacheIdlepurge" defines how long the cache should be maintained 
    before purging
  - some devices support notifications on changes in services, 
@@ -1484,13 +1516,16 @@ where-
 
  - "id" is the id of the device
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Get connection status
 
 Method: `GET /{id}/action/connection`
 
-Description: Get connection status for a device. Success when device(s) is/are connected, includes service map for the device if available. Failure when a device is not connected
+Description: Get connection status for a device. Success when device(s)
+is/are connected, includes service map for the device if available.
+Failure when a device is not connected.
 
 Parameters:
 
@@ -1531,10 +1566,10 @@ Example of a response:
 where-
 
   - "id" is the id of the device
-   - "protocolMap" contains an Array of BLE services as shown in
-   {{BLEservices}}
+  - "protocolMap" contains an Array of BLE services as shown in {{BLEservices}}
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Write a value using protocol mapping
 
@@ -1590,7 +1625,8 @@ where-
  - "value" is the bytes that were written in base64 encoding
  - "protocolMap" is the protocol mapping for the property
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Read a value using protocol mapping
 
@@ -1644,13 +1680,14 @@ where-
  - "value" is the bytes that were read in base64 encoding
  - "protocolMap" is the protocol mapping for the property
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 ### Broadcast to a device
 
 Method: `POST /{id}/action/broadcast`
 
-Description: Broadcast a payload to a device. The broadcast is performed on the AP where the device was last seen
+Description: Broadcast a payload to a device. 
 
 Parameters:
 
@@ -1677,7 +1714,8 @@ An example body of a broadcast:
 where-
 
  - "id" is the id of the device
- - "protocolMap" is the protocol mapping for the property to identify the protocol to be used
+ - "protocolMap" is the protocol mapping for the property to identify the
+   protocol to be used
  - "cycle" is the broadcast cycle, either "single" or "repeat"
  - "broadcastTime" is the time in milliseconds for the broadcast to run
  - "broadcastInterval" is the time in milliseconds between each broadcast
@@ -1685,9 +1723,11 @@ where-
 
 Response:
 
-This API responds with a HTTP 200 OK status code and an empty body when successful.
+This API responds with a HTTP 200 OK status code and an empty body when
+successful.
 
-A failure will generate a standard failed response. Please refer to {{failure}} definition of failed response.
+A failure will generate a standard failed response. Please refer to {{failure}}
+definition of failed response.
 
 # NIPC Extensibility
 
@@ -1700,8 +1740,8 @@ NIPC is extensible in two ways:
  
 ## Protocol extensions
 
-As described in {{protocolmap}} NIPC supports mapping protocol specific
-mapping to NIPC properties. BLE and Zigbee are used as examples, but protocol
+As described in {{protocolmap}}, NIPC supports mapping protocol specific
+properties to NIPC properties. BLE and Zigbee are used as examples, but protocol
 mapping is extensible to other protocols, so now non-IP protocols can be 
 supported by NIPC without a schema change.
 
@@ -2219,8 +2259,6 @@ with {{!RFC8126}}.
 ## Protocol mapping
 
 ## API extensions
-
-## well_known URI
 
 --- back
 
