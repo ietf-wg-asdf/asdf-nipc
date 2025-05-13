@@ -9,12 +9,12 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.5.0
+  version: 0.5.1
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-04"
+  - url: "{gw_host}/nipc/draft-05"
     variables:
       gw_host:
         default: localhost
