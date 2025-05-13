@@ -50,21 +50,21 @@ paths:
               allOf:
                 - $ref: './Extension-File.yaml#/components/schemas/Extension-File'
                 - $ref: '#/components/schemas/Extension-Firmware'
+                - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-Callback'
         required: true
       responses:
-        '200':
-          description: Success
+        '202':
+          description: Accepted
           headers:
             X-Request-ID:
               schema:
                 type: integer
               description: Unique Request ID
-          content:
-            application/json:
+            Location:
               schema:
-                allOf: 
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
-                  - $ref: '#/components/schemas/Extension-UpgradeStatus'
+                type: string
+              description: Location of the resource
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/firmware/status?requestId=12345678-1234-5678-1234-56789abcdef4
         '400':
           description: Bad request
         '401':
@@ -76,8 +76,88 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+      callbacks:
+        bulkEvent:
+          '{$request.body#/callback.url}':
+            post:
+              description: Callback for bulk response
+              operationId: bulkCallback
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      anyOf:
+                        - $ref: '../NIPC.yaml#/components/schemas/Id'
+                        - allOf:
+                          - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+                          - $ref: '#/components/schemas/ExtensionErrorCodes'
+              responses:
+                '200':
+                  description: OK
+                '400':
+                  description: Bad request
+                '401':
+                  description: Unauthorized
+                '405':
+                  description: Invalid request
+                '500':
+                  description: Server-side failure
                   
+    get:
+      tags:
+        - NIPC API extensions
+      summary: Get the status of a firmware upgrade of a device
+      description: |-
+        Get the status of a firmware upgrade of a device. Returns success when ongoing or completed, with a reason. Returns failure when upgrade has failed. Id cannot be a group-id.
+      operationId: upgradeFirmwareStatus
+      parameters:
+      - name: id
+        in: path
+        description: device id that need to be filtered, group id is not allowed
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: requestId
+        in: query
+        description: Request ID of the firmware upgrade operation
+        required: true
+        schema:
+          type: string
+          example: 12345678-1234-5678-1234-56789abcdef4
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Request-ID:
+              schema:
+                type: string
+              description: Unique Request ID
+            Location:
+              schema:
+                type: string
+              description: Location of the resource
+          content:
+            application/json:
+              schema:
+                $ref: '../NIPC.yaml#/components/schemas/Id'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '405':
+          description: Invalid request
+        '500':
+          description: Server-side failure
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+                  - $ref: '#/components/schemas/ExtensionErrorCodes'
+  /{id}/extension/firmware/status:
     get:
       tags:
         - NIPC API extensions
@@ -94,34 +174,48 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
+      - name: requestId
+        in: query
+        description: Request ID of the firmware upgrade operation
+        required: true
+        schema:
+          type: string
+          example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
           description: Success
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
                   - $ref: '../NIPC.yaml#/components/schemas/Id'
-                  - $ref: '#/components/schemas/Extension-UpgradeStatus'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+                  - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-StatusResponse'
+        '303':
+          description: See Other
+          headers:
+            Location:
+              schema:
+                type: string
+              description: URL to get the firmware response
+              example: /12345678-1234-5678-1234-56789abcdef4/extension/firmware?requestId=12345678-1234-5678-1234-56789abcdef4
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
-  
+                  - $ref: '../NIPC.yaml#/components/schemas/Id'
+                  - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-StatusResponse'
+              examples:
+                successExample:
+                  summary: Completed
+                  value:
+                    id: 12345678-1234-5678-1234-56789abcdef4
+                    status: COMPLETED
+
 components:
   schemas:
 # Extensions
@@ -135,18 +229,16 @@ components:
             - nordic
             - silabs
 
-## Firmware upgrade status extension
-    Extension-UpgradeStatus:
+    ExtensionErrorCodes:
       type: object
       properties:
-        upgradeStatus:
-          type: string
+        errorCode:
+          type: integer
+          format: int32
           enum:
-            - started
-            - completed
-            - in progress
-            - rolled-back
-            - failed
+            - 1600 # Firmware rollback
+            - 1601 # Firmware update failed
+
 
 
 

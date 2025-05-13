@@ -553,7 +553,7 @@ Example of a failure response:
 
 ~~~~~
 {
-  "errorCode": 2000,
+  "errorCode": 1000,
   "reason": "Generic error message"
 }
 ~~~~~
@@ -734,19 +734,37 @@ The request body also contains one of the following:
    is an MQTT client that will receive streaming data over MQTT
  - mqttBroker: an object that contains the MQTT broker information
    where the broker will publish the streaming data. 
+    - URI: the URI of the MQTT broker
+    - username: the username to authenticate with the MQTT broker
+    - password: the password to authenticate with the MQTT broker
+    - brokerCACert: the CA certificate of the MQTT broker (optional)
+    - customTopic: the custom topic to publish the streaming data to
+      (optional)
  - webhook: an object that contains a webhook URL along with any 
-   credentials that are required to authenticate the webhook. 
-   The webhook URL is the endpoint where the streaming data will be sent.
+    credentials that are required to authenticate the webhook. 
+    The webhook URL is the endpoint where the streaming data will be sent.
+    - URI: the webhook URL
+    - headers: An object that contains the headers to be sent with the webhook
+      request. The headers can contain any authentication information
+      required by the webhook server.
+    - serverCACert: the CA certificate of the webhook server (optional)
  - websocket: an object that contains a websocket URL along with any 
    credentials that are required to authenticate the websocket. 
    The websocket URL is the endpoint where the streaming data will be sent.
+    - URI: the websocket URL
+    - headers: An object that contains the headers to be sent with the websocket
+      request. The headers can contain any authentication information
+      required by the websocket server.
+    - serverCACert: the CA certificate of the websocket server (optional)
 
 Example of a request body:
 
 ~~~~~
 {
   "events": [
-    "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+    {
+      "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+    }
   ],
   "mqttClient": {}
 }
@@ -758,12 +776,15 @@ Example of a request body for a data application that is an MQTT broker:
 ~~~~~
 {
   "events": [
-    "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+    {
+      "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+    }
   ],
   "mqttBroker": {
     "URI": "mqtt.example.com:1883",
     "username": "user",
-    "password": "password"
+    "password": "password",
+    "customTopic": "custom/topic",
   }
 }
 ~~~~~
@@ -1041,16 +1062,34 @@ connection is already active for this device, the existing connection will be
 leveraged without modifying it.
 
 The event is a global name reference to an `sdfEvent`. 
-If the data application registered for this event is an MQTT broker or 
-client, the event will be used as the MQTT topic as well. 
-When used as a topic, the event will be percent-encoded as per 
-{{!RFC3986}} since '/' and '#' have special meaning in MQTT.
 
 The ID in the path is the id of the device or group of devices.
 An event can be enabled on a group of devices if it is supported by the
 underlying protocol. For example, if the underlying protocol is BLE, 
 the event can be enabled on a group of devices if the event is an 
 advertisement event or connection status event.
+
+If the data application registered for this event is an MQTT broker or 
+client, the event is used to construct the MQTT topic for the event.
+The topic is constructed using the data application ID, the default 
+namespace for the event, and the event itself. For example, if the data 
+application ID is `"12345678-1234-5678-1234-56789abcdef4"` 
+and the event is 
+`"https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"`,
+the topic will be:
+
+~~~~~
+data-app/<data-app-id>/<namespace>/<json_pointer_to_sdf_event>
+
+data-app/12345678-1234-5678-1234-56789abcdef4/thermometer/sdfObject/thermometer/sdfEvent/isPresent
+~~~~~
+
+A data application can subscribe to this topic using the topic or it 
+can use MQTT wildcards to subscribe to `data-app/+/temperature/#` to 
+receive all events for the `temperature` namespace.
+
+If a custom topic is provided for an MQTT broker, the custom topic is
+used as the MQTT topic instead.
 
 ### Enable event reporting
 
@@ -1770,7 +1809,19 @@ compound statements in order to streamline application operation against
 devices, make operations more expediant and convenient in one API call.
 In principle they do not add any basic functionality. In
 the OpenAPI model {{NIPCextensions}} below, we have defined a few example 
-extensions.  
+extensions.
+
+The extensions can contain long running operations, such as firmware updates,
+or other bulk operations that can be performed on a device. For long 
+running operations, the extension API will return a 202 Accepted status 
+code and a location header with the URL to check the status of the operation.
+The status of the operation can be checked by calling the status extension API
+with the same device ID. The status extension API will return a 200 OK status code
+when the operation is in progress. When the operation is complete, 
+the status extension API will return a 303 See Other status code with a 
+location header with the URL to check the status of the operation.
+The GET operation on the extension API will return a 200 OK status code
+with the actual response once the operation is complete.
 
 # NIPC Error Handling
 {: #errorhandling}
@@ -1790,6 +1841,7 @@ categories:
     including connection management and service discovery.
   - 1400-1499 (Zigbee-Specific): Errors specific to Zigbee operations.
   - 1500-1599 (Broadcast APIs): Errors related to broadcasting data.
+  - 1600-1699 (Extension APIs): Errors related to extension APIs.
 
 The specific error codes are defined in the table below:
 
@@ -1800,6 +1852,7 @@ The specific error codes are defined in the table below:
 | 1002       | Invalid device ID or gateway doesn't recognize the ID | Generic          |
 | 1003       | Invalid SDF URL or SDF affordance not found   | Generic                   |
 | 1004       | Operation was not executed since the previous operation failed | Generic |
+| 1005       | SDF model already registered                  | Generic                   |
 | 1100       | Property not readable                         | Property APIs             |
 | 1101       | Property not writable                         | Property APIs             |
 | 1200       | Event already enabled                         | Event APIs                |
@@ -1815,6 +1868,8 @@ The specific error codes are defined in the table below:
 | 1400       | Zigbee connection timeout                     | Zigbee-Specific           |
 | 1401       | Invalid Zigbee endpoint or cluster ID         | Zigbee-Specific           |
 | 1500       | Invalid broadcast data                        | Broadcast APIs            |
+| 1600       | Firmware rollback                             | Extension APIs            |
+| 1601       | Firmware update failed                        | Extension APIs            |
 {: #errorcodes title="Error Codes"}
 
 The appropriate HTTP status code is returned in the response. 

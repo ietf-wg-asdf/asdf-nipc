@@ -62,7 +62,7 @@ paths:
           headers:
             X-Request-ID:
               schema:
-                type: integer
+                type: string
               description: Unique Request ID
           content:
             application/json:
