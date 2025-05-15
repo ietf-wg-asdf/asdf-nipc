@@ -1646,6 +1646,7 @@ components:
             - 1003 # Invalid SDF URL or SDF affordance not found
             - 1004 # Operation was not executed since the previous operation failed
             - 1005 # SDF model already registered
+            - 1006 # SDF model in use
 
     PropertyErrorCodes:
       type: object
