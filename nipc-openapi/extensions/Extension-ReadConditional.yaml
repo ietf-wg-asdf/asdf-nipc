@@ -111,8 +111,9 @@ paths:
                         summary: Failed
                         value:
                           id: 12345678-1234-5678-1234-56789abcdef4
-                          errorCode: 1000
-                          reason: "Invalid request"
+                          status: 400
+                          nipcStatus: 1000
+                          detail: "Invalid request"
                           property: https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature
                           value: dGVzdA==
                           

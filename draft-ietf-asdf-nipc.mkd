@@ -543,7 +543,8 @@ identifier for the request. Each successful response will have a HTTP
 status code of 200 OK. 
 
 A failure response will consist of a HTTP status code of 4xx or 5xx, and 
-will contain an error code and reason field. The error codes and the 
+will contain an error code in the `nipcStatus` field and a 
+human-readable `detail` field. The error codes and the 
 appropriate error codes are described in {{errorhandling}}.
 
 Failure response: 
@@ -561,9 +562,10 @@ Example of a failure response:
 
 where-
 
- - "errorCode" is error code that indicates the type of error, 
+  - "status" is the HTTP status code
+  - "nipcStatus" is error code that indicates the type of error, 
    as described in {{errorcodes}}
- - "reason" is a human-readable error message
+  - "detail" is a human-readable error message
 
 # NIPC Registrations
 

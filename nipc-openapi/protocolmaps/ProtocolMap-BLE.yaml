@@ -180,7 +180,7 @@ components:
     ProtocolMap-BLE-ErrorCodes:
       type: object
       properties:
-        errorCode:
+        nipcStatus:
           type: integer
           format: int32
           enum:
