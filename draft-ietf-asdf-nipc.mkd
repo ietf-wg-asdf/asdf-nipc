@@ -1853,6 +1853,7 @@ The specific error codes are defined in the table below:
 | 1003       | Invalid SDF URL or SDF affordance not found   | Generic                   |
 | 1004       | Operation was not executed since the previous operation failed | Generic |
 | 1005       | SDF model already registered                  | Generic                   |
+| 1006       | SDF model in use                              | Generic                   |
 | 1100       | Property not readable                         | Property APIs             |
 | 1101       | Property not writable                         | Property APIs             |
 | 1200       | Event already enabled                         | Event APIs                |
