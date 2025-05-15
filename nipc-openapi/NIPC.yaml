@@ -1633,12 +1633,19 @@ components:
     FailureResponse:
       type: object
       properties:
-        reason:
-          type: string
-          example: Bad request
-        errorCode:
+        status:
           type: integer
           format: int32
+          example: 400
+          description: HTTP status code
+        detail:
+          type: string
+          example: Bad request
+          description: Human-readable error message
+        nipcStatus:
+          type: integer
+          format: int32
+          description: NIPC error code
           enum: 
             - 1000 # Generic catch-all error code for any API
             - 1001 # Application not authorized to access the device
@@ -1650,7 +1657,7 @@ components:
     PropertyErrorCodes:
       type: object
       properties:
-        errorCode:
+        nipcStatus:
           type: integer
           format: int32
           enum:
@@ -1660,7 +1667,7 @@ components:
     EventErrorCodes:
       type: object
       properties:
-        errorCode:
+        nipcStatus:
           type: integer
           format: int32
           enum:
@@ -1671,7 +1678,7 @@ components:
     ConnectionErrorCodes:
       type: object
       properties:
-        errorCode:
+        nipcStatus:
           type: integer
           format: int32
           enum:
@@ -1688,7 +1695,7 @@ components:
     BroadcastErrorCodes:
       type: object
       properties:
-        errorCode:
+        nipcStatus:
           type: integer
           format: int32
           enum:

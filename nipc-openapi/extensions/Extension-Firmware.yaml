@@ -232,7 +232,7 @@ components:
     ExtensionErrorCodes:
       type: object
       properties:
-        errorCode:
+        nipcStatus:
           type: integer
           format: int32
           enum:

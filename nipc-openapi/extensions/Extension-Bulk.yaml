@@ -338,21 +338,24 @@ components:
             path: >-
               /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
-              reason: Property not readable
-              errorCode: 1100
+              status: 400
+              detail: Property not readable
+              nipcStatus: 1100
           - method: PUT
             path: >-
               /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
-              reason: >-
+              status: 400
+              detail: >-
                 Operation was not executed since the previous
                 operation failed
-              errorCode: 1004
+              nipcStatus: 1004
           - method: POST
             path: >-
               /12345678-1234-5678-1234-56789abcdef4/extension/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
             response:
-              reason: >-
+              status: 400
+              detail: >-
                 Operation was not executed since the previous
                 operation failed
-              errorCode: 1004
+              nipcStatus: 1004
