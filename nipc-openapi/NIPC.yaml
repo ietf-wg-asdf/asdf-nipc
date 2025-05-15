@@ -960,7 +960,7 @@ paths:
                   - $ref: '#/components/schemas/FailureResponse'
 
 
-  /registration/model/{sdfRef}:
+  /registration/model/{sdfName}:
     put:
       tags:
         - NIPC registration APIs
@@ -969,9 +969,9 @@ paths:
         Update an SDF model, including Properties, Events and actions
       operationId: updateSdf
       parameters:
-        - name: sdfRef
+        - name: sdfName
           in: path
-          description: sdfRef can be a reference to an sdfThing or sdfObject
+          description: sdfName can be a reference to an sdfThing or sdfObject
           required: true
           schema:
             type: string
@@ -1017,7 +1017,7 @@ paths:
         Delete an sdfObject, including Properties, Events and actions
       operationId: deleteSdfObject
       parameters:
-        - name: sdfRef
+        - name: sdfName
           in: path
           description: sdfObject name
           required: true
@@ -1059,7 +1059,7 @@ paths:
         Get an sdfObject, including Properties, Events and actions
       operationId: getSdfObject
       parameters:
-        - name: sdfRef
+        - name: sdfName
           in: path
           description: sdfObject name
           required: true
@@ -1483,7 +1483,7 @@ components:
       type: object
       description: SDF URL referring to the sdfobject
       properties: 
-        sdfRef:
+        sdfName:
           type: string
           example: "https://example.com/heartrate#/sdfObject/healthsensor"
     
