@@ -512,17 +512,16 @@ identifier, known both to the application as well as the NIPC Server.
 ### SDFReferences
 
 NIPC operations happen against SDF affordances and are referenced with an
-sdfReference, which can either be the full path including the namespace, or
-and abbreviated reference.
+sdfReference, which is the full path including the namespace.
 
-The opererations are either Properties, Events or Actions and their references
+The operations are either Properties, Events or Actions and their references
 are of type string
 
 For example:
 
 | Attribute | Req |   Type  |          Example                               |
 +-----------+-----+---------+------------------------------------------------|
-| Property  |  T  |  string | #/sdfObject/thermostat/sdfProperty/temperature |
+| Property  |  T  |  string | https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature |
 {: #nipcopsdef title="Definition of a NIPC operation on a property"}
 
 ### Responses 
@@ -553,8 +552,9 @@ Example of a failure response:
 
 ~~~~~
 {
-  "errorCode": 1000,
-  "reason": "Generic error message"
+  "status": 400,
+  "nipcStatus": 1000,
+  "detail": "Generic error message"
 }
 ~~~~~
 {: #failure title="Example failure response"}
@@ -593,14 +593,14 @@ Example of a response:
 
 ~~~~~
 {
-  "sdfRef": "https://example.com/heartrate#/sdfObject/healthsensor"
+  "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
 {:json #exregresp title="Example register sdf model response"}
 
 where-
 
- - "sdfRef" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the reference to the top-level sdfThing or sdfObject 
     in the SDF model
  - "id" is the id of the sdf model
 
@@ -617,7 +617,7 @@ Example of a response:
 ~~~~~
 [
   {
-    "sdfRef": "https://example.com/heartrate#/sdfObject/healthsensor"
+    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
   }
 ]
 ~~~~~
@@ -625,19 +625,19 @@ Example of a response:
 
 where-
 
- - "sdfRef" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the reference to the top-level sdfThing or sdfObject 
     in the SDF model
  - "id" is the id of the sdf model
 
 ### Get an sdf model
 
-Method: `GET /registration/model/{sdfRef}`
+Method: `GET /registration/model/{sdfName}`
 
 Description: Gets an sdf model registered with the gateway
 
 Parameters: 
 
- - sdfRef: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the reference to the top-level sdfThing or sdfObject 
     in the SDF model. This is a percent-encoded URL string.
 
 Response:
@@ -647,13 +647,13 @@ The sdf model is returned in JSON format, similar to the example in
 
 ### Delete an sdf model
 
-Method: `DELETE /registration/model/{sdfRef}`
+Method: `DELETE /registration/model/{sdfName}`
 
 Description: Deletes an sdf model registered with the gateway
 
 Parameters: 
 
- - sdfRef: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the reference to the top-level sdfThing or sdfObject 
     in the SDF model. This is a percent-encoded URL string.
 
 Response:
@@ -662,26 +662,26 @@ Example of a response:
 
 ~~~~~
 {
-  "sdfRef": "https://example.com/heartrate#/sdfObject/healthsensor"
+  "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
 {:json #exdelresp title="Example delete sdf model response"}
 
 where-
 
- - "sdfRef" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the reference to the top-level sdfThing or sdfObject 
     in the SDF model
  - "id" is the id of the sdf model
 
 ### Update an sdf model
 
-Method: `PUT /registration/model/{sdfRef}`
+Method: `PUT /registration/model/{sdfName}`
 
 Description: Updates an sdf model registered with the gateway
 
 Parameters: 
 
- - sdfRef: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the reference to the top-level sdfThing or sdfObject 
     in the SDF model. This is a percent-encoded URL string.
 
 Request Body:
@@ -694,14 +694,14 @@ Example of a response:
 
 ~~~~~
 {
-  "sdfRef": "https://example.com/heartrate#/sdfObject/healthsensor"
+  "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
 {:json #exupresp title="Example update sdf model response"}
 
 where-
 
- - "sdfRef" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the reference to the top-level sdfThing or sdfObject 
     in the SDF model
  - "id" is the id of the sdf model
 
@@ -2016,7 +2016,7 @@ The sequence of operations for this are:
     x-request-id: 1f1c5a37-e21c-4edc-aeb0-65b9d747fe07
 
     {
-      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer"
+      "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
     }
     ~~~~~
 
@@ -2036,7 +2036,7 @@ The sequence of operations for this are:
     {
       "id": "12345678-1234-5678-1234-56789abcdef4",
       "value": "dGVzdA==",
-      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name"
+      "sdfName": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name"
     }
     ~~~~~
  
@@ -2059,7 +2059,7 @@ The sequence of operations for this are:
     {
       "id": "12345678-1234-5678-1234-56789abcdef4",
       "value": "dGVzdA==",
-      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name"
+      "sdfName": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name"
     }
     ~~~~~
 
@@ -2087,7 +2087,7 @@ The sequence of operations for this are:
     x-request-id: 1f1c5a37-e21c-4edc-aeb0-65b9d747fe07
 
     {
-      "sdfRef": "https://example.com/thermometer#/sdfThing/thermometer"
+      "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
     }
     ~~~~~
 
