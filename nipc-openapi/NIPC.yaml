@@ -1,15 +1,19 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 openapi: 3.0.3
 info:
   title: Non IP Device Control (NIPC) API
   description: |-
-    This API specifies RESTful application layer interface for gateways providing operations against non-IP devices. The described interface is extensible. The examples includes leverage Bluetooth Low Energy and Zigbee as they are commonly deployed.
+    This API specifies RESTful application layer interface for gateways
+    providing operations against non-IP devices. The described interface
+    is extensible. The examples includes leverage Bluetooth Low Energy
+    and Zigbee as they are commonly deployed.
   termsOfService: http://swagger.io/terms/
   contact:
     email: bbrinckm@cisco.com
   license:
     name: TBD
     url: TBD
-  version: 0.5.2
+  version: 0.5.3
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
@@ -22,23 +26,29 @@ servers:
 tags:
   - name: NIPC property APIs
     description: |-
-      APIs that allow apps to get and update device properties. If the underlying protocol requires connection management, it will be performed as part of the API call.
+      APIs that allow apps to get and update device properties.
+      If the underlying protocol requires connection management,
+      it will be performed as part of the API call.
   - name: NIPC event APIs
     description: |-
-      APIs that allow apps to enable or disable event reporting on devices. If the underlying protocol requires connection management, it will be performed as part of the API call.
+      APIs that allow apps to enable or disable event reporting on 
+      devices. If the underlying protocol requires connection
+      management, it will be performed as part of the API call.
   - name: NIPC action APIs
     description: |-
       APIs that perform actions on devices.
   - name: NIPC action APIs with embedded protocol mapping
     description: |-
-      APIs that perform actions on devices, but do not use registered properties, events or actions. These APIs have embedded protocol mappings
+      APIs that perform actions on devices, but do not use registered
+      properties, events or actions. These APIs have embedded protocol
+      mappings
   - name: NIPC registration APIs
     description: |-
       APIs that register sdf models or data applications
 
 paths:
 ### NIPC Property APIs
-  /{id}/property/{property}:
+  /{id}/properties/{propertyName}:
     put:
       tags:
         - NIPC property APIs
@@ -55,43 +65,27 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: propertyName
         in: path
-        description: property that needs to be filtered
+        description: the property to write to
         required: true
         schema:
           type: string
           example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature"
       requestBody:
         content:
-          application/json:
+          application/octet-stream:
             schema:
-              $ref: '#/components/schemas/Value'
+              type: string
+              format: binary
         required: true
       responses:
-        '200':
-          description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
+        '204':
+          description: Success, no content
+        default:
+          description: Error response
           content:
-            application/json:
-              schema:
-                allOf: 
-                  - $ref: '#/components/schemas/Id'
-                  - $ref: '#/components/schemas/PropertyValue'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
-          content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -113,9 +107,9 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: propertyName
         in: path
-        description: property that needs to be filtered
+        description: the property to read from
         required: true
         schema:
           type: string
@@ -123,33 +117,21 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
+          content:
+            application/octet-stream:
               schema:
                 type: string
-              description: Unique Request ID
+                format: binary
+        default:
+          description: Error response
           content:
-            application/json:
-              schema:
-                allOf: 
-                  - $ref: '#/components/schemas/Id'
-                  - $ref: '#/components/schemas/PropertyValue'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
-          content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
                   - $ref: '#/components/schemas/PropertyErrorCodes'
 
-  /{id}/property:
+  /{id}/properties:
     put:
       tags:
         - NIPC property APIs
@@ -175,29 +157,19 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
-                  - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/PropertyValueResponseArray'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request       
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
-                $ref: '#/components/schemas/FailureResponse' 
+                allOf:
+                  - $ref: '#/components/schemas/FailureResponse' 
+                  - $ref: '#/components/schemas/PropertyErrorCodes'
 
     get:
       tags:
@@ -215,11 +187,9 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: propertyName
         in: query
-        description: properties that needs to be filtered, multiple values are comma-separated
-        required: true
-        explode: false
+        description: Properties to be read
         schema:
           type: array
           items:
@@ -228,34 +198,23 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf: 
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/PropertyValueResponseArray'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
                   - $ref: '#/components/schemas/PropertyErrorCodes'
  
  ### NIPC Event APIs
-  /{id}/event/{event}:
+  /{id}/events/{eventName}:
     post:
       tags:
         - NIPC event APIs
@@ -272,7 +231,7 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: event
+      - name: eventName
         in: path
         description: event that needs to be enabled
         required: true
@@ -280,35 +239,25 @@ paths:
           type: string
           example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
       responses:
-        '200':
+        '201':
           description: Success
           headers:
-            X-Request-ID:
+            Location:
+              description: Location of the created event
               schema:
                 type: string
-              description: Unique Request ID
+                format: uri
+                example: "/{id}/event/{instanceId}"
+        default:
+          description: Error response
           content:
-            application/json:
-              schema:
-                allOf: 
-                  - $ref: '#/components/schemas/Id'
-                  - $ref: '#/components/schemas/Event'                  
-                
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request 
-        '500':
-          description: Server-side failure
-          content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
                   - $ref: '#/components/schemas/EventErrorCodes'
   
+  /{id}/events/{instanceId}:
     delete:
       tags:
         - NIPC event APIs
@@ -325,37 +274,21 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: event
+      - name: instanceId
         in: path
-        description: event that needs to be disabled
+        description: instance id of the event that needs to be disabled
         required: true
         schema:
           type: string
-          example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
       responses:
-        '200':
-          description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
+        '204':
+          description: Success, no content
+        default:
+          description: Error response
           content:
-            application/json:
-              schema:
-                allOf: 
-                  - $ref: '#/components/schemas/Id'  
-                  - $ref: '#/components/schemas/Event' 
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
-          content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -377,43 +310,32 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: event
+      - name: instanceId
         in: path
-        description: event that needs to be filtered
+        description: instance id of the event that needs to be checked
         required: true
         schema:
           type: string
-          example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
-                allOf: 
-                  - $ref: '#/components/schemas/Id'
+                allOf:
                   - $ref: '#/components/schemas/Event' 
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
                   - $ref: '#/components/schemas/EventErrorCodes'
 
-  /{id}/event:
+  /{id}/events:
     get:
       tags:
         - NIPC event APIs
@@ -430,46 +352,35 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: event
+      - name: instanceId
         in: query
-        description: events that needs to be filtered, multiple values are comma-separated
-        explode: false
-        required: true
+        description: Instance IDs of the events that need to be filtered
+        required: false
         schema:
           type: array
           items:
             type: string
-            example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+            format: uuid
+            example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/EventStatusResponseArray'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
                   - $ref: '#/components/schemas/EventErrorCodes'
 
 ### NIPC action APIs
-  /{id}/action/{action}:
-    put:
+  /{id}/actions/{actionName}:
+    post:
       tags:
         - NIPC action APIs
       summary: Perform an action on a device
@@ -485,7 +396,7 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: action
+      - name: actionName
         in: path
         description: action that needs to be performed
         required: true
@@ -494,38 +405,69 @@ paths:
           example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfAction/start"
       requestBody:
         content:
-          application/json:
+          application/octet-stream:
             schema:
-              $ref: '#/components/schemas/Value'
-        required: true
+              type: string
+              format: binary
+        required: false
       responses:
-        '200':
-          description: Success
+        '202':
+          description: Accepted, action is being performed
           headers:
-            X-Request-ID:
+            Location:
+              description: Location of the action
               schema:
                 type: string
-              description: Unique Request ID
+                format: uri
+                example: "/{id}/actions/{instanceId}"
+        default:
+          description: Error response
           content:
-            application/json:
-              schema:
-                allOf: 
-                  - $ref: '#/components/schemas/Id'
-                  - $ref: '#/components/schemas/ActionValue'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
-          content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
-                  - $ref: '#/components/schemas/PropertyErrorCodes'   
+                  - $ref: '#/components/schemas/PropertyErrorCodes'
+  /{id}/actions/{instanceId}:
+    get:
+      tags:
+        - NIPC action APIs
+      summary: Get status of an action on a device
+      description: |-
+        Get status of an action on a specific device or a group of devices. Success is action is active, failure if action not active.
+      operationId: GetAction
+      parameters:
+      - name: id
+        in: path
+        description: device id that need to be filtered, group id not allowed
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: instanceId
+        in: path
+        description: instance id of the action that needs to be checked
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      responses:
+        '200':
+          description: Success, action is active
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/FailureResponse' 
+                  - $ref: '#/components/schemas/PropertyErrorCodes'
                   
   /{id}/action/broadcast:
     post:
@@ -553,21 +495,10 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -601,27 +532,16 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -653,27 +573,16 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -699,26 +608,15 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -743,27 +641,16 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -799,11 +686,6 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
@@ -811,16 +693,10 @@ paths:
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/Value'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -853,11 +729,6 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
@@ -865,16 +736,10 @@ paths:
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/Value'
                   - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse' 
@@ -899,26 +764,15 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/SdfReference'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
@@ -933,11 +787,6 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
@@ -945,16 +794,10 @@ paths:
                 items:
                   allOf:
                     - $ref: '#/components/schemas/SdfReference'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
@@ -985,26 +828,15 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/SdfReference'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
@@ -1027,26 +859,15 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/SdfReference'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
@@ -1069,31 +890,20 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/SdfModel'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
 
-  /registration/data-app/{data-app}:
+  /registration/data-app/{dataAppId}:
     post:
       tags:
         - NIPC registration APIs
@@ -1102,7 +912,7 @@ paths:
         Register a dataApp that is able to receive device data. 
       operationId: registerDataApp
       parameters:
-        - name: data-app
+        - name: dataAppId
           in: path
           description: id of the data app that will be registered
           required: true
@@ -1119,26 +929,15 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DataApp'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
@@ -1151,7 +950,7 @@ paths:
         Update registration of a dataApp that is able to receive device data. 
       operationId: UpdateDataApp
       parameters:
-        - name: data-app
+        - name: dataAppId
           in: path
           description: id of the data app that will be updated
           required: true
@@ -1168,26 +967,15 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DataApp'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
@@ -1200,7 +988,7 @@ paths:
         Delete registration of a dataApp that is able to receive device data. 
       operationId: DeleteDataApp
       parameters:
-        - name: data-app
+        - name: dataAppId
           in: path
           description: id of the data app that will be updated
           required: true
@@ -1211,26 +999,15 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DataApp'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
@@ -1243,7 +1020,7 @@ paths:
         Get registrationdetails of a dataApp that is able to receive device data. 
       operationId: GetDataApp
       parameters:
-        - name: data-app
+        - name: dataAppId
           in: path
           description: id of the data app that will be updated
           required: true
@@ -1254,26 +1031,15 @@ paths:
       responses:
         '200':
           description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DataApp'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        default:
+          description: Error response
           content:
-            application/json:
+            application/problem+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
@@ -1336,12 +1102,9 @@ components:
 
 ## An array of Property values
     PropertyValueArray:
-      type: object
-      properties:
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyValue'
+      type: array
+      items:
+        $ref: '#/components/schemas/PropertyValue'
 
 ## Event
     Event:
@@ -1629,15 +1392,32 @@ components:
 
 # responses
 
-## Error 500 application Failure response
-    FailureResponse:
+    SuccessResponse:
       type: object
       properties:
         status:
           type: integer
           format: int32
+          example: 200
+          description: HTTP status code
+
+## Error 500 application Failure response
+    FailureResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          example: https://www.iana.org/assignments/http-problem-types#server-error
+          description: URI to the error type
+        status:
+          type: integer
+          format: int32
           example: 400
           description: HTTP status code
+        title:
+          type: string
+          example: NIPC server error
+          description: Human-readable error title
         detail:
           type: string
           example: Bad request
@@ -1706,30 +1486,22 @@ components:
     
     PropertyValueResponseArrayItem:
       oneOf:
-        - $ref: '#/components/schemas/PropertyValue'
+        - $ref: '#/components/schemas/SuccessResponse'
         - $ref: '#/components/schemas/FailureResponse'
     
     PropertyValueResponseArray:
-      type: object
-      properties:
-        properties:
-          type: array
-          items:
-              $ref: '#/components/schemas/PropertyValueResponseArrayItem'
+      type: array
+      items:
+          $ref: '#/components/schemas/PropertyValueResponseArrayItem'
 
 ## Event operations responses
     EventStatusResponseArrayItem:
-      allOf:
-        - $ref: '#/components/schemas/Id'
-        - $ref: '#/components/schemas/Event' 
       oneOf:
+        - $ref: '#/components/schemas/Event'
         - $ref: '#/components/schemas/FailureResponse'
 
     EventStatusResponseArray:
-      type: object
-      properties:
-        events:
-          type: array
-          items:
-              $ref: '#/components/schemas/EventStatusResponseArrayItem'
+      type: array
+      items:
+          $ref: '#/components/schemas/EventStatusResponseArrayItem'
 
