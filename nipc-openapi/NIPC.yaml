@@ -1063,7 +1063,7 @@ components:
           format: uuid
           description: A SCIM-generated UUID, can be a device or group
           example: 12345678-1234-5678-1234-56789abcdef4
-          
+
 ## A property
     Property:
       required:
