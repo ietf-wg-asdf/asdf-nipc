@@ -37,7 +37,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -45,7 +45,7 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
         in: path
-        description: property that needs to be filtered
+        description: The SDF property name that needs to be read conditionally.
         required: true
         schema:
           type: string
@@ -117,7 +117,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -125,7 +125,7 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
         in: path
-        description: property that needs to be filtered
+        description: The SDF property name that needs to be read conditionally.
         required: true
         schema:
           type: string
@@ -169,7 +169,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -177,7 +177,7 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
         in: path
-        description: property that needs to be filtered
+        description: The SDF property name that needs to be read conditionally.
         required: true
         schema:
           type: string

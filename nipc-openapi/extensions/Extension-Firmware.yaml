@@ -38,7 +38,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -57,10 +57,6 @@ paths:
         '202':
           description: Accepted
           headers:
-            X-Request-ID:
-              schema:
-                type: integer
-              description: Unique Request ID
             Location:
               schema:
                 type: string
@@ -109,7 +105,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -159,7 +155,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string

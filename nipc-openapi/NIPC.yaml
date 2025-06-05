@@ -37,11 +37,9 @@ tags:
   - name: NIPC action APIs
     description: |-
       APIs that perform actions on devices.
-  - name: NIPC action APIs with embedded protocol mapping
+  - name: NIPC management APIs
     description: |-
-      APIs that perform actions on devices, but do not use registered
-      properties, events or actions. These APIs have embedded protocol
-      mappings
+      APIs that manage device connections.
   - name: NIPC registration APIs
     description: |-
       APIs that register sdf models or data applications
@@ -59,7 +57,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -102,7 +100,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -144,7 +142,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -181,7 +179,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -332,14 +330,14 @@ paths:
     get:
       tags:
         - NIPC event APIs
-      summary: Get status of events on a device or group of devices
+      summary: Get status of events on a device
       description: |-
-        Get status of an event or multiple events on a specific device or group of devices.
+        Get status of an event or multiple events on a specific device
       operationId: GetEvents
       parameters:
       - name: id
         in: path
-        description: device or group id that needs to be filtered
+        description: The ID of the device.
         required: true
         schema:
           type: string
@@ -347,7 +345,7 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: instanceId
         in: query
-        description: Instance IDs of the events that need to be filtered
+        description: Instance ID of the events that need to be filtered
         required: false
         schema:
           type: array
@@ -533,7 +531,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -580,7 +578,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -611,7 +609,7 @@ paths:
   /devices/{id}/manage/connection:
     post:
       tags:
-        - NIPC action APIs with embedded protocol mapping
+        - NIPC management APIs
       summary: Connect a device
       description: |-
         Connect a device. 3 retries by default, optionally retry policy can be defined in the API body. If the protocol requires service discovery, full service discovery will be performed, unless specific services are described in the API body.
@@ -619,7 +617,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: device id that need to be filtered, group id not allowed
+          description: The ID of the device. Group ID is not allowed.
           required: true
           schema:
             type: string
@@ -659,7 +657,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: device id that need to be filtered, group id not allowed
+          description: The ID of the device. Group ID is not allowed.
           required: true
           schema:
             type: string
@@ -697,7 +695,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: device id that need to be filtered, group id not allowed
+          description: The ID of the device. Group ID is not allowed.
           required: true
           schema:
             type: string
@@ -728,7 +726,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: device id that need to be filtered, group id not allowed
+          description: The ID of the device. Group ID is not allowed.
           required: true
           schema:
             type: string
@@ -787,9 +785,9 @@ paths:
     get:
       tags:
         - NIPC registration APIs
-      summary: Get all registered sdfRefs
+      summary: Get all registered SDF model names
       description: |-
-        Get all registered sdfRefs for a device or group
+        Get all registered SDF model names.
       operationId: getSdfRefs
       responses:
         '200':

@@ -38,7 +38,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: device id that need to be filtered, group id not allowed
+          description: The ID of the device. Group ID is not allowed.
           required: true
           schema:
             type: string
@@ -72,7 +72,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: device id that need to be filtered, group id not allowed
+          description: The ID of the device. Group ID is not allowed.
           required: true
           schema:
             type: string
@@ -108,7 +108,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: device id that need to be filtered, group id not allowed
+          description: The ID of the device. Group ID is not allowed.
           required: true
           schema:
             type: string
