@@ -717,13 +717,13 @@ that is registered with the SCIM server. The endpoint app is defined in
 
 ### Register a data application
 
-Method: `POST /registration/data-app/{data-app-id}`
+Method: `POST /registration/data-app/{dataAppId}`
 
 Description: Registers a data application with the gateway
 
 Parameters: 
 
- - data-app-id: the id of the data application
+ - dataAppId: the id of the data application
 
 Request Body:
 
@@ -798,13 +798,13 @@ If successful, the response will be identical to the request body.
 
 ### Update a data application
 
-Method: `PUT /registration/data-app/{data-app-id}`
+Method: `PUT /registration/data-app/{dataAppId}`
 
 Description: Updates a data application with the gateway
 
 Parameters: 
 
- - data-app-id: the id of the data application
+ - dataAppId: the id of the data application
 
 Request Body: Same as the request body for the register data application API.
 
@@ -814,13 +814,13 @@ If successful, the response will be identical to the request body.
 
 ### Get a data application
 
-Method: `GET /registration/data-app/{data-app-id}`
+Method: `GET /registration/data-app/{dataAppId}`
 
 Description: Gets a data application registered with the gateway
 
 Parameters: 
 
- - data-app-id: the id of the data application
+ - dataAppId: the id of the data application
 
 Response:
 
@@ -829,13 +829,13 @@ application API.
 
 ### Delete a data application
 
-Method: `DELETE /registration/data-app/{data-app-id}`
+Method: `DELETE /registration/data-app/{dataAppId}`
 
 Description: Deletes a data application registered with the gateway
 
 Parameters: 
 
- - data-app-id: the id of the data application
+ - dataAppId: the id of the data application
 
 Response:
 
@@ -1052,7 +1052,7 @@ and the event is
 the topic will be:
 
 ~~~~~
-data-app/<data-app-id>/<namespace>/<json_pointer_to_sdf_event>
+data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>
 
 data-app/12345678-1234-5678-1234-56789abcdef4/thermometer/sdfObject/thermometer/sdfEvent/isPresent
 ~~~~~
