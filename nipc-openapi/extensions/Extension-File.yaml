@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 openapi: 3.0.3
 info:
   title: Non IP Device Control (NIPC) API write file extension
@@ -9,12 +10,12 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.5.1
+  version: 0.5.3
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-05"
+  - url: "{gw_host}/nipc/draft-07"
     variables:
       gw_host:
         default: localhost
@@ -26,7 +27,7 @@ tags:
 
 paths:
 ### Extensions
-  /{id}/extension/property/{property}/file:
+  /extensions/{id}/properties/{propertyName}/file:
     put:
       tags:
         - NIPC API extensions
@@ -43,7 +44,7 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: propertyName
         in: path
         description: property that needs to be filtered
         required: true
@@ -57,33 +58,14 @@ paths:
               $ref: '#/components/schemas/Extension-File'
         required: true
       responses:
-        '200':
-          description: Success
-          headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
+        '204':
+          description: Success, no content
+        'default':
+          description: Error response
           content:
             application/json:
               schema:
-                allOf: 
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
-                  - $ref: '../NIPC.yaml#/components/schemas/Property'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
-                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
 
 components:
   schemas:

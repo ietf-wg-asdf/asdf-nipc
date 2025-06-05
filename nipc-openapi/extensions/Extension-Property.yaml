@@ -1,0 +1,164 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
+openapi: 3.0.3
+info:
+  title: Non IP Device Control (NIPC) API read conditional extension
+  description: |-
+    Non IP Device Control (NIPC) API read conditional extension
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: bbrinckm@cisco.com
+  license:
+    name: TBD
+    url: TBD
+  version: 0.5.3
+externalDocs:
+  description: NIPC IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
+servers:
+  - url: "{gw_host}/nipc/draft-07"
+    variables:
+      gw_host:
+        default: localhost
+        description: Gateway Host
+tags:
+  - name:  NIPC API extensions
+    description: |-
+      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
+
+paths:
+### Extensions
+  /extensions/{id}/manage/transmit:
+    post:
+      tags:
+        - NIPC API extensions
+      summary: Broadcast to a device
+      description: |-
+        Broadcast a payload to a device. The broadcast is performed on the AP where the device was last seen
+      operationId: ActionBroadcast
+      parameters:
+        - name: id
+          in: path
+          description: device id that need to be filtered, group id not allowed
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 12345678-1234-5678-1234-56789abcdef4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transmit'
+        required: true
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+   
+  /extensions/{id}/action/property/write:
+    post:
+      tags:
+        - NIPC API extensions
+      summary: Write a value to an property using protocol mapping
+      description: |-
+        Write a value to an unregistered property, embedding property protocol mapping in the API, this does not require
+        property registration. You cannot write to a group id.
+      operationId: ActionPropWrite
+      parameters:
+        - name: id
+          in: path
+          description: device id that need to be filtered, group id not allowed
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 12345678-1234-5678-1234-56789abcdef4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '../NIPC.yaml#/components/schemas/Value' 
+                - $ref: '../protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
+        required: true
+      responses:
+        '204':
+          description: Success, no content
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+                
+  /extensions/{id}/action/property/read:
+    post:
+      tags:
+        - NIPC API extensions
+      summary: Read a value to an property using protocol mapping
+      description: |-
+        Read a value from an unregistered property, embedding property protocol mapping in the API, this does not require
+        property registration. You cannot read from a group id.
+      operationId: ActionPropRead
+      parameters:
+        - name: id
+          in: path
+          description: device id that need to be filtered, group id not allowed
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 12345678-1234-5678-1234-56789abcdef4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                allOf: 
+                  - $ref: '../NIPC.yaml#/components/schemas/Value'
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+
+components:
+  schemas:
+    Transmit:
+      allOf:
+        - $ref: '../protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Broadcast'
+      required:
+        - cycle
+      type: object
+      properties:
+        cycle:
+          type: string
+          example: single
+          enum:
+            - single
+            - repeat
+        # transmit time in ms
+        transmitTime:
+          type: integer
+          example: 3000
+        # interval between transmits in ms
+        transmitInterval:
+          type: integer
+          example: 500
+        payload:
+          type: string
+          format: byte
+          example: AgEaAgoMFv9MABAHch9BsDkgeA==
