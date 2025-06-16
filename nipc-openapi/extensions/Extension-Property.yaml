@@ -60,7 +60,7 @@ paths:
               schema:
                 $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
    
-  /extensions/{id}/action/property/write:
+  /extensions/{id}/properties/write:
     post:
       tags:
         - NIPC API extensions
@@ -96,7 +96,7 @@ paths:
               schema:
                 $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
                 
-  /extensions/{id}/action/property/read:
+  /extensions/{id}/properties/read:
     post:
       tags:
         - NIPC API extensions

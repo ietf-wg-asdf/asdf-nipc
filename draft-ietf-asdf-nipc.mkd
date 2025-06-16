@@ -2111,7 +2111,7 @@ The sequence of operations for this are:
   - Read a property from the BLE device
 
     ~~~~~
-    POST /extensions/12345678-1234-5678-1234-56789abcdef4/action/property/read
+    POST /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read
     Content-Type: application/json
     Accept: application/json
     Host: localhost
@@ -2143,7 +2143,7 @@ The sequence of operations for this are:
   - Write to a property on the BLE device
 
     ~~~~~
-    POST /extensions/12345678-1234-5678-1234-56789abcdef4/action/property/write
+    POST /extensions/12345678-1234-5678-1234-56789abcdef4/properties/write
     Content-Type: application/json
     Accept: application/json
     Host: localhost
