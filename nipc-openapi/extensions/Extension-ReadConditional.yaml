@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 openapi: 3.0.3
 info:
   title: Non IP Device Control (NIPC) API read conditional extension
@@ -9,12 +10,12 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.5.1
+  version: 0.5.3
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-05"
+  - url: "{gw_host}/nipc/draft-07"
     variables:
       gw_host:
         default: localhost
@@ -26,7 +27,7 @@ tags:
 
 paths:
 ### Extensions
-  /{id}/extension/property/{property}/read/conditional:
+  /extensions/{id}/properties/{propertyName}/read/conditional:
     post:
       tags:
         - NIPC API extensions
@@ -36,15 +37,15 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: propertyName
         in: path
-        description: property that needs to be filtered
+        description: The SDF property name that needs to be read conditionally.
         required: true
         schema:
           type: string
@@ -59,10 +60,6 @@ paths:
         '202':
           description: Accepted
           headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
             Location:
               schema:
                 type: string
@@ -72,20 +69,12 @@ paths:
               schema:
                 type: integer
               description: Time in seconds to wait before retrying
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
+        'default':
+          description: Error response
           content:
             application/json:
               schema:
-                anyOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
-                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
       callbacks:
         callbackEvent:
           "{$request.body#/callback.url}":
@@ -99,7 +88,6 @@ paths:
                           - $ref: '../NIPC.yaml#/components/schemas/Id'
                           - $ref: '../NIPC.yaml#/components/schemas/PropertyValue'
                         - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
-                        - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
                     examples:
                       successExample:
                         summary: Success
@@ -129,15 +117,15 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: propertyName
         in: path
-        description: property that needs to be filtered
+        description: The SDF property name that needs to be read conditionally.
         required: true
         schema:
           type: string
@@ -154,31 +142,24 @@ paths:
         '200':
           description: Success
           headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
-                  - $ref: '../NIPC.yaml#/components/schemas/PropertyValue'
-        '400':
-          description: Bad request
-        '401':
-          description: Unauthorized
-        '405':
-          description: Invalid request
-        '500':
-          description: Server-side failure
-          content:
-            application/json:
+                  - $ref: '../NIPC.yaml#/components/schemas/Value'
+            application/octet-stream:
               schema:
-                anyOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
-                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
-  /{id}/extension/property/{property}/read/conditional/status:
+                type: string
+                format: binary
+              description: Binary data of the property value
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                allOf:
+                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+  /extensions/{id}/properties/{propertyName}/read/conditional/status:
     get:
       tags:
         - NIPC API extensions
@@ -188,15 +169,15 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
-      - name: property
+      - name: propertyName
         in: path
-        description: property that needs to be filtered
+        description: The SDF property name that needs to be read conditionally.
         required: true
         schema:
           type: string
@@ -213,15 +194,10 @@ paths:
         '200':
           description: OK
           headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
                   - $ref: '#/components/schemas/Extension-StatusResponse'
         '303':
           description: See Other
@@ -235,7 +211,6 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
                   - $ref: '#/components/schemas/Extension-StatusResponse'
               examples:
                 successExample:

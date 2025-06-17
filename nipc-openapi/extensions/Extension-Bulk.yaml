@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 openapi: 3.0.3
 info:
   title: Non IP Device Control (NIPC) API bulk extension
@@ -9,12 +10,12 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.5.1
+  version: 0.5.3
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-05"
+  - url: "{gw_host}/nipc/draft-07"
     variables:
       gw_host:
         default: localhost
@@ -26,7 +27,7 @@ tags:
 
 paths:
 ### Extensions
-  /{id}/extension/bulk:
+  /extensions/{id}/bulk:
     post:
       tags:
         - NIPC API extensions
@@ -36,7 +37,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -55,15 +56,11 @@ paths:
         '202':
           description: Accepted
           headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
             Location:
               schema:
                 type: string
               description: URL to get the bulk status response
-              example: /12345678-1234-5678-1234-56789abcdef4/extension/bulk/status?requestId=12345678-1234-5678-1234-56789abcdef4
+              example: /extensions/12345678-1234-5678-1234-56789abcdef4/bulk/status?requestId=12345678-1234-5678-1234-56789abcdef4
         '401':
           description: Unauthorized
         '405':
@@ -73,9 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                anyOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
-                  - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
       callbacks:
         bulkEvent:
           '{$request.body#/callback.url}':
@@ -109,7 +104,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -127,10 +122,6 @@ paths:
         '200':
           description: OK
           headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
@@ -143,7 +134,7 @@ paths:
                 errorBulkResponse:
                   $ref: '#/components/examples/errorBulkResponse'
                 
-  /{id}/extension/bulk/status:
+  /extensions/{id}/bulk/status:
     get:
       tags:
         - NIPC API extensions
@@ -153,7 +144,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id that need to be filtered, group id is not allowed
+        description: The ID of the device. Group ID is not allowed.
         required: true
         schema:
           type: string
@@ -171,15 +162,10 @@ paths:
         '200':
           description: OK
           headers:
-            X-Request-ID:
-              schema:
-                type: string
-              description: Unique Request ID
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
                   - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-StatusResponse'
         '303':
           description: See Other
@@ -188,18 +174,16 @@ paths:
               schema:
                 type: string
               description: URL to get the bulk response
-              example: /12345678-1234-5678-1234-56789abcdef4/extension/bulk?requestId=12345678-1234-5678-1234-56789abcdef4
+              example: /extensions/12345678-1234-5678-1234-56789abcdef4/bulk?requestId=12345678-1234-5678-1234-56789abcdef4
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
                   - $ref: './Extension-ReadConditional.yaml#/components/schemas/Extension-StatusResponse'
               examples:
                 successExample:
                   summary: Success
                   value:
-                    id: 12345678-1234-5678-1234-56789abcdef4
                     status: COMPLETED
 
 components:
@@ -233,10 +217,10 @@ components:
             path:
               type: string
               enum:
-                - /{id}/property/{property}
-                - /{id}/action/{action}
-                - /{id}/extension/property/{property}/read/conditional
-              example: /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+                - /devices/{id}/properties/{propertyName}
+                - /devices/{id}/actions/{actionName}
+                - /extensions/{id}/properties/{propertyName}/read/conditional
+              example: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             data:
               type: object
               oneOf:
@@ -267,20 +251,15 @@ components:
             path:
               type: string
               enum:
-                - /{id}/property/{property}
-                - /{id}/action/{action}
-                - /{id}/extension/property/{property}/read/conditional'
-              example: /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+                - /devices/{id}/properties/{propertyName}
+                - /devices/{id}/actions/{actionName}
+                - /extensions/{id}/properties/{propertyName}/read/conditional
+              example: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               anyOf:
-                - allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
-                  - $ref: '../NIPC.yaml#/components/schemas/PropertyValue'
-                - allOf: 
-                  - $ref: '../NIPC.yaml#/components/schemas/Id'
-                  - $ref: '../NIPC.yaml#/components/schemas/ActionValue'
+                - $ref: '../NIPC.yaml#/components/schemas/Value'
+                - $ref: '../NIPC.yaml#/components/schemas/SuccessResponse'
                 - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
-                - $ref: '../NIPC.yaml#/components/schemas/PropertyErrorCodes'
 
   examples:
     bulkRequest:
@@ -288,16 +267,13 @@ components:
       value:
         operations:
           - method: GET
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
           - method: PUT
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             data:
               value: dGVzdA==
           - method: POST
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/extension/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
             data:
               value: dGVzdA==
               maxRepeat: 5
@@ -307,55 +283,39 @@ components:
       value:
         operations:
           - method: GET
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
-              id: 12345678-1234-5678-1234-56789abcdef4
-              property: >-
-                https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
               value: dGVzdA==
           - method: PUT
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
-              id: 12345678-1234-5678-1234-56789abcdef4
-              property: >-
-                https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
-              value: dGVzdA==
+              status: 200
           - method: POST
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/extension/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
             response:
-              id: 12345678-1234-5678-1234-56789abcdef4
-              property: >-
-                https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
               value: dGVzdA==
     errorBulkResponse:
       summary: Error Bulk response example
       value:
         operations:
           - method: GET
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
+              type: https://www.iana.org/assignments/http-problem-types#nipc-property-not-readable
               status: 400
-              detail: Property not readable
-              nipcStatus: 1100
+              title: Property not readable
+              detail: Property https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/temperature is not readable
           - method: PUT
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
+              type: https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed
               status: 400
-              detail: >-
-                Operation was not executed since the previous
-                operation failed
-              nipcStatus: 1004
+              title: Operation not executed
+              detail: Operation was not executed since the previous operation failed
           - method: POST
-            path: >-
-              /12345678-1234-5678-1234-56789abcdef4/extension/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
             response:
+              type: https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed
               status: 400
-              detail: >-
-                Operation was not executed since the previous
-                operation failed
-              nipcStatus: 1004
+              title: Operation not executed
+              detail: Operation was not executed since the previous operation failed
