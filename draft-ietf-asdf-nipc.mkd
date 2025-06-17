@@ -879,6 +879,17 @@ This connection can be established as part of the same API call implicitly.
 If a connection is already active for this device, the existing connection willi
 be leveraged without modifying it.
 
+These APIs support multiple media types based on Content-Type and Accept
+headers to accommodate different data formats. 
+
+When using `application/octet-stream`, the raw binary data is sent 
+directly in the request/response body.
+When using `application/json`, the request and response bodies follow 
+the format shown in the examples above, with binary data encoded as 
+base64 in the "value" field. 
+For other content types, the data is transmitted according to the 
+specific format requirements of that media type.
+
 ### Write a value
 
 Method: `PUT /devices/{id}/properties/{propertyName}`
@@ -892,7 +903,7 @@ Parameters:
 
 Request Body:
 
- - value: the bytes to be written in base64 encoding
+the binary data to write to the property (using `application/octet-stream`)
 
 Response:
 
@@ -914,7 +925,13 @@ Parameters:
 
 Response:
 
-Example of a read property response:
+The response will be the binary data read from the property. 
+
+If the Accept header is set to `application/octet-stream`, the response body
+will contain the raw binary data.
+
+Example of a read property response if the Accept header is set to
+`application/json`:
 
 ~~~~~
 {
@@ -1933,40 +1950,26 @@ The sequence of operations for this are:
   - Read a property from the BLE device
 
     ~~~~~
-    GET /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
-    Accept: application/json
+    GET /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
+    Accept: application/octet-stream
     Host: localhost
     
     HTTP/1.1 200 OK
-    content-type: application/json
+    content-type: application/octet-stream
     
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "value": "dGVzdA==",
-      "sdfName": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name"
-    }
+    ... (binary data)
     ~~~~~
  
   - Write to a property on the BLE device
 
     ~~~~~
-    PUT /12345678-1234-5678-1234-56789abcdef4/property/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
-    Content-Type: application/json
-    Accept: application/json
+    PUT /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
+    Content-Type: application/octet-stream
     Host: localhost
     
-    {
-      "value": "dGVzdA=="
-    }
+    ... (binary data)
     
-    HTTP/1.1 200 OK
-    content-type: application/json
-    
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "value": "dGVzdA==",
-      "sdfName": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name"
-    }
+    HTTP/1.1 204 No Content
     ~~~~~
 
 ## Enabling an Event
@@ -2017,174 +2020,35 @@ The sequence of operations for this are:
     content-type: application/json
 
     {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
       "events": [
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
-      ]
+      ],
+      "mqttClient": {}
     }
     ~~~~~
 
   - Enable the advertisement event
 
     ~~~~
-    POST /12345678-1234-5678-1234-56789abcdef4/event/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FisPresent
-    Content-Type: application/json
-    Accept: application/json
+    POST /devices/12345678-1234-5678-1234-56789abcdef4/events/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
     
-    HTTP/1.1 200 OK
-    content-type: application/json
-
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
-    }
+    HTTP/1.1 201 OK
+    Location: /devices/12345678-1234-5678-1234-56789abcdef4/events/87654321-4321-8765-4321-fedcba9876543
     ~~~~
 
-## Property read/write with explicit connection
-
-In this example, we will connect to a device explicitly and read and 
-write from a property.
-The sequence of operations for this are:  
-
-  - Onboard a device using the SCIM Interface (out of scope of this
-    memo)
-  - Connect to the device
+  - Check the status of the event
 
     ~~~~~
-    POST /devices/12345678-1234-5678-1234-56789abcdef4/manage/connection
-    Content-Type: application/json
-    Accept: application/json
-    Host: localhost
-    
-    {
-      "retries": 3,
-      "retryMultipleAPs": true,
-      "protocolMap": {
-        "ble": {
-          "services": [
-            {
-              "serviceID": "1800"
-            },
-            {
-              "serviceID": "1801"
-            }
-          ],
-          "cached": false,
-          "cacheIdlePurge": 3600,
-          "autoUpdate": true,
-          "bonding": "default"
-        }
-      }
-    }
-
-    HTTP/1.1 200 OK
-    content-type: application/json
-    
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "protocolMap": {
-        "ble": [
-          {
-            "serviceID": "1800",
-            "characteristics": [
-              {
-                "characteristicID": "2A00",
-                "flags": [
-                  "read",
-                  "write"
-                ],
-                "descriptors": [
-                  {
-                    "descriptorID": "2901"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    }
-    ~~~~~
-
-  - Read a property from the BLE device
-
-    ~~~~~
-    POST /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read
-    Content-Type: application/json
-    Accept: application/json
-    Host: localhost
-
-    {
-      "protocolMap": {
-        "ble": {
-          "serviceID": "1800",
-          "characteristicID": "2A00"
-        }
-      }
-    }
-    
-    HTTP/1.1 200 OK
-    content-type: application/json
-    
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "value": "dGVzdA==",
-      "protocolMap": {
-        "ble": {
-          "serviceID": "1800",
-          "characteristicID": "2A00"
-        }
-      }
-    }
-    ~~~~~
-
-  - Write to a property on the BLE device
-
-    ~~~~~
-    POST /extensions/12345678-1234-5678-1234-56789abcdef4/properties/write
-    Content-Type: application/json
-    Accept: application/json
-    Host: localhost
-    
-    {
-      "value": "dGVzdA==",
-      "protocolMap": {
-        "ble": {
-          "serviceID": "1800",
-          "characteristicID": "2A00"
-        }
-      }
-    }
-    
-    HTTP/1.1 200 OK
-    content-type: application/json
-    
-    {
-      "id": "12345678-1234-5678-1234-56789abcdef4",
-      "value": "dGVzdA==",
-      "protocolMap": {
-        "ble": {
-          "serviceID": "1800",
-          "characteristicID": "2A00"
-        }
-      }
-    }
-    ~~~~~
-
-  - Disconnect from the device
-
-    ~~~~~
-    DELETE /devices/12345678-1234-5678-1234-56789abcdef4/manage/connection
-    Accept: application/json
+    GET /devices/12345678-1234-5678-1234-56789abcdef4/events/87654321-4321-8765-4321-fedcba9876543
     Host: localhost
     
     HTTP/1.1 200 OK
     content-type: application/json
     
     {
-      "id": "12345678-1234-5678-1234-56789abcdef4"
+      "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
     }
     ~~~~~
 
