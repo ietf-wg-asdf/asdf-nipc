@@ -380,10 +380,10 @@ Gateway will leverage the exissting connection and will also not tear the
 connection down after the operation completes. The app will have to explicitly
 close the connection. 
 
-### Action APIs with embedded protocol mapping
+### Management APIs
 
-Action APIs with embedded protocol mapping are APIs that perform actions on
-devices, but do not use registered affordances. These APIs have embedded
+Management APIs are APIs that perform device connection management and
+protocol-specific operations, but do not use registered affordances. These APIs have embedded
 protocol mappings. They require explicit connection management.
 
 ### Extensions {#extensions}
@@ -635,14 +635,14 @@ where-
 
 ### Get an sdf model
 
-Method: `GET /registration/model/{sdfName}`
+Method: `GET /registration/model`
 
 Description: Gets an sdf model registered with the gateway
 
-Parameters: 
+Query Parameters: 
 
  - sdfName: the reference to the top-level sdfThing or sdfObject 
-    in the SDF model. This is a percent-encoded URL string.
+    in the SDF model.
 
 Response:
 
@@ -651,14 +651,14 @@ The sdf model is returned in JSON format, similar to the example in
 
 ### Delete an sdf model
 
-Method: `DELETE /registration/model/{sdfName}`
+Method: `DELETE /registration/model`
 
 Description: Deletes an sdf model registered with the gateway
 
-Parameters: 
+Query Parameters: 
 
  - sdfName: the reference to the top-level sdfThing or sdfObject 
-    in the SDF model. This is a percent-encoded URL string.
+    in the SDF model.
 
 Response:
 
@@ -678,14 +678,14 @@ where-
 
 ### Update an sdf model
 
-Method: `PUT /registration/model/{sdfName}`
+Method: `PUT /registration/model`
 
 Description: Updates an sdf model registered with the gateway
 
-Parameters: 
+Query Parameters: 
 
  - sdfName: the reference to the top-level sdfThing or sdfObject 
-    in the SDF model. This is a percent-encoded URL string.
+    in the SDF model.
 
 Request Body:
 
@@ -717,11 +717,11 @@ that is registered with the SCIM server. The endpoint app is defined in
 
 ### Register a data application
 
-Method: `POST /registration/data-app/{dataAppId}`
+Method: `POST /registration/data-app`
 
 Description: Registers a data application with the gateway
 
-Parameters: 
+Query Parameters: 
 
  - dataAppId: the id of the data application
 
@@ -798,11 +798,11 @@ If successful, the response will be identical to the request body.
 
 ### Update a data application
 
-Method: `PUT /registration/data-app/{dataAppId}`
+Method: `PUT /registration/data-app`
 
 Description: Updates a data application with the gateway
 
-Parameters: 
+Query Parameters: 
 
  - dataAppId: the id of the data application
 
@@ -814,11 +814,11 @@ If successful, the response will be identical to the request body.
 
 ### Get a data application
 
-Method: `GET /registration/data-app/{dataAppId}`
+Method: `GET /registration/data-app`
 
 Description: Gets a data application registered with the gateway
 
-Parameters: 
+Query Parameters: 
 
  - dataAppId: the id of the data application
 
@@ -829,11 +829,11 @@ application API.
 
 ### Delete a data application
 
-Method: `DELETE /registration/data-app/{dataAppId}`
+Method: `DELETE /registration/data-app`
 
 Description: Deletes a data application registered with the gateway
 
-Parameters: 
+Query Parameters: 
 
  - dataAppId: the id of the data application
 
@@ -855,9 +855,9 @@ The NIPC APIs are divided into 3 categories:
    reporting on devices.
  - NIPC Action APIs: These APIs allow applications to perform actions on
    devices.
- - NIPC Action APIs with embedded protocol mapping: These APIs allow
-   applications to perform actions on devices, but do not use registered
-   properties, events or actions.
+ - NIPC Management APIs: These APIs allow
+   applications to manage device connections and perform protocol-specific
+   operations.
 
 An SDF model must be registered for the device in order to use these NIPC
 Property, Event and Action APIs. The SDF model can be a top-level sdfThing with
@@ -869,7 +869,6 @@ as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
 The SDF global name will be used against the registered SDF model to 
 determine the protocol-specific protocolMap that the NIPC API will operate on. 
-The global name must be percent-encoded to be used in the URL as per {{!RFC3986}}.
 
 ## NIPC Property APIs
 
@@ -889,63 +888,6 @@ the format shown in the examples above, with binary data encoded as
 base64 in the "value" field. 
 For other content types, the data is transmitted according to the 
 specific format requirements of that media type.
-
-### Write a value
-
-Method: `PUT /devices/{id}/properties/{propertyName}`
-
-Description: Writes a value to a property on a device
-
-Parameters: 
-
- - id: the id of the device
- - propertyName: the property to write to
-
-Request Body:
-
-the binary data to write to the property (using `application/octet-stream`)
-
-Response:
-
-HTTP status code 204 No Content is returned for successful writes.
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-### Read a value
-
-Method: `GET /devices/{id}/properties/{propertyName}`
-
-Description: Reads a value from a property on a device
-
-Parameters: 
-
- - id: the id of the device
- - propertyName: the property to read from
-
-Response:
-
-The response will be the binary data read from the property. 
-
-If the Accept header is set to `application/octet-stream`, the response body
-will contain the raw binary data.
-
-Example of a read property response if the Accept header is set to
-`application/json`:
-
-~~~~~
-{
-  "value": "dGVzdA=="
-}
-~~~~~
-{:json #exreresp title="Example read property response"}
-
-where-
-
- - "value" is the bytes that were read in base64 encoding
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
 
 ### Write multiple values
 
@@ -1083,13 +1025,16 @@ used as the MQTT topic instead.
 
 ### Enable event reporting
 
-Method: `POST /devices/{id}/events/{eventName}`
+Method: `POST /devices/{id}/events`
 
 Description: Enables an event on a specific device
 
 Parameters: 
 
  - id: the id of the device
+
+Query Parameters:
+
  - eventName: the event to enable
 
 The eventName is a URL encoded string that is the absolute URI that is a global
@@ -1103,7 +1048,7 @@ Example of a successful response:
 
 ~~~~~
 HTTP/1.1 201 Created
-Location: /devices/12345678-1234-5678-1234-56789abcdef4/events/87654321-4321-8765-4321-fedcba9876543
+Location: /devices/12345678-1234-5678-1234-56789abcdef4/events?instanceId=87654321-4321-8765-4321-fedcba9876543
 ~~~~~
 
 The Location header contains the URI for the created event instance, which can be used to check status or disable the event.
@@ -1113,13 +1058,16 @@ definition of failed response.
 
 ### Disable event reporting
 
-Method: `DELETE /devices/{id}/events/{instanceId}`
+Method: `DELETE /devices/{id}/events`
 
 Description: Disables an event on a specific device
 
 Parameters:
 
   - id: the id of the device or group of devices
+
+Query Parameters:
+
   - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
 
 Response:
@@ -1135,13 +1083,16 @@ definition of failed response.
 
 ### Get event status
 
-Method: `GET /devices/{id}/events/{instanceId}`
+Method: `GET /devices/{id}/events`
 
 Description: Get the status of an event on a specific device
 
 Parameters:
 
   - id: the id of the device or group of devices
+
+Query Parameters:
+
   - instanceId: the instance ID of the event to query
 
 Response:
@@ -1198,13 +1149,16 @@ definition of failed response.
 
 ### Enable event reporting on a group of devices
 
-Method: `POST /groups/{id}/events/{eventName}`
+Method: `POST /groups/{id}/events`
 
 Description: Enables an event on a group of devices
 
 Parameters: 
 
  - id: the id of the group of devices
+
+Query Parameters:
+
  - eventName: the event to enable
 
 The eventName is a URL encoded string that is the absolute URI that is a global
@@ -1218,7 +1172,7 @@ Example of a successful response:
 
 ~~~~~
 HTTP/1.1 201 Created
-Location: /groups/12345678-1234-5678-1234-56789abcdef4/events/87654321-4321-8765-4321-fedcba9876543
+Location: /groups/12345678-1234-5678-1234-56789abcdef4/events?instanceId=87654321-4321-8765-4321-fedcba9876543
 ~~~~~
 
 The Location header contains the URI for the created event instance, which can be used to check status or disable the event.
@@ -1228,13 +1182,16 @@ definition of failed response.
 
 ### Disable event reporting on a group of devices
 
-Method: `DELETE /groups/{id}/events/{instanceId}`
+Method: `DELETE /groups/{id}/events`
 
 Description: Disables an event on a group of devices
 
 Parameters:
 
   - id: the id of the group of devices
+
+Query Parameters:
+
   - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
 
 Response:
@@ -1250,13 +1207,16 @@ definition of failed response.
 
 ### Get event status on a group of devices
 
-Method: `GET /groups/{id}/events/{instanceId}`
+Method: `GET /groups/{id}/events`
 
 Description: Get the status of an event on a group of devices
 
 Parameters:
 
  - id: the id of the group of devices
+
+Query Parameters:
+
  - instanceId: the instance ID of the event to check
 
 Response:
@@ -1321,13 +1281,16 @@ without modifying it.
 
 ### Perform an action
 
-Method: `POST /devices/{id}/actions/{actionName}`
+Method: `POST /devices/{id}/actions`
 
 Description: Perform an action on a specific device
 
 Parameters:
 
   - id: the id of the device
+
+Query Parameters:
+
   - actionName: the action to perform
 
 Request Body:
@@ -1344,20 +1307,23 @@ Example of a successful response:
 
 ~~~~~
 HTTP/1.1 202 Accepted
-Location: /devices/12345678-1234-5678-1234-56789abcdef4/actions/87654321-4321-8765-4321-fedcba9876543
+Location: /devices/12345678-1234-5678-1234-56789abcdef4/actions?instanceId=87654321-4321-8765-4321-fedcba9876543
 ~~~~~
 
 The Location header contains the URI for the action instance, which can be used to check the action status.
 
 ### Check action status
 
-Method: `GET /devices/{id}/actions/{instanceId}`
+Method: `GET /devices/{id}/actions`
 
 Description: Check the status of an action on a specific device
 
 Parameters:
 
   - id: the id of the device
+
+Query Parameters:
+
   - instanceId: the instance ID of the action (obtained from the Location header)
 
 Response:
@@ -1376,9 +1342,9 @@ where "status" indicates the current state of the action (e.g., "IN_PROGRESS" or
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
 
-## NIPC Action APIs with embedded protocol mapping
+## NIPC Management APIs
 
-These APIs allow applications to perform actions on devices, but do not use
+These APIs allow applications to manage device connections, but do not use
 registered properties, events or actions. These APIs do not perform an implicit
 connection, so a connection must be established before calling these APIs.
 
@@ -1950,26 +1916,44 @@ The sequence of operations for this are:
   - Read a property from the BLE device
 
     ~~~~~
-    GET /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
-    Accept: application/octet-stream
+    GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name
+    Accept: application/json
     Host: localhost
     
     HTTP/1.1 200 OK
-    content-type: application/octet-stream
+    content-type: application/json
     
-    ... (binary data)
+    [
+      {
+        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
+        "value": "dGVzdA=="
+      }
+    ]
     ~~~~~
  
   - Write to a property on the BLE device
 
     ~~~~~
-    PUT /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
-    Content-Type: application/octet-stream
+    PUT /devices/12345678-1234-5678-1234-56789abcdef4/properties
+    Content-Type: application/json
     Host: localhost
     
-    ... (binary data)
+    [
+      {
+        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
+        "value": "dGVzdA=="
+      }
+    ]
     
-    HTTP/1.1 204 No Content
+    HTTP/1.1 200 OK
+    content-type: application/json
+    
+    [
+      {
+        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
+        "value": "dGVzdA=="
+      }
+    ]
     ~~~~~
 
 ## Enabling an Event
@@ -2004,7 +1988,7 @@ The sequence of operations for this are:
   - Register the data app with the event 
 
     ~~~~~
-    POST /registration/data-app/23456789-1234-5678-1234-56789abcdef4
+    POST /registration/data-app?dataAppId=23456789-1234-5678-1234-56789abcdef4
     Content-Type: application/json
     Accept: application/json
     Host: localhost
@@ -2030,18 +2014,18 @@ The sequence of operations for this are:
   - Enable the advertisement event
 
     ~~~~
-    POST /devices/12345678-1234-5678-1234-56789abcdef4/events/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FisPresent
+    POST /devices/12345678-1234-5678-1234-56789abcdef4/events?eventName=https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent
     Host: localhost
     Content-Length: 0
     
-    HTTP/1.1 201 OK
-    Location: /devices/12345678-1234-5678-1234-56789abcdef4/events/87654321-4321-8765-4321-fedcba9876543
+    HTTP/1.1 201 Created
+    Location: /devices/12345678-1234-5678-1234-56789abcdef4/events?instanceId=87654321-4321-8765-4321-fedcba9876543
     ~~~~
 
   - Check the status of the event
 
     ~~~~~
-    GET /devices/12345678-1234-5678-1234-56789abcdef4/events/87654321-4321-8765-4321-fedcba9876543
+    GET /devices/12345678-1234-5678-1234-56789abcdef4/events?instanceId=87654321-4321-8765-4321-fedcba9876543
     Host: localhost
     
     HTTP/1.1 200 OK

@@ -27,7 +27,7 @@ tags:
 
 paths:
 ### Extensions
-  /extensions/{id}/properties/{propertyName}/read/conditional:
+  /extensions/{id}/properties/read/conditional:
     post:
       tags:
         - NIPC API extensions
@@ -44,7 +44,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
-        in: path
+        in: query
         description: The SDF property name that needs to be read conditionally.
         required: true
         schema:
@@ -124,7 +124,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
-        in: path
+        in: query
         description: The SDF property name that needs to be read conditionally.
         required: true
         schema:
@@ -159,7 +159,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
-  /extensions/{id}/properties/{propertyName}/read/conditional/status:
+  /extensions/{id}/properties/read/conditional/status:
     get:
       tags:
         - NIPC API extensions
@@ -176,7 +176,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
-        in: path
+        in: query
         description: The SDF property name that needs to be read conditionally.
         required: true
         schema:

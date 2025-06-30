@@ -46,91 +46,6 @@ tags:
 
 paths:
 ### NIPC Property APIs
-  /devices/{id}/properties/{propertyName}:
-    put:
-      tags:
-        - NIPC property APIs
-      summary: Write a value to a property on a device
-      description: |-
-        Write a value to a property on a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
-      operationId: UpdateProperty
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the device. Group ID is not allowed.
-        required: true
-        schema:
-          type: string
-          format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
-      - name: propertyName
-        in: path
-        description: the property to write to
-        required: true
-        schema:
-          type: string
-          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Value'
-          application/octet-stream:
-            schema:
-              type: string
-              format: binary
-        required: true
-      responses:
-        '204':
-          description: Success, no content
-        default:
-          description: Error response
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/FailureResponse'
-
-    get:
-      tags:
-        - NIPC property APIs
-      summary: Read a value from a property on a device
-      description: |-
-        Read a value to a property on a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
-      operationId: GetProperty
-      parameters:
-      - name: id
-        in: path
-        description: The ID of the device. Group ID is not allowed.
-        required: true
-        schema:
-          type: string
-          format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
-      - name: propertyName
-        in: path
-        description: the property to read from
-        required: true
-        schema:
-          type: string
-          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature"
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Value'
-            application/octet-stream:
-              schema:
-                type: string
-                format: binary
-        default:
-          description: Error response
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/FailureResponse'
-
   /devices/{id}/properties:
     put:
       tags:
@@ -211,7 +126,7 @@ paths:
                 $ref: '#/components/schemas/FailureResponse'
  
  ### NIPC Event APIs
-  /devices/{id}/events/{eventName}:
+  /devices/{id}/events:
     post:
       tags:
         - NIPC event APIs
@@ -229,7 +144,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: eventName
-        in: path
+        in: query
         description: event that needs to be enabled
         required: true
         schema:
@@ -244,15 +159,14 @@ paths:
               schema:
                 type: string
                 format: uri
-                example: "/devices/{id}/events/{instanceId}"
+                example: "/devices/{id}/events?instanceId={instanceId}"
         default:
           description: Error response
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
-  
-  /devices/{id}/events/{instanceId}:
+
     delete:
       tags:
         - NIPC event APIs
@@ -270,7 +184,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: instanceId
-        in: path
+        in: query
         description: instance id of the event that needs to be disabled
         required: true
         schema:
@@ -286,47 +200,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
-                
-    get:
-      tags:
-        - NIPC event APIs
-      summary: Get status of an event on a specific device
-      description: |-
-        Get status of an event on a specific device or a groupd of devices. Success is event is active, failure if event not active.
-      operationId: GetEvent
-      parameters:
-      - name: id
-        in: path
-        description: device id or group id
-        required: true
-        schema:
-          type: string
-          format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
-      - name: instanceId
-        in: path
-        description: instance id of the event that needs to be checked
-        required: true
-        schema:
-          type: string
-          format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Event' 
-        default:
-          description: Error response
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/FailureResponse'
-
-  /devices/{id}/events:
+               
     get:
       tags:
         - NIPC event APIs
@@ -367,7 +241,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
 
-  /groups/{id}/events/{eventName}:
+  /groups/{id}/events:
     post:
       tags:
         - NIPC event APIs
@@ -385,7 +259,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: eventName
-        in: path
+        in: query
         description: event that needs to be enabled
         required: true
         schema:
@@ -400,14 +274,13 @@ paths:
               schema:
                 type: string
                 format: uri
-                example: "/groups/{id}/events/{instanceId}"
+                example: "/groups/{id}/events?instanceId={instanceId}"
         default:
           description: Error response
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
-  /groups/{id}/events/{instanceId}:
     delete:
       tags:
         - NIPC event APIs
@@ -425,7 +298,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: instanceId
-        in: path
+        in: query
         description: instance id of the event that needs to be disabled
         required: true
         schema:
@@ -441,44 +314,6 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
-    get:
-      tags:
-        - NIPC event APIs
-      summary: Get status of an event on a group of devices
-      description: |-
-        Get status of an event on a group of devices. Success is event is active, failure if event not active.
-      operationId: GetGroupEvent
-      parameters:
-      - name: id
-        in: path
-        description: group id for which the event needs to be checked
-        required: true
-        schema:
-          type: string
-          format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
-      - name: instanceId
-        in: path
-        description: instance id of the event that needs to be checked
-        required: true
-        schema:
-          type: string
-          format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
-      responses:
-        '200':
-          description: Success, event is active
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Event'
-        default:
-          description: Error response
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/FailureResponse'
-  /groups/{id}/events:
     get:
       tags:
         - NIPC event APIs
@@ -520,7 +355,7 @@ paths:
                 $ref: '#/components/schemas/FailureResponse'
 
 ### NIPC action APIs
-  /devices/{id}/actions/{actionName}:
+  /devices/{id}/actions:
     post:
       tags:
         - NIPC action APIs
@@ -538,7 +373,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: actionName
-        in: path
+        in: query
         description: action that needs to be performed
         required: true
         schema:
@@ -560,14 +395,13 @@ paths:
               schema:
                 type: string
                 format: uri
-                example: "/devices/{id}/actions/{instanceId}"
+                example: "/devices/{id}/actions?instanceId={instanceId}"
         default:
           description: Error response
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
-  /devices/{id}/actions/{instanceId}:
     get:
       tags:
         - NIPC action APIs
@@ -585,7 +419,7 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: instanceId
-        in: path
+        in: query
         description: instance id of the action that needs to be checked
         required: true
         schema:
@@ -649,7 +483,7 @@ paths:
   
     put:
       tags:
-        - NIPC action APIs with embedded protocol mapping
+        - NIPC management APIs
       summary: Update cached ServiceMap for a device.
       description: |-
         Update cached ServiceMap for a device. Full service discovery will be performed, unless specific services are described in the API body.
@@ -687,7 +521,7 @@ paths:
   
     delete:
       tags:
-        - NIPC action APIs with embedded protocol mapping
+        - NIPC management APIs
       summary: Disconnect a device 
       description: |-
         Disconnect a device.
@@ -718,7 +552,7 @@ paths:
                   
     get:
       tags:
-        - NIPC action APIs with embedded protocol mapping
+        - NIPC management APIs
       summary: Get connection state for a device
       description: |-
         Get connection status for a device. Success when device(s) is/are connected, includes service map for the device if available. Failure when a device is not connected
@@ -789,16 +623,21 @@ paths:
       description: |-
         Get all registered SDF model names.
       operationId: getSdfRefs
+      parameters:
+        - name: sdfName
+          in: query
+          description: sdfName can be a reference to an sdfThing or sdfObject
+          required: false
+          schema:
+            type: string
+            example: "https://example.com/heartrate#/sdfObject/healthsensor"
       responses:
         '200':
           description: Success
           content:
-            application/json:
+            application/sdf+json:
               schema:
-                type: array
-                items:
-                  allOf:
-                    - $ref: '#/components/schemas/SdfReference'
+                $ref: '#/components/schemas/SdfModel'
         default:
           description: Error response
           content:
@@ -806,9 +645,6 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
-
-
-  /registration/model/{sdfName}:
     put:
       tags:
         - NIPC registration APIs
@@ -818,7 +654,7 @@ paths:
       operationId: updateSdf
       parameters:
         - name: sdfName
-          in: path
+          in: query
           description: sdfName can be a reference to an sdfThing or sdfObject
           required: true
           schema:
@@ -877,38 +713,7 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
 
-    get:
-      tags:
-        - NIPC registration APIs
-      summary: get a registered sdfObject
-      description: |-
-        Get an sdfObject, including Properties, Events and actions
-      operationId: getSdfObject
-      parameters:
-        - name: sdfName
-          in: path
-          description: sdfObject name
-          required: true
-          schema:
-            type: string
-            example: "https://example.com/heartrate#/sdfObject/healthsensor"
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/SdfModel'
-        default:
-          description: Error response
-          content:
-            application/problem+json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/FailureResponse'
-
-  /registration/data-app/{dataAppId}:
+  /registration/data-app:
     post:
       tags:
         - NIPC registration APIs
@@ -918,7 +723,7 @@ paths:
       operationId: registerDataApp
       parameters:
         - name: dataAppId
-          in: path
+          in: query
           description: id of the data app that will be registered
           required: true
           schema:
@@ -1026,7 +831,7 @@ paths:
       operationId: GetDataApp
       parameters:
         - name: dataAppId
-          in: path
+          in: query
           description: id of the data app that will be updated
           required: true
           schema:
