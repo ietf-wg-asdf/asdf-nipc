@@ -1978,9 +1978,11 @@ The sequence of operations for this are:
     HTTP/1.1 200 OK
     content-type: application/json
 
-    {
-      "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
-    }
+    [
+      {
+        "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
+      }
+    ]
     ~~~~~
 
     Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
