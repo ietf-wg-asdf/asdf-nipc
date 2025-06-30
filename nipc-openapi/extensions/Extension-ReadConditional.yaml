@@ -47,6 +47,7 @@ paths:
         in: query
         description: The SDF property name that needs to be read conditionally.
         required: true
+        allowReserved: true
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
@@ -127,6 +128,7 @@ paths:
         in: query
         description: The SDF property name that needs to be read conditionally.
         required: true
+        allowReserved: true
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
@@ -179,6 +181,7 @@ paths:
         in: query
         description: The SDF property name that needs to be read conditionally.
         required: true
+        allowReserved: true
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"

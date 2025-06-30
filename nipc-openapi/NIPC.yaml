@@ -104,6 +104,7 @@ paths:
         in: query
         description: Properties to be read
         required: true
+        allowReserved: true
         schema:
           type: array
           items:
@@ -147,6 +148,7 @@ paths:
         in: query
         description: event that needs to be enabled
         required: true
+        allowReserved: true
         schema:
           type: string
           example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
@@ -262,6 +264,7 @@ paths:
         in: query
         description: event that needs to be enabled
         required: true
+        allowReserved: true
         schema:
           type: string
           example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
@@ -376,6 +379,7 @@ paths:
         in: query
         description: action that needs to be performed
         required: true
+        allowReserved: true
         schema:
           type: string
           example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfAction/start"
@@ -628,6 +632,7 @@ paths:
           in: query
           description: sdfName can be a reference to an sdfThing or sdfObject
           required: false
+          allowReserved: true
           schema:
             type: string
             example: "https://example.com/heartrate#/sdfObject/healthsensor"
@@ -657,6 +662,7 @@ paths:
           in: query
           description: sdfName can be a reference to an sdfThing or sdfObject
           required: true
+          allowReserved: true
           schema:
             type: string
             example: "https://example.com/heartrate#/sdfObject/healthsensor"
