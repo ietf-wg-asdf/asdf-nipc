@@ -217,10 +217,10 @@ components:
             path:
               type: string
               enum:
-                - /devices/{id}/properties/{propertyName}
-                - /devices/{id}/actions/{actionName}
-                - /extensions/{id}/properties/{propertyName}/read/conditional
-              example: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+                - /devices/{id}/properties?propertyName={propertyName}
+                - /devices/{id}/actions/?actionName={actionName}
+                - /extensions/{id}/properties/read/conditional?propertyName={propertyName}
+              example: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             data:
               type: object
               oneOf:
@@ -251,10 +251,10 @@ components:
             path:
               type: string
               enum:
-                - /devices/{id}/properties/{propertyName}
-                - /devices/{id}/actions/{actionName}
-                - /extensions/{id}/properties/{propertyName}/read/conditional
-              example: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+                - /devices/{id}/properties?propertyName={propertyName}
+                - /devices/{id}/actions/?actionName={actionName}
+                - /extensions/{id}/properties/read/conditional?propertyName={propertyName}
+              example: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
               anyOf:
                 - $ref: '../NIPC.yaml#/components/schemas/Value'
@@ -267,13 +267,13 @@ components:
       value:
         operations:
           - method: GET
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             data:
               value: dGVzdA==
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             data:
               value: dGVzdA==
               maxRepeat: 5
@@ -283,15 +283,15 @@ components:
       value:
         operations:
           - method: GET
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
               value: dGVzdA==
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
               status: 200
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
               value: dGVzdA==
     errorBulkResponse:
@@ -299,21 +299,21 @@ components:
       value:
         operations:
           - method: GET
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
               type: https://www.iana.org/assignments/http-problem-types#nipc-property-not-readable
               status: 400
               title: Property not readable
               detail: Property https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/temperature is not readable
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
               type: https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed
               status: 400
               title: Operation not executed
               detail: Operation was not executed since the previous operation failed
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature/read/conditional
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
               type: https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed
               status: 400
