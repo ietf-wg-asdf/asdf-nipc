@@ -13,7 +13,7 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.5.3
+  version: 0.5.4
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
