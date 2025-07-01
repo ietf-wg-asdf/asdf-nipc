@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-IP device control (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-07
+docname: draft-ietf-asdf-nipc-08
 submissionType: IETF
 category: std
 
@@ -1916,7 +1916,7 @@ The sequence of operations for this are:
   - Read a property from the BLE device
 
     ~~~~~
-    GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name
+    GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/device_name
     Accept: application/json
     Host: localhost
     
@@ -2016,7 +2016,7 @@ The sequence of operations for this are:
   - Enable the advertisement event
 
     ~~~~
-    POST /devices/12345678-1234-5678-1234-56789abcdef4/events?eventName=https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent
+    POST /devices/12345678-1234-5678-1234-56789abcdef4/events?eventName=https://example.com/thermometer%23/sdfThing/thermometer/sdfEvent/isPresent
     Host: localhost
     Content-Length: 0
     
