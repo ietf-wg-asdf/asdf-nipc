@@ -2,3 +2,4 @@ venv/
 draft-ietf-asdf-nipc.txt
 draft-ietf-asdf-nipc.xml
 draft-ietf-asdf-nipc.html
+.refcache

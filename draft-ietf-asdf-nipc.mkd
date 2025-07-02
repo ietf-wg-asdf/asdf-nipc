@@ -84,7 +84,7 @@ telemetry from these non-IP low-power devices must do so through a gateway
 function on the IP network. This gateway functions then translates the 
 communication to the non-IP protocol that the low-power device supports. 
 
-~~~~~
+~~~~~ aasvg
                                                                
     +-------------+              +---------+              +--------+
     | Application |<------------>| Gateway |<------------>| Non-IP |                     
@@ -148,23 +148,23 @@ The Application gateway is a network function, so its goal is to proxy payloads
 between Non-IP and IP networks. It is not intended to be a middleware function
 that interprets, decodes or modifies these payloads.
 
-~~~~~
+~~~~~ aasvg
 
-                             +-----------------------------------+
-                             |                                   |
-    +-----------+   Request  |  +---------+                      |
-    | onboarding|-------------->|  SCIM   |                      |
-    |    app    |<--------------| Server  |                      |
-    +-----------+  Ctrl Endpt|  +---------+                      |
-                             |                                   |
-    +-----------+            |  +------------+  +-------+  +--+  |
-    |  Control  |>...REST....|.>|    NIPC    |..|  AP   |..|D |  |
-    |     &     |            |  |   Gateway  |  +-------+  +--+  |
-    | Telemetry |<..pub/sub..|.<|            |                   |
-    |    Apps   |            |  +------------+                   |
-    +-----------+            |                                   |
-                             |       Network Deployment          |
-                             +-----------------------------------+
+                           +------------------------------------------+
+                           |                                          |
+  +-----------+   Request  |  +---------+                             |
+  | onboarding+-------------->|  SCIM   |                             |
+  |    app    |<--------------+ Server  |                             |
+  +-----------+  Ctrl Endpt|  +---------+                             |
+                           |                                          |
+  +-----------+            |  +------------+   +-------+   +--------+ |
+  |  Control  +----REST------>|    NIPC    +-->|  AP   +-->| Device | |
+  |     &     |            |  |   Gateway  |   +-------+   +--------+ |
+  | Telemetry |<--pub/sub-----+            |                          |
+  |    Apps   |            |  +------------+                          |
+  +-----------+            |                                          |
+                           |            Network Deployment            |
+                           +------------------------------------------+
 
 ~~~~~
 {: #arch title="Basic Architecture"}
@@ -208,19 +208,18 @@ protocol-neutral operations, and hence requires a mapping of protocol-neutral
 operations to protocol specific operations. These are supplied to the gateway
 by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 
-~~~~~
+~~~~~ aasvg
 
     +------------+   
     |    SCIM    |                      
     |   object   |           +----------------+          
-    |    {id}    |---------->|                |
+    |    {id}    +---------->|                |
     +------------+           | NIPC Operation |
                              |    - Property  |
                              |    - Action    |
     +------------+           |    - Event     |
-    |     SDF    |---------->|                |
+    |     SDF    +---------->|                |
     |    model   |           +----------------+
-    |            |
     +------------+  
 
 ~~~~~
@@ -282,15 +281,17 @@ cluster of an endpoint.
 protocol mapping allows for integration of new protocols in NIPC, new mappings 
 can be created without the need to update the base schema.
 
-~~~~~
+~~~~~ aasvg
 
-     - protocolmap
-        |
-        |> ble
-        |     - BLE property
-        |
-        |> zigbee
-              - Zigbee property
+  protocolmap
+    |
+    +-----> ble
+    |        |
+    |        +--> BLE property
+    |
+    +-----> zigbee
+              |
+              +--> Zigbee property
 
 ~~~~~
 {: #protmap title="Property Mapping"}
