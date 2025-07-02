@@ -290,8 +290,8 @@ can be created without the need to update the base schema.
     |        +--> BLE property
     |
     +-----> zigbee
-              |
-              +--> Zigbee property
+             |
+             +--> Zigbee property
 
 ~~~~~
 {: #protmap title="Property Mapping"}
