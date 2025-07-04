@@ -428,7 +428,7 @@ delivered over either:
 
 ## Paths
 
-### General
+### General {#paths-general}
 
 The NIPC HTTP protocol is described in terms of a path relative to a Base URI.
 The Base URI MUST NOT contain a query string, as clients MAY append additional 
@@ -440,11 +440,28 @@ For example:
 
       "https://example.com/nipc/"
 
-Based on this a well_known URI {{!RFC8615}} of nipc can be defined.
-
 Additionally a version number may be added, for example: 
 
       "https://example.com/nipc/v1/"
+
+The well-known URI `/.well-known/nipc` defined in {{iana-well-known}} can
+be used to discover the base path of the NIPC APIs and the supported 
+extension APIs. The paths can be a URI template as defined in {{!RFC6570}}.
+
+~~~~~ json
+{
+  "base_path": "/nipc/v1/",
+  "extensions": [
+    "/extensions/{id}/bulk",
+    "/extensions/{id}/firmware",
+    "/extensions/{id}/properties/blob",
+    "/extensions/{id}/properties/file",
+    "/extensions/{id}/properties/read/conditional",
+    "/extensions/{id}/properties/write"
+  ]
+}
+~~~~~
+{: #ex-wellknown title="Example response for /.well-known/nipc"}
 
 ### NIPC Registrations
 
@@ -2062,11 +2079,61 @@ with {{!RFC8126}}.
 
 ## Protocol mapping
 
+IANA is requested to create a new registry called "NIPC Protocol Mapping".
+
+| Protocol map | Protocol Name               | Description                                 | Reference       |
+|--------------|-----------------------------|---------------------------------------------|-----------------|
+| ble          | Bluetooth Low Energy (BLE)  | Protocol mapping for BLE devices            | This document   |
+| zigbee       | Zigbee                      | Protocol mapping for Zigbee devices         | This document   |
+
 ## API extensions
 
-## Well-known URIs
+<!-- TODO: Define the IANA registry for NIPC API extensions -->
+
+## Well-known URIs {#iana-well-known}
+
+IANA is requested to register the following well-known URI in the "Well-Known URIs" registry as defined by {{!RFC8615}}:
+
+| URI Suffix | Change Controller | Specification Document            |
+|------------|-------------------|-----------------------------------|
+| nipc       | IETF              | This document, [](#paths-general) |
+
+The well-known URI for NIPC is:
+
+    /.well-known/nipc
 
 ## Problem Details for HTTP APIs
+
+This document registers new Problem Details types in the "HTTP Problem Type" registry established by {{RFC9457}}.
+
+IANA is requested to register the following URIs in the "HTTP Problem Type" registry:
+
+| Problem Type URI                                                                 | Description                                  | Reference         |
+|----------------------------------------------------------------------------------|----------------------------------------------|-------------------|
+| https://www.iana.org/assignments/http-problem-types#nipc-invalid-id              | Invalid device ID or gateway doesn't recognize the ID | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-invalid-sdf-url         | Invalid SDF URL or SDF affordance not found   | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed | Operation was not executed since the previous operation failed | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-sdf-model-already-registered | SDF model already registered                  | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-sdf-model-in-use        | SDF model in use                              | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-property-not-readable   | Property not readable                         | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-property-not-writable   | Property not writable                         | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-event-already-enabled   | Event already enabled                         | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-event-not-enabled       | Event not enabled                             | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-event-not-registered    | Event not registered for any data application | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-already-connected | Device already connected                      | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-no-connection | No connection found for device                | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-connection-timeout | BLE connection timeout                        | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-bonding-failed | BLE bonding failed                            | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-connection-failed | BLE connection failed                         | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-service-discovery-failed | BLE service discovery failed                  | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-invalid-service-or-characteristic | Invalid BLE service or characteristic ID      | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-zigbee-connection-timeout | Zigbee connection timeout                     | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-zigbee-invalid-endpoint-or-cluster | Invalid Zigbee endpoint or cluster ID         | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-extension-broadcast-invalid-data | Invalid transmit data                         | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-extension-firmware-rollback | Firmware rollback                             | This document   |
+| https://www.iana.org/assignments/http-problem-types#nipc-extension-firmware-update-failed | Firmware update failed                        | This document   |
+
+Each Problem Type URI is intended for use as the "type" member in Problem Details responses as described.
 
 --- back
 
