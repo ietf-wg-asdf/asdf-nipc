@@ -27,7 +27,7 @@ tags:
 
 paths:
 ### Extensions
-  /extensions/{id}/properties/{propertyName}/blob:
+  /extensions/{id}/properties/blob:
     put:
       tags:
         - NIPC API extensions
@@ -45,12 +45,12 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
-        in: path
+        in: query
         description: The SDF property name that needs to be written to.
         required: true
         schema:
           type: string
-          example: "bin_blob"
+          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware"
       requestBody:
         content:
           application/json:

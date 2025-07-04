@@ -16,6 +16,3 @@ all: $(DOCS)
 
 %.txt:	%.xml
 	xml2rfc --text $<
-
-%.ftxt: %.json $(JSON)
-	python3 fold.py < $< > $@
