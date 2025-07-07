@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-IP device control (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-08
+docname: draft-ietf-asdf-nipc-09
 submissionType: IETF
 category: std
 
@@ -394,7 +394,7 @@ extensions to it. Extensions are compound APIs. They leverage basic NIPC
 operations but combine multiple operations in to one API call for efficiency.
 An example of this is the the bulk operation, allowing to send multiple
 operations in one operation. Extensions can be generic, IANA registered 
-extentions, or vendor specific extensions.
+extentions {{iana-api-ext}}, or vendor specific extensions.
 
 ## Events publish subscribe interface
 
@@ -448,6 +448,8 @@ Additionally a version number may be added, for example:
 The well-known URI `/.well-known/nipc` defined in {{iana-well-known}} can
 be used to discover the base path of the NIPC APIs and the supported 
 extension APIs. The paths can be a URI template as defined in {{!RFC6570}}.
+The following is an example of a template defining the NIPC base path as well
+as supported extensions on a server.
 
 ~~~~~ json
 {
@@ -1712,14 +1714,14 @@ protocol as well. Protocol objects will be extended as follows:
 
 In the new protocol object, protocol specific properties can be added.
 
-Protocol mappings need to be IANA registered.
+Protocol mappings need to be IANA registered, see {{iana-prot-map}}.
  
 ## API extensions {#apiextensions}
 
 /extension
 
 The extension APIs allow for extensibility of the APIs, either IANA 
-registered extensions or vendor-specific extensions.
+registered extensions ({{iana-api-ext}}) or vendor-specific extensions.
 Extension APIs must leverage the basic NIPC defined APIs and combine them in 
 compound statements in order to streamline application operation against
 devices, make operations more expediant and convenient in one API call.
@@ -2078,18 +2080,43 @@ This section provides guidance to the Internet Assigned Numbers Authority
 (IANA) regarding registration of values related to NIPC, in accordance
 with {{!RFC8126}}.
 
-## Protocol mapping
+## Protocol mapping {#iana-prot-map}
 
-IANA is requested to create a new registry called "NIPC Protocol Mapping".
+IANA is requested to create a new registry called "NIPC protocol mapping".
+The registry must contain following attributes:
+- Protocol map name
+- Protocol name
+- Description
+- Reference of the document describing the protocol mapping. This document 
+  must be an RFC.
+
+Following protocol mappings are described in this document:
 
 | Protocol map | Protocol Name               | Description                                 | Reference       |
 |--------------|-----------------------------|---------------------------------------------|-----------------|
 | ble          | Bluetooth Low Energy (BLE)  | Protocol mapping for BLE devices            | This document   |
 | zigbee       | Zigbee                      | Protocol mapping for Zigbee devices         | This document   |
 
-## API extensions
+## API extensions {#iana-api-ext}
 
-<!-- TODO: Define the IANA registry for NIPC API extensions -->
+IANA is requested to create a new registry called "NIPC API extensions". 
+Registering extensions is optional, extensions can be gemerally available (IANA
+The registry must contain following attributes:
+- Extension URI 
+- Extension name
+- Description
+- Openapi model describing the extension. This model must be reviewed by an expert.  
+
+Following API extensions are described in this document:
+
+| Extension URI                                | Extension name       | Description                                    | Model reference    |
+|----------------------------------------------|----------------------|------------------------------------------------|--------------------|
+| /extension/{id}/bulk                         | Bulk API             | Call multiple NIPC's in s single request       | {{NIPCextensions}} |
+| /extension/{id}/properties/file              | File write API       | Write a file with multiple property ops        | {{NIPCextensions}} |
+| /extension/{id}/properties/blob              | Binary write API     | Write a binary blob with multiple property ops | {{NIPCextensions}} |
+| /extensions/{id}/properties/read/conditional | Read conditional API | Read a property until a condition is fulfilled | {{NIPCextensions}} |
+| /extensions/{id}/firmware                    | Firmware upgrade API | Firmware upgrade API, leveraging mutiple opsed | {{NIPCextensions}} |
+| /extensions/{id}/manage/transmit             | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
 
 ## Well-known URIs {#iana-well-known}
 
