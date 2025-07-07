@@ -582,7 +582,7 @@ These APIs allow applications to register an SDF model for a class of devices.
 These APIs use the `application/sdf+json` media type, as described in 
 {{Section 7.1 of I-D.ietf-asdf-sdf}}.
 
-### Register an sdf model
+### Register an SDF model
 
 Method: `POST /registration/model`
 
@@ -603,18 +603,18 @@ Example of a response:
   }
 ]
 ~~~~~
-{:json #exregresp title="Example register sdf model response"}
+{:json #exregresp title="Example register SDF model response"}
 
 where-
 
  - "sdfName" is the reference to the top-level sdfThing or sdfObject 
     in the SDF model
 
-### Get all sdf models
+### Get all SDF models
 
 Method: `GET /registration/model`
 
-Description: Gets all sdf models registered with the gateway
+Description: Gets all SDF models registered with the gateway
 
 Response:
 
@@ -627,18 +627,18 @@ Example of a response:
   }
 ]
 ~~~~~
-{:json #exgetallresp title="Example get all sdf models response"}
+{:json #exgetallresp title="Example get all SDF models response"}
 
 where-
 
  - "sdfName" is the reference to the top-level sdfThing or sdfObject 
     in the SDF model
 
-### Get an sdf model
+### Get an SDF model
 
 Method: `GET /registration/model`
 
-Description: Gets an sdf model registered with the gateway
+Description: Gets an SDF model registered with the gateway
 
 Query Parameters: 
 
@@ -647,14 +647,14 @@ Query Parameters:
 
 Response:
 
-The sdf model is returned in JSON format, similar to the example in 
+The SDF model is returned in JSON format, similar to the example in 
 {{thermometer-sdf}}.
 
-### Delete an sdf model
+### Delete an SDF model
 
 Method: `DELETE /registration/model`
 
-Description: Deletes an sdf model registered with the gateway
+Description: Deletes an SDF model registered with the gateway
 
 Query Parameters: 
 
@@ -670,18 +670,18 @@ Example of a response:
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
-{:json #exdelresp title="Example delete sdf model response"}
+{:json #exdelresp title="Example delete SDF model response"}
 
 where-
 
  - "sdfName" is the reference to the top-level sdfThing or sdfObject 
     in the SDF model
 
-### Update an sdf model
+### Update an SDF model
 
 Method: `PUT /registration/model`
 
-Description: Updates an sdf model registered with the gateway
+Description: Updates an SDF model registered with the gateway
 
 Query Parameters: 
 
@@ -701,7 +701,7 @@ Example of a response:
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
-{:json #exupresp title="Example update sdf model response"}
+{:json #exupresp title="Example update SDF model response"}
 
 where-
 
@@ -2086,7 +2086,7 @@ file "openapi.yml"
 
 # Protocol mapping
 
-NIPC requires that a protocol mapping be provided as part of the sdf
+NIPC requires that a protocol mapping be provided as part of the SDF
 model for a device or have one provided using the NIPC action APIs with 
 embedded protocol mapping. The protocol mapping is a JSON object that 
 describes the underlying technology used to communicate with the device 
