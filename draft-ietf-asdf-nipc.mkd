@@ -2083,7 +2083,9 @@ with {{!RFC8126}}.
 ## Protocol mapping {#iana-prot-map}
 
 IANA is requested to create a new registry called "NIPC protocol mapping".
+
 The registry must contain following attributes:
+
 - Protocol map name
 - Protocol name
 - Description
@@ -2100,8 +2102,11 @@ Following protocol mappings are described in this document:
 ## API extensions {#iana-api-ext}
 
 IANA is requested to create a new registry called "NIPC API extensions". 
-Registering extensions is optional, extensions can be gemerally available (IANA
+Registering extensions is optional, extensions can be generally
+available (IANA registered), or vendor-specific (not IANA registered).
+
 The registry must contain following attributes:
+
 - Extension URI 
 - Extension name
 - Description
@@ -2111,7 +2116,7 @@ Following API extensions are described in this document:
 
 | Extension URI                                | Extension name       | Description                                    | Model reference    |
 |----------------------------------------------|----------------------|------------------------------------------------|--------------------|
-| /extension/{id}/bulk                         | Bulk API             | Call multiple NIPC's in s single request       | {{NIPCextensions}} |
+| /extension/{id}/bulk                         | Bulk API             | Call multiple NIPC's in a single request       | {{NIPCextensions}} |
 | /extension/{id}/properties/file              | File write API       | Write a file with multiple property ops        | {{NIPCextensions}} |
 | /extension/{id}/properties/blob              | Binary write API     | Write a binary blob with multiple property ops | {{NIPCextensions}} |
 | /extensions/{id}/properties/read/conditional | Read conditional API | Read a property until a condition is fulfilled | {{NIPCextensions}} |
