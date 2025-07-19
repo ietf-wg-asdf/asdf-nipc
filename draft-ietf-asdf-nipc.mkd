@@ -946,12 +946,13 @@ Example of a response:
 ~~~~~
 [
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
-    "value": "dGVzdA=="
+    "status": 200
   },
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/humidity",
-    "value": "eGVzdB=="
+    "type": "https://www.iana.org/assignments/http-problem-types#nipc-invalid-property",
+    "status": 400,
+    "title": "Invalid Property",
+    "detail": "Property https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature does not exist or is not writable"
   }
 ]
 ~~~~~
