@@ -389,12 +389,13 @@ protocol mappings. They require explicit connection management.
 
 ### Extensions {#extensions}
 
-Extensions are not part of the core NIPC API specification, but 
-extensions to it. Extensions are compound APIs. They leverage basic NIPC
-operations but combine multiple operations in to one API call for efficiency.
-An example of this is the the bulk operation, allowing to send multiple
-operations in one operation. Extensions can be generic, IANA registered 
-extentions {{iana-api-ext}}, or vendor specific extensions.
+NIPC is extendable as a NIPC gateway may want to provide a way to execute a
+complex set of NIPC operations in a single API call, or may want to perform
+an operation that can deliver an outcome more efficiently than a NIPC API. 
+An example of an extension that uses compound operation is the bulk API.
+
+Extensions must leverage the /extension path element. In order to assure
+inter-operability, extensions should be IANA registered {{iana-api-ext}}.
 
 ## Events publish subscribe interface
 
