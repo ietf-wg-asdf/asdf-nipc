@@ -446,15 +446,28 @@ Additionally a version number may be added, for example:
 
       "https://example.com/nipc/v1/"
 
+After the base or version number, the path must contain a collection identifier.
+The collection identifier can be one of the following:
+- /registrations: for NIPC registration APIs
+- /devices: for NIPC operations on devices
+- /groups: for NIPC operations on groups of devices
+- /extensions: for NIPC extension APIs
+- /manage: for NIPC management APIs
+
 The well-known URI `/.well-known/nipc` defined in {{iana-well-known}} can
-be used to discover the base path of the NIPC APIs and the supported 
+be used to discover the base path of the NIPC APIs and the supported versions
+and extensions. The response to a GET request on this URI MUST be a JSON
+document that contains the base path, and optionally the supported versions and  
 extension APIs. The paths can be a URI template as defined in {{!RFC6570}}.
 The following is an example of a template defining the NIPC base path as well
 as supported extensions on a server.
 
 ~~~~~ json
 {
-  "base_path": "/nipc/v1/",
+  "base_path": "/nipc",
+  "versions": [
+    "/v1"
+  ],
   "extensions": [
     "/extensions/{id}/bulk",
     "/extensions/{id}/firmware",
