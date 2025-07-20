@@ -301,21 +301,21 @@ components:
           - method: GET
             path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
-              type: https://www.iana.org/assignments/http-problem-types#nipc-property-not-readable
+              type: https://www.iana.org/assignments/nipc-problem-types#property-not-readable
               status: 400
               title: Property not readable
               detail: Property https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/temperature is not readable
           - method: PUT
             path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
-              type: https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed
+              type: https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed
               status: 400
               title: Operation not executed
               detail: Operation was not executed since the previous operation failed
           - method: POST
             path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/temperature
             response:
-              type: https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed
+              type: https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed
               status: 400
               title: Operation not executed
               detail: Operation was not executed since the previous operation failed

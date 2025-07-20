@@ -1202,28 +1202,28 @@ components:
           type: string
           description: URI to the error type
           enum:
-            - https://www.iana.org/assignments/http-problem-types#nipc-invalid-id
-            - https://www.iana.org/assignments/http-problem-types#nipc-invalid-sdf-url
-            - https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed
-            - https://www.iana.org/assignments/http-problem-types#nipc-sdf-model-already-registered
-            - https://www.iana.org/assignments/http-problem-types#nipc-sdf-model-in-use
-            - https://www.iana.org/assignments/http-problem-types#nipc-property-not-readable
-            - https://www.iana.org/assignments/http-problem-types#nipc-property-not-writable
-            - https://www.iana.org/assignments/http-problem-types#nipc-event-already-enabled
-            - https://www.iana.org/assignments/http-problem-types#nipc-event-not-enabled
-            - https://www.iana.org/assignments/http-problem-types#nipc-event-not-registered
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-already-connected
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-no-connection
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-connection-timeout
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-bonding-failed
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-connection-failed
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-service-discovery-failed
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-invalid-service-or-characteristic
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-zigbee-connection-timeout
-            - https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-zigbee-invalid-endpoint-or-cluster
-            - https://www.iana.org/assignments/http-problem-types#nipc-extension-broadcast-invalid-data
-            - https://www.iana.org/assignments/http-problem-types#nipc-extension-firmware-rollback
-            - https://www.iana.org/assignments/http-problem-types#nipc-extension-firmware-update-failed
+            - https://www.iana.org/assignments/nipc-problem-types#invalid-id
+            - https://www.iana.org/assignments/nipc-problem-types#invalid-sdf-url
+            - https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed
+            - https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered
+            - https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use
+            - https://www.iana.org/assignments/nipc-problem-types#property-not-readable
+            - https://www.iana.org/assignments/nipc-problem-types#property-not-writable
+            - https://www.iana.org/assignments/nipc-problem-types#event-already-enabled
+            - https://www.iana.org/assignments/nipc-problem-types#event-not-enabled
+            - https://www.iana.org/assignments/nipc-problem-types#event-not-registered
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-already-connected
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-no-connection
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-timeout
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-bonding-failed
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-failed
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-service-discovery-failed
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-invalid-service-or-characteristic
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-connection-timeout
+            - https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-invalid-endpoint-or-cluster
+            - https://www.iana.org/assignments/nipc-problem-types#extension-broadcast-invalid-data
+            - https://www.iana.org/assignments/nipc-problem-types#extension-firmware-rollback
+            - https://www.iana.org/assignments/nipc-problem-types#extension-firmware-update-failed
             - about:blank
         status:
           type: integer
