@@ -389,12 +389,13 @@ protocol mappings. They require explicit connection management.
 
 ### Extensions {#extensions}
 
-Extensions are not part of the core NIPC API specification, but 
-extensions to it. Extensions are compound APIs. They leverage basic NIPC
-operations but combine multiple operations in to one API call for efficiency.
-An example of this is the the bulk operation, allowing to send multiple
-operations in one operation. Extensions can be generic, IANA registered 
-extentions {{iana-api-ext}}, or vendor specific extensions.
+NIPC is extendable as a NIPC gateway may want to provide a way to execute a
+complex set of NIPC operations in a single API call, or may want to perform
+an operation that can deliver an outcome more efficiently than a NIPC API. 
+An example of an extension that uses compound operation is the bulk API.
+
+Extensions must leverage the /extension path element. In order to assure
+inter-operability, extensions should be IANA registered {{iana-api-ext}}.
 
 ## Events publish subscribe interface
 
@@ -445,15 +446,28 @@ Additionally a version number may be added, for example:
 
       "https://example.com/nipc/v1/"
 
+After the base or version number, the path must contain a collection identifier.
+The collection identifier can be one of the following:
+- /registrations: for NIPC registration APIs
+- /devices: for NIPC operations on devices
+- /groups: for NIPC operations on groups of devices
+- /extensions: for NIPC extension APIs
+- /manage: for NIPC management APIs
+
 The well-known URI `/.well-known/nipc` defined in {{iana-well-known}} can
-be used to discover the base path of the NIPC APIs and the supported 
+be used to discover the base path of the NIPC APIs and the supported versions
+and extensions. The response to a GET request on this URI MUST be a JSON
+document that contains the base path, and optionally the supported versions and  
 extension APIs. The paths can be a URI template as defined in {{!RFC6570}}.
 The following is an example of a template defining the NIPC base path as well
 as supported extensions on a server.
 
 ~~~~~ json
 {
-  "base_path": "/nipc/v1/",
+  "base_path": "/nipc",
+  "versions": [
+    "/v1"
+  ],
   "extensions": [
     "/extensions/{id}/bulk",
     "/extensions/{id}/firmware",
@@ -574,7 +588,7 @@ Example of a failure response:
 
 ~~~~~
 {
-  "type": "https://www.iana.org/assignments/http-problem-types#nipc-invalid-id",
+  "type": "https://www.iana.org/assignments/nipc-problem-types#invalid-id",
   "status": 400,
   "title": "Invalid Device ID",
   "detail": "Device ID 12345678-1234-5678-1234-56789abcdef4 does not exist or is not a device"
@@ -1761,28 +1775,28 @@ The specific error codes are defined in the table below:
 
 | Error Code                                      | Description                                  | Category         |
 |-------------------------------------------------|----------------------------------------------|------------------|
-| nipc-invalid-id                                 | Invalid device ID or gateway doesn't recognize the ID | Generic          |
-| nipc-invalid-sdf-url                            | Invalid SDF URL or SDF affordance not found   | Generic           |
-| nipc-extension-operation-not-executed           | Operation was not executed since the previous operation failed | Generic |
-| nipc-sdf-model-already-registered               | SDF model already registered                  | Generic           |
-| nipc-sdf-model-in-use                           | SDF model in use                              | Generic           |
-| nipc-property-not-readable                      | Property not readable                         | Property APIs     |
-| nipc-property-not-writable                      | Property not writable                         | Property APIs     |
-| nipc-event-already-enabled                      | Event already enabled                         | Event APIs        |
-| nipc-event-not-enabled                          | Event not enabled                             | Event APIs        |
-| nipc-event-not-registered                       | Event not registered for any data application | Event APIs        |
-| nipc-protocolmap-ble-already-connected          | Device already connected                      | Protocol specific |
-| nipc-protocolmap-ble-no-connection              | No connection found for device                | Protocol specific |
-| nipc-protocolmap-ble-connection-timeout         | BLE connection timeout                        | Protocol specific |
-| nipc-protocolmap-ble-bonding-failed             | BLE bonding failed                            | Protocol specific |
-| nipc-protocolmap-ble-connection-failed          | BLE connection failed                         | Protocol specific |
-| nipc-protocolmap-ble-service-discovery-failed   | BLE service discovery failed                  | Protocol specific |
-| nipc-protocolmap-ble-invalid-service-or-characteristic | Invalid BLE service or characteristic ID | Protocol specific     |
-| nipc-protocolmap-zigbee-connection-timeout      | Zigbee connection timeout                     | Protocol specific |
-| nipc-protocolmap-zigbee-invalid-endpoint-or-cluster | Invalid Zigbee endpoint or cluster ID     | Protocol specific |
-| nipc-extension-broadcast-invalid-data           | Invalid transmit data                         | Transmit APIs     |
-| nipc-extension-firmware-rollback                | Firmware rollback                             | Extension APIs    |
-| nipc-extension-firmware-update-failed           | Firmware update failed                        | Extension APIs    |
+| invalid-id                                 | Invalid device ID or gateway doesn't recognize the ID | Generic          |
+| invalid-sdf-url                            | Invalid SDF URL or SDF affordance not found   | Generic           |
+| extension-operation-not-executed           | Operation was not executed since the previous operation failed | Generic |
+| sdf-model-already-registered               | SDF model already registered                  | Generic           |
+| sdf-model-in-use                           | SDF model in use                              | Generic           |
+| property-not-readable                      | Property not readable                         | Property APIs     |
+| property-not-writable                      | Property not writable                         | Property APIs     |
+| event-already-enabled                      | Event already enabled                         | Event APIs        |
+| event-not-enabled                          | Event not enabled                             | Event APIs        |
+| event-not-registered                       | Event not registered for any data application | Event APIs        |
+| protocolmap-ble-already-connected          | Device already connected                      | Protocol specific |
+| protocolmap-ble-no-connection              | No connection found for device                | Protocol specific |
+| protocolmap-ble-connection-timeout         | BLE connection timeout                        | Protocol specific |
+| protocolmap-ble-bonding-failed             | BLE bonding failed                            | Protocol specific |
+| protocolmap-ble-connection-failed          | BLE connection failed                         | Protocol specific |
+| protocolmap-ble-service-discovery-failed   | BLE service discovery failed                  | Protocol specific |
+| protocolmap-ble-invalid-service-or-characteristic | Invalid BLE service or characteristic ID | Protocol specific     |
+| protocolmap-zigbee-connection-timeout      | Zigbee connection timeout                     | Protocol specific |
+| protocolmap-zigbee-invalid-endpoint-or-cluster | Invalid Zigbee endpoint or cluster ID     | Protocol specific |
+| extension-broadcast-invalid-data           | Invalid transmit data                         | Transmit APIs     |
+| extension-firmware-rollback                | Firmware rollback                             | Extension APIs    |
+| extension-firmware-update-failed           | Firmware update failed                        | Extension APIs    |
 {: #errorcodes title="Error Codes"}
 
 The appropriate HTTP status code is returned in the response. 
@@ -2103,8 +2117,6 @@ Following protocol mappings are described in this document:
 ## API extensions {#iana-api-ext}
 
 IANA is requested to create a new registry called "NIPC API extensions". 
-Registering extensions is optional, extensions can be generally
-available (IANA registered), or vendor-specific (not IANA registered).
 
 The registry must contain following attributes:
 
@@ -2140,32 +2152,35 @@ The well-known URI for NIPC is:
 
 This document registers new Problem Details types in the "HTTP Problem Type" registry established by {{RFC9457}}.
 
-IANA is requested to register the following URIs in the "HTTP Problem Type" registry:
+IANA is requested to create a new registry, the "NIPC Problem Type" registry, 
+with following URL: https://www.iana.org/assignments/nipc-problem-types. IANA
+is requested to register the following URIs in the "NIPC Problem Type" 
+registry:
 
 | Problem Type URI                                                                 | Description                                  | Reference         |
 |----------------------------------------------------------------------------------|----------------------------------------------|-------------------|
-| https://www.iana.org/assignments/http-problem-types#nipc-invalid-id              | Invalid device ID or gateway doesn't recognize the ID | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-invalid-sdf-url         | Invalid SDF URL or SDF affordance not found   | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-extension-operation-not-executed | Operation was not executed since the previous operation failed | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-sdf-model-already-registered | SDF model already registered                  | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-sdf-model-in-use        | SDF model in use                              | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-property-not-readable   | Property not readable                         | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-property-not-writable   | Property not writable                         | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-event-already-enabled   | Event already enabled                         | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-event-not-enabled       | Event not enabled                             | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-event-not-registered    | Event not registered for any data application | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-already-connected | Device already connected                      | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-no-connection | No connection found for device                | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-connection-timeout | BLE connection timeout                        | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-bonding-failed | BLE bonding failed                            | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-connection-failed | BLE connection failed                         | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-service-discovery-failed | BLE service discovery failed                  | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-ble-invalid-service-or-characteristic | Invalid BLE service or characteristic ID      | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-zigbee-connection-timeout | Zigbee connection timeout                     | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-protocolmap-zigbee-invalid-endpoint-or-cluster | Invalid Zigbee endpoint or cluster ID         | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-extension-broadcast-invalid-data | Invalid transmit data                         | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-extension-firmware-rollback | Firmware rollback                             | This document   |
-| https://www.iana.org/assignments/http-problem-types#nipc-extension-firmware-update-failed | Firmware update failed                        | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#invalid-id              | Invalid device ID or gateway doesn't recognize the ID | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#invalid-sdf-url         | Invalid SDF URL or SDF affordance not found   | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed | Operation was not executed since the previous operation failed | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered | SDF model already registered                  | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use        | SDF model in use                              | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#property-not-readable   | Property not readable                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#property-not-writable   | Property not writable                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#event-already-enabled   | Event already enabled                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#event-not-enabled       | Event not enabled                             | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#event-not-registered    | Event not registered for any data application | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-already-connected | Device already connected                      | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-no-connection | No connection found for device                | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-timeout | BLE connection timeout                        | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-bonding-failed | BLE bonding failed                            | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-failed | BLE connection failed                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-service-discovery-failed | BLE service discovery failed                  | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-invalid-service-or-characteristic | Invalid BLE service or characteristic ID      | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-connection-timeout | Zigbee connection timeout                     | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-invalid-endpoint-or-cluster | Invalid Zigbee endpoint or cluster ID         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#extension-broadcast-invalid-data | Invalid transmit data                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#extension-firmware-rollback | Firmware rollback                             | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#extension-firmware-update-failed | Firmware update failed                        | This document   |
 
 Each Problem Type URI is intended for use as the "type" member in Problem Details responses as described.
 
