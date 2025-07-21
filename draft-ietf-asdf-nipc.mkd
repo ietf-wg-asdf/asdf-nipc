@@ -980,8 +980,8 @@ Example of a response:
     "status": 200
   },
   {
-    "type": "https://www.iana.org/assignments/nipc-problem-types#htt\
-p-invalid-property",
+    "type": "https://www.iana.org/assignments/nipc-problem-types#inv\
+alid-property",
     "status": 400,
     "title": "Invalid Property",
     "detail": "Property https://example.com/heartrate#/sdfObject/the\
