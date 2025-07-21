@@ -949,7 +949,7 @@ Example of a response:
     "status": 200
   },
   {
-    "type": "https://www.iana.org/assignments/http-problem-types#nipc-invalid-property",
+    "type": "https://www.iana.org/assignments/nipc-problem-types#invalid-property",
     "status": 400,
     "title": "Invalid Property",
     "detail": "Property https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature does not exist or is not writable"
