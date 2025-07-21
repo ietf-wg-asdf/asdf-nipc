@@ -3,7 +3,8 @@ openapi: 3.0.3
 info:
   title: Non IP Device Control (NIPC) API firmware upgrade extension
   description: |-
-    Non IP Device Control (NIPC) API firmware upgrade extension, requires the file extension
+    Non IP Device Control (NIPC) API firmware upgrade extension, 
+    requires the file extension
   termsOfService: http://swagger.io/terms/
   contact:
     email: bbrinckm@cisco.com
@@ -23,7 +24,8 @@ servers:
 tags:
   - name:  NIPC API extensions
     description: |-
-      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
+      APIs that simplify application interaction by implementing
+      one or more basic APIs into a single API call.
 
 paths:
 ### Extensions
@@ -33,7 +35,8 @@ paths:
         - NIPC API extensions
       summary: Upgrade the firmware of a device
       description: |-
-        Update the firmware of a device. Will perform all operations required to upgrade the firmware. Id cannot be a group-id.
+        Update the firmware of a device. Will perform all operations
+        required to upgrade the firmware. ID cannot be a group-id.
       operationId: upgradeFirmware
       parameters:
       - name: id
@@ -100,7 +103,10 @@ paths:
         - NIPC API extensions
       summary: Get the status of a firmware upgrade of a device
       description: |-
-        Get the status of a firmware upgrade of a device. Returns success when ongoing or completed, with a reason. Returns failure when upgrade has failed. Id cannot be a group-id.
+        Get the status of a firmware upgrade of a device. 
+        Returns success when ongoing or completed, with a reason. 
+        Returns failure when upgrade has failed. 
+        ID cannot be a group-id.
       operationId: upgradeFirmwareStatus
       parameters:
       - name: id
@@ -150,7 +156,10 @@ paths:
         - NIPC API extensions
       summary: Get the status of a firmware upgrade of a device
       description: |-
-        Get the status of a firmware upgrade of a device. REturns success when ongoing or completed, with a reason. Returns failure when upgrade has failed. Id cannot be a group-id.
+        Get the status of a firmware upgrade of a device. 
+        Returns success when ongoing or completed, with a reason. 
+        Returns failure when upgrade has failed. 
+        ID cannot be a group-id.
       operationId: upgradeFirmwareStatus
       parameters:
       - name: id

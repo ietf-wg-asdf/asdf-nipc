@@ -23,7 +23,8 @@ servers:
 tags:
   - name:  NIPC API extensions
     description: |-
-      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
+      APIs that simplify application interaction by implementing
+      one or more basic APIs into a single API call.
 
 paths:
 ### Extensions
@@ -33,7 +34,13 @@ paths:
         - NIPC API extensions
       summary: Write a binary blob to a property on a device
       description: |-
-        Write a binary blob to a property on a device. Will chunk up the binary blob and perform multiple writes. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
+        Write a binary blob to a property on a device. Will chunk up
+        the binary blob and perform multiple writes. If the 
+        underlying protocol requires a connection to be set up, 
+        this API call will perform the necessary connection 
+        management. If a connection is already active for this 
+        device, the existing connection will be leveraged without 
+        modifying it. ID cannot be a group-id.
       operationId: writeBlob
       parameters:
       - name: id
@@ -46,7 +53,8 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
         in: query
-        description: The SDF property name that needs to be written to.
+        description: |-
+          The SDF property name that needs to be written to.
         required: true
         schema:
           type: string

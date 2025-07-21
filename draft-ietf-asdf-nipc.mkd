@@ -150,21 +150,21 @@ that interprets, decodes or modifies these payloads.
 
 ~~~~~ aasvg
 
-                           +------------------------------------------+
-                           |                                          |
-  +-----------+   Request  |  +---------+                             |
-  | onboarding+-------------->|  SCIM   |                             |
-  |    app    |<--------------+ Server  |                             |
-  +-----------+  Ctrl Endpt|  +---------+                             |
-                           |                                          |
-  +-----------+            |  +------------+   +-------+   +--------+ |
-  |  Control  +----REST------>|    NIPC    +-->|  AP   +-->| Device | |
-  |     &     |            |  |   Gateway  |   +-------+   +--------+ |
-  | Telemetry |<--pub/sub-----+            |                          |
-  |    Apps   |            |  +------------+                          |
-  +-----------+            |                                          |
-                           |            Network Deployment            |
-                           +------------------------------------------+
+                         +------------------------------------------+
+                         |                                          |
++-----------+   Request  |  +---------+                             |
+| onboarding+-------------->|  SCIM   |                             |
+|    app    |<--------------+ Server  |                             |
++-----------+  Ctrl Endpt|  +---------+                             |
+                         |                                          |
++-----------+            |  +------------+   +-------+   +--------+ |
+|  Control  +----REST------>|    NIPC    +-->|  AP   +-->| Device | |
+|     &     |            |  |   Gateway  |   +-------+   +--------+ |
+| Telemetry |<--pub/sub-----+            |                          |
+|    Apps   |            |  +------------+                          |
++-----------+            |                                          |
+                         |            Network Deployment            |
+                         +------------------------------------------+
 
 ~~~~~
 {: #arch title="Basic Architecture"}
@@ -330,7 +330,8 @@ Example protocol mapping:
         "protocolMap": {
           "ble": {
             "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-            "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
+            "characteristicID": 
+              "12345678-1234-5678-1234-56789abcdef4"
           }
         }
       }
@@ -553,9 +554,9 @@ are of type string
 
 For example:
 
-| Attribute | Req |   Type  |          Example                               |
-+-----------+-----+---------+------------------------------------------------|
-| Property  |  T  |  string | https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature |
+| Attribute | Req |   Type  |          Example                      |
++-----------+-----+---------+---------------------------------------|
+| Property  |  T  |  string | https://example.com/heartrate#/<br/>sdfObject/thermostat/sdfProperty/temperature |
 {: #nipcopsdef title="Definition of a NIPC operation on a property"}
 
 ### Responses 
@@ -587,11 +588,15 @@ Failure response:
 Example of a failure response:
 
 ~~~~~
+=============== NOTE: '\\' line wrapping per RFC 8792 ===============
+
 {
-  "type": "https://www.iana.org/assignments/nipc-problem-types#invalid-id",
+  "type": "https://www.iana.org/assignments/nipc-problem-types#inval\
+\id-id",
   "status": 400,
   "title": "Invalid Device ID",
-  "detail": "Device ID 12345678-1234-5678-1234-56789abcdef4 does not exist or is not a device"
+  "detail": "Device ID 12345678-1234-5678-1234-56789abcdef4 does not\
+\ exist or is not a device"
 }
 ~~~~~
 {: #failure title="Example failure response"}
@@ -631,9 +636,9 @@ Example of a response:
 
 ~~~~~
 [
-  {
-    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
-  }
+ {
+  "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
+ }
 ]
 ~~~~~
 {:json #exregresp title="Example register SDF model response"}
@@ -655,9 +660,9 @@ Example of a response:
 
 ~~~~~
 [
-  {
-    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
-  }
+ {
+  "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
+ }
 ]
 ~~~~~
 {:json #exgetallresp title="Example get all SDF models response"}
@@ -796,10 +801,13 @@ The request body also contains one of the following:
 Example of a request body:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 {
   "events": [
     {
-      "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+      "event": "https://example.com/heartrate#/sdfObject/healthsenso\
+r/sdfEvent/fallDetected"
     }
   ],
   "mqttClient": {}
@@ -810,17 +818,20 @@ Example of a request body:
 Example of a request body for a data application that is an MQTT broker:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 {
   "events": [
     {
-      "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+      "event": "https://example.com/heartrate#/sdfObject/healthsenso\
+r/sdfEvent/fallDetected"
     }
   ],
   "mqttBroker": {
     "URI": "mqtt.example.com:1883",
     "username": "user",
     "password": "password",
-    "customTopic": "custom/topic",
+    "customTopic": "custom/topic"
   }
 }
 ~~~~~
@@ -939,14 +950,18 @@ Request Body:
 
 Example body updating multiple properties:
 
-~~~~~
+~~~~~ json
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 [
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
+    "property": "https://example.com/heartrate#/sdfObject/thermostat\
+/sdfProperty/temperature",
     "value": "dGVzdA=="
   },
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/humidity",
+    "property": "https://example.com/heartrate#/sdfObject/thermostat\
+/sdfProperty/humidity",
     "value": "eGVzdB=="
   }
 ]
@@ -958,15 +973,19 @@ Response:
 Example of a response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 [
   {
     "status": 200
   },
   {
-    "type": "https://www.iana.org/assignments/nipc-problem-types#invalid-property",
+    "type": "https://www.iana.org/assignments/nipc-problem-types#htt\
+p-invalid-property",
     "status": 400,
     "title": "Invalid Property",
-    "detail": "Property https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature does not exist or is not writable"
+    "detail": "Property https://example.com/heartrate#/sdfObject/the\
+rmostat/sdfProperty/temperature does not exist or is not writable"
   }
 ]
 ~~~~~
@@ -999,13 +1018,17 @@ Response:
 Example of a response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 [
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
+    "property": "https://example.com/heartrate#/sdfObject/thermostat\
+/sdfProperty/temperature",
     "value": "dGVzdA=="
   },
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/humidity",
+    "property": "https://example.com/heartrate#/sdfObject/thermostat\
+/sdfProperty/humidity",
     "value": "eGVzdB=="
   }
 ]
@@ -1046,9 +1069,12 @@ and the event is
 the topic will be:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>
 
-data-app/12345678-1234-5678-1234-56789abcdef4/thermometer/sdfObject/thermometer/sdfEvent/isPresent
+data-app/12345678-1234-5678-1234-56789abcdef4/thermometer/sdfObject/\
+thermometer/sdfEvent/isPresent
 ~~~~~
 
 A data application can subscribe to this topic using the topic or it 
@@ -1082,8 +1108,11 @@ Returns HTTP status code 201 Created with a Location header pointing to the crea
 Example of a successful response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 HTTP/1.1 201 Created
-Location: /devices/12345678-1234-5678-1234-56789abcdef4/events?instanceId=87654321-4321-8765-4321-fedcba9876543
+Location: /devices/12345678-1234-5678-1234-56789abcdef4/events?insta\
+nceId=87654321-4321-8765-4321-fedcba9876543
 ~~~~~
 
 The Location header contains the URI for the created event instance, which can be used to check status or disable the event.
@@ -1135,8 +1164,11 @@ Response:
 Example of a response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 {
-  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sd\
+fEvent/fallDetected"
 }
 ~~~~~
 {:json #exgeteventresp title="Example get event status response"}
@@ -1165,10 +1197,13 @@ Response:
 Example of a response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 [
   {
     "instanceId": "87654321-4321-8765-4321-fedcba9876543",
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected"
   }
 ]
 ~~~~~
@@ -1206,8 +1241,11 @@ Returns HTTP status code 201 Created with a Location header pointing to the crea
 Example of a successful response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 HTTP/1.1 201 Created
-Location: /groups/12345678-1234-5678-1234-56789abcdef4/events?instanceId=87654321-4321-8765-4321-fedcba9876543
+Location: /groups/12345678-1234-5678-1234-56789abcdef4/events?instan\
+ceId=87654321-4321-8765-4321-fedcba9876543
 ~~~~~
 
 The Location header contains the URI for the created event instance, which can be used to check status or disable the event.
@@ -1259,8 +1297,11 @@ Response:
 Example of a response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 {
-  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sd\
+fEvent/fallDetected"
 }
 ~~~~~
 {:json #exgetgevntresp title="Example get group event status response"}
@@ -1289,10 +1330,13 @@ Response:
 Example of a response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 [
   {
     "instanceId": "87654321-4321-8765-4321-fedcba9876543",
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected"
   }
 ]
 ~~~~~
@@ -1341,8 +1385,11 @@ with a Location header pointing to the action instance for status checking.
 Example of a successful response:
 
 ~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 HTTP/1.1 202 Accepted
-Location: /devices/12345678-1234-5678-1234-56789abcdef4/actions?instanceId=87654321-4321-8765-4321-fedcba9876543
+Location: /devices/12345678-1234-5678-1234-56789abcdef4/actions?inst\
+anceId=87654321-4321-8765-4321-fedcba9876543
 ~~~~~
 
 The Location header contains the URI for the action instance, which can be used to check the action status.
@@ -1494,14 +1541,16 @@ Example of a response:
         "serviceID": "12345678-1234-5678-1234-56789abcdef4",
         "characteristics": [
           {
-            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "characteristicID": 
+              "12345678-1234-5678-1234-56789abcdef4",
             "flags": [
               "read",
               "write"
             ],
             "descriptors": [
               {
-                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+                "descriptorID": 
+                  "12345678-1234-5678-1234-56789abcdef4"
               }
             ]
           }
@@ -1593,14 +1642,16 @@ Example of a response:
         "serviceID": "12345678-1234-5678-1234-56789abcdef4",
         "characteristics": [
           {
-            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "characteristicID": 
+              "12345678-1234-5678-1234-56789abcdef4",
             "flags": [
               "read",
               "write"
             ],
             "descriptors": [
               {
-                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+                "descriptorID": 
+                  "12345678-1234-5678-1234-56789abcdef4"
               }
             ]
           }
@@ -1674,14 +1725,16 @@ Example of a response:
         "serviceID": "12345678-1234-5678-1234-56789abcdef4",
         "characteristics": [
           {
-            "characteristicID": "12345678-1234-5678-1234-56789abcdef4",
+            "characteristicID": 
+              "12345678-1234-5678-1234-56789abcdef4",
             "flags": [
               "read",
               "write"
             ],
             "descriptors": [
               {
-                "descriptorID": "12345678-1234-5678-1234-56789abcdef4"
+                "descriptorID": 
+                  "12345678-1234-5678-1234-56789abcdef4"
               }
             ]
           }
@@ -1931,19 +1984,24 @@ The sequence of operations for this are:
   - Register an SDF model for the device
 
     ~~~~~
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
     POST /registration/model
     Content-Type: application/sdf+json
     Accept: application/json
     Host: localhost
-    
+
     { ... }
 
     HTTP/1.1 200 OK
     content-type: application/json
 
-    {
-      "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
-    }
+    [
+      {
+        "sdfName": "https://example.com/thermometer#/sdfThing/thermom\
+    eter"
+      }
+    ]
     ~~~~~
 
     Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
@@ -1951,16 +2009,21 @@ The sequence of operations for this are:
   - Read a property from the BLE device
 
     ~~~~~
-    GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https://example.com/thermometer%23/sdfThing/thermometer/sdfProperty/device_name
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
+    GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?prop\
+    ertyName=https://example.com/thermometer%23/sdfThing/thermometer/\
+    sdfProperty/device_name
     Accept: application/json
     Host: localhost
-    
+
     HTTP/1.1 200 OK
     content-type: application/json
-    
+
     [
       {
-        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
+        "property": "https://example.com/thermometer#/sdfThing/thermo\
+    meter/sdfProperty/device_name",
         "value": "dGVzdA=="
       }
     ]
@@ -1969,23 +2032,27 @@ The sequence of operations for this are:
   - Write to a property on the BLE device
 
     ~~~~~
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
     PUT /devices/12345678-1234-5678-1234-56789abcdef4/properties
     Content-Type: application/json
     Host: localhost
-    
+
     [
       {
-        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
+        "property": "https://example.com/thermometer#/sdfThing/thermo\
+    meter/sdfProperty/device_name",
         "value": "dGVzdA=="
       }
     ]
-    
+
     HTTP/1.1 200 OK
     content-type: application/json
-    
+
     [
       {
-        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
+        "property": "https://example.com/thermometer#/sdfThing/thermo\
+    meter/sdfProperty/device_name",
         "value": "dGVzdA=="
       }
     ]
@@ -2003,36 +2070,18 @@ The sequence of operations for this are:
   - Register an SDF model for the device
 
     ~~~~~
-    POST /registration/model
-    Content-Type: application/sdf+json
-    Accept: application/json
-    Host: localhost
-    
-    { ... }
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    HTTP/1.1 200 OK
-    content-type: application/json
-
-    [
-      {
-        "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
-      }
-    ]
-    ~~~~~
-
-    Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
-    
-  - Register the data app with the event 
-
-    ~~~~~
-    POST /registration/data-app?dataAppId=23456789-1234-5678-1234-56789abcdef4
+    POST /registration/data-app?dataAppId=23456789-1234-5678-1234-567\
+    89abcdef4
     Content-Type: application/json
     Accept: application/json
     Host: localhost
 
     {
       "events": [
-        "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
+    nt/isPresent"
       ],
       "mqttClient": {}
     }
@@ -2042,7 +2091,41 @@ The sequence of operations for this are:
 
     {
       "events": [
-        "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
+    nt/isPresent"
+      ],
+      "mqttClient": {}
+    }
+    ~~~~~
+
+    Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
+    
+  - Register the data app with the event 
+
+    ~~~~~
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
+    POST /registration/data-app?dataAppId=23456789-1234-5678-1234-567\
+    89abcdef4
+    Content-Type: application/json
+    Accept: application/json
+    Host: localhost
+
+    {
+      "events": [
+        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
+    nt/isPresent"
+      ],
+      "mqttClient": {}
+    }
+
+    HTTP/1.1 200 OK
+    content-type: application/json
+
+    {
+      "events": [
+        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
+    nt/isPresent"
       ],
       "mqttClient": {}
     }
@@ -2051,25 +2134,34 @@ The sequence of operations for this are:
   - Enable the advertisement event
 
     ~~~~
-    POST /devices/12345678-1234-5678-1234-56789abcdef4/events?eventName=https://example.com/thermometer%23/sdfThing/thermometer/sdfEvent/isPresent
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
+    POST /devices/12345678-1234-5678-1234-56789abcdef4/events?eventNa\
+    me=https://example.com/thermometer%23/sdfThing/thermometer/sdfEve\
+    nt/isPresent
     Host: localhost
     Content-Length: 0
-    
+
     HTTP/1.1 201 Created
-    Location: /devices/12345678-1234-5678-1234-56789abcdef4/events?instanceId=87654321-4321-8765-4321-fedcba9876543
+    Location: /devices/12345678-1234-5678-1234-56789abcdef4/events?in\
+    stanceId=87654321-4321-8765-4321-fedcba9876543
     ~~~~
 
   - Check the status of the event
 
     ~~~~~
-    GET /devices/12345678-1234-5678-1234-56789abcdef4/events?instanceId=87654321-4321-8765-4321-fedcba9876543
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
+    GET /devices/12345678-1234-5678-1234-56789abcdef4/events?instance\
+    Id=87654321-4321-8765-4321-fedcba9876543
     Host: localhost
-    
+
     HTTP/1.1 200 OK
     content-type: application/json
-    
+
     {
-      "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+      "event": "https://example.com/thermometer#/sdfThing/thermometer\
+    /sdfEvent/isPresent"
     }
     ~~~~~
 
@@ -2194,7 +2286,7 @@ the implementor.
 ~~~~~~
 <CODE BEGINS>
 file "openapi.yml"
-{::include nipc-openapi/NIPC.yaml}
+{::include nipc-openapi/NIPC.yaml.folded}
 <CODE ENDS>
 ~~~~~~
 {: #openAPI}
@@ -2216,7 +2308,7 @@ OpenAPI model for the convenience of the implementor.
 ~~~~~~
 <CODE BEGINS>
 file "ProtocolMap.yaml"
-{::include nipc-openapi/protocolmaps/ProtocolMap.yaml}
+{::include nipc-openapi/protocolmaps/ProtocolMap.yaml.folded}
 <CODE ENDS>
 ~~~~~~
 {: #protocolmapmodel}
@@ -2226,7 +2318,7 @@ file "ProtocolMap.yaml"
 ~~~~~
 <CODE BEGINS>
 file "ProtocolMap-BLE.yaml"
-{::include nipc-openapi/protocolmaps/ProtocolMap-BLE.yaml}
+{::include nipc-openapi/protocolmaps/ProtocolMap-BLE.yaml.folded}
 <CODE ENDS>
 ~~~~~~
 {: #protocolmapble}
@@ -2236,7 +2328,7 @@ file "ProtocolMap-BLE.yaml"
 ~~~~~
 <CODE BEGINS>
 file "ProtocolMap-Zigbee.yaml"
-{::include nipc-openapi/protocolmaps/ProtocolMap-Zigbee.yaml}
+{::include nipc-openapi/protocolmaps/ProtocolMap-Zigbee.yaml.folded}
 <CODE ENDS>
 ~~~~~~
 {: #protocolmapzigbee}
@@ -2251,7 +2343,7 @@ NIPC API.
 ~~~~~
 <CODE BEGINS>
 file "Extension-Blob.yaml"
-{::include nipc-openapi/extensions/Extension-Blob.yaml}
+{::include nipc-openapi/extensions/Extension-Blob.yaml.folded}
 <CODE ENDS>
 ~~~~~
 
@@ -2260,7 +2352,7 @@ file "Extension-Blob.yaml"
 ~~~~~
 <CODE BEGINS>
 file "Extension-Bulk.yaml"
-{::include nipc-openapi/extensions/Extension-Bulk.yaml}
+{::include nipc-openapi/extensions/Extension-Bulk.yaml.folded}
 <CODE ENDS>
 ~~~~~
 
@@ -2269,7 +2361,7 @@ file "Extension-Bulk.yaml"
 ~~~~~
 <CODE BEGINS>
 file "Extension-File.yaml"
-{::include nipc-openapi/extensions/Extension-File.yaml}
+{::include nipc-openapi/extensions/Extension-File.yaml.folded}
 <CODE ENDS>
 ~~~~~
 
@@ -2278,7 +2370,7 @@ file "Extension-File.yaml"
 ~~~~~
 <CODE BEGINS>
 file "Extension-Firmware.yaml"
-{::include nipc-openapi/extensions/Extension-Firmware.yaml}
+{::include nipc-openapi/extensions/Extension-Firmware.yaml.folded}
 <CODE ENDS>
 ~~~~~
 
@@ -2287,7 +2379,7 @@ file "Extension-Firmware.yaml"
 ~~~~~
 <CODE BEGINS>
 file "Extension-ReadConditional.yaml"
-{::include nipc-openapi/extensions/Extension-ReadConditional.yaml}
+{::include nipc-openapi/extensions/Extension-ReadConditional.yaml.folded}
 <CODE ENDS>
 ~~~~~
 
@@ -2296,7 +2388,7 @@ file "Extension-ReadConditional.yaml"
 ~~~~~
 <CODE BEGINS>
 file "Extension-Property.yaml"
-{::include nipc-openapi/extensions/Extension-Property.yaml}
+{::include nipc-openapi/extensions/Extension-Property.yaml.folded}
 <CODE ENDS>
 ~~~~~
 
