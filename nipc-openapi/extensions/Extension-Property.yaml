@@ -23,7 +23,8 @@ servers:
 tags:
   - name:  NIPC API extensions
     description: |-
-      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
+      APIs that simplify application interaction by implementing
+      one or more basic APIs into a single API call.
 
 paths:
 ### Extensions
@@ -66,7 +67,8 @@ paths:
         - NIPC API extensions
       summary: Write a value to an property using protocol mapping
       description: |-
-        Write a value to an unregistered property, embedding property protocol mapping in the API, this does not require
+        Write a value to an unregistered property, embedding property
+        protocol mapping in the API, this does not require
         property registration. You cannot write to a group id.
       operationId: ActionPropWrite
       parameters:
@@ -102,7 +104,8 @@ paths:
         - NIPC API extensions
       summary: Read a value to an property using protocol mapping
       description: |-
-        Read a value from an unregistered property, embedding property protocol mapping in the API, this does not require
+        Read a value from an unregistered property, embedding 
+        property protocol mapping in the API, this does not require
         property registration. You cannot read from a group id.
       operationId: ActionPropRead
       parameters:

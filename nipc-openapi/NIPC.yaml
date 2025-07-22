@@ -3,10 +3,11 @@ openapi: 3.0.3
 info:
   title: Non IP Device Control (NIPC) API
   description: |-
-    This API specifies RESTful application layer interface for gateways
-    providing operations against non-IP devices. The described interface
-    is extensible. The examples includes leverage Bluetooth Low Energy
-    and Zigbee as they are commonly deployed.
+    This API specifies RESTful application layer interface for
+    gateways providing operations against non-IP devices. The
+    described interface is extensible. The examples includes
+    leverage Bluetooth Low Energy and Zigbee as they are commonly
+    deployed.
   termsOfService: http://swagger.io/terms/
   contact:
     email: bbrinckm@cisco.com
@@ -27,11 +28,11 @@ tags:
   - name: NIPC property APIs
     description: |-
       APIs that allow apps to get and update device properties.
-      If the underlying protocol requires connection management,
-      it will be performed as part of the API call.
+      If the underlying protocol requires connection management, it
+      will be performed as part of the API call.
   - name: NIPC event APIs
     description: |-
-      APIs that allow apps to enable or disable event reporting on 
+      APIs that allow apps to enable or disable event reporting on
       devices. If the underlying protocol requires connection
       management, it will be performed as part of the API call.
   - name: NIPC action APIs
@@ -52,7 +53,12 @@ paths:
         - NIPC property APIs
       summary: Update a value of one or more properties on a device
       description: |-
-        Write a value to a property or multiple properties to a device. If underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
+        Write a value to a property or multiple properties to a
+        device. If underlying protocol requires a connection to be
+        set up, this API call will perform the necessary connection
+        management. If a connection is already active for this
+        device, the existing connection will be leveraged without
+        modifying it.
       operationId: UpdateProperties
       parameters:
       - name: id
@@ -87,9 +93,15 @@ paths:
     get:
       tags:
         - NIPC property APIs
-      summary: Read a value from one or multiple properties on a device
+      summary: |-
+        Read a value from one or multiple properties on a device
       description: |-
-        Read a value to a property or multiple properties from a device. If underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
+        Read a value to a property or multiple properties from a
+        device. If underlying protocol requires a connection to be
+        set up, this API call will perform the necessary connection
+        management. If a connection is already active for this
+        device, the existing connection will be leveraged without
+        modifying it. 
       operationId: GetProperties
       parameters:
       - name: id
@@ -133,7 +145,12 @@ paths:
         - NIPC event APIs
       summary: Enable an event on a specific device
       description: |-
-        Enable an event on a specific device or for a group of devices. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+        Enable an event on a specific device or for a group of
+        devices. If the underlying protocol requires a connection to
+        be set up, this API call will perform the necessary
+        connection management. If a connection is already active for
+        this device, the existing connection will be leveraged
+        without modifying it.
       operationId: EnableEvent
       parameters:
       - name: id
@@ -174,7 +191,12 @@ paths:
         - NIPC event APIs
       summary: Disable an event on a specific device
       description: |-
-        Disable an event on a specific device or a group of devices. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. 
+        Disable an event on a specific device or a group of devices.
+        If the underlying protocol requires a connection to be set
+        up, this API call will perform the necessary connection
+        management. If a connection is already active for this
+        device, the existing connection will be leveraged without
+        modifying it.
       operationId: DisableEvent
       parameters:
       - name: id
@@ -221,7 +243,8 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: instanceId
         in: query
-        description: Instance ID of the events that need to be filtered
+        description: |-
+          Instance ID of the events that need to be filtered
         required: false
         schema:
           type: array
@@ -249,12 +272,18 @@ paths:
         - NIPC event APIs
       summary: Enable an event on a group of devices
       description: |-
-        Enable an event on a group of devices. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+        Enable an event on a group of devices.
+        If the underlying protocol requires a connection to be set
+        up, this API call will perform the necessary connection
+        management. If a connection is already active for this
+        device, the existing connection will be leveraged without
+        modifying it.
       operationId: EnableGroupEvent
       parameters:
       - name: id
         in: path
-        description: group id for which the event needs to be enabled
+        description: |-
+          group id for which the event needs to be enabled
         required: true
         schema:
           type: string
@@ -289,12 +318,17 @@ paths:
         - NIPC event APIs
       summary: Disable an event on a group of devices
       description: |-
-        Disable an event on a group of devices. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it.
+        Disable an event on a group of devices. If the underlying
+        protocol requires a connection to be set up, this API call
+        will perform the necessary connection management.
+        If a connection is already active for this device, the
+        existing connection will be leveraged without modifying it.
       operationId: DisableGroupEvent
       parameters:
       - name: id
         in: path
-        description: group id for which the event needs to be disabled
+        description: |-
+          group id for which the event needs to be disabled
         required: true
         schema:
           type: string
@@ -335,7 +369,8 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: instanceId
         in: query
-        description: Instance IDs of the events that need to be filtered
+        description: |-
+          Instance IDs of the events that need to be filtered
         required: false
         schema:
           type: array
@@ -364,7 +399,12 @@ paths:
         - NIPC action APIs
       summary: Perform an action on a device
       description: |-
-        Perform an action on a device. If the underlying protocol requires a connection to be set up, this API call will perform the necessary connection management. If a connection is already active for this device, the existing connection will be leveraged without modifying it. Id cannot be a group-id.
+        Perform an action on a device.
+        If the underlying protocol requires a connection to be set
+        up, this API call will perform the necessary connection
+        management. If a connection is already active for this
+        device, the existing connection will be leveraged without
+        modifying it.
       operationId: ActionProperty
       parameters:
       - name: id
@@ -411,7 +451,9 @@ paths:
         - NIPC action APIs
       summary: Get status of an action on a device
       description: |-
-        Get status of an action on a specific device or a group of devices. Success is action is active, failure if action not active.
+        Get status of an action on a specific device or a group of
+        devices. Success is action is active, failure if action not
+        active.
       operationId: GetAction
       parameters:
       - name: id
@@ -424,7 +466,8 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: instanceId
         in: query
-        description: instance id of the action that needs to be checked
+        description: |-
+          instance id of the action that needs to be checked
         required: true
         schema:
           type: string
@@ -450,7 +493,11 @@ paths:
         - NIPC management APIs
       summary: Connect a device
       description: |-
-        Connect a device. 3 retries by default, optionally retry policy can be defined in the API body. If the protocol requires service discovery, full service discovery will be performed, unless specific services are described in the API body.
+        Connect a device. 3 retries by default, optionally retry
+        policy can be defined in the API body. If the protocol
+        requires service discovery, full service discovery will be
+        performed, unless specific services are described in the API
+        body.
       operationId: ActionCreateConnection
       parameters:
         - name: id
@@ -490,7 +537,9 @@ paths:
         - NIPC management APIs
       summary: Update cached ServiceMap for a device.
       description: |-
-        Update cached ServiceMap for a device. Full service discovery will be performed, unless specific services are described in the API body.
+        Update cached ServiceMap for a device. Full service discovery
+        will be performed, unless specific services are described in
+        the API body.
       operationId: ActionUpdateServiceMap
       parameters:
         - name: id
@@ -559,7 +608,9 @@ paths:
         - NIPC management APIs
       summary: Get connection state for a device
       description: |-
-        Get connection status for a device. Success when device(s) is/are connected, includes service map for the device if available. Failure when a device is not connected
+        Get connection status for a device. Success when device(s)
+        is/are connected, includes service map for the device if
+        available. Failure when a device is not connected
       operationId: ActionGetConnection
       parameters:
         - name: id
@@ -594,7 +645,8 @@ paths:
         - NIPC registration APIs
       summary: Register an sdfObject
       description: |-
-        Register an sdfObject, including Properties, Events and actions
+        Register an sdfObject, including Properties, Events and
+        actions
       operationId: registerSdfObject
       requestBody:
         content:
@@ -630,7 +682,8 @@ paths:
       parameters:
         - name: sdfName
           in: query
-          description: sdfName can be a reference to an sdfThing or sdfObject
+          description: |-
+            sdfName can be a reference to an sdfThing or sdfObject
           required: false
           allowReserved: true
           schema:
@@ -655,12 +708,14 @@ paths:
         - NIPC registration APIs
       summary: Update an SDF model
       description: |-
-        Update an SDF model, including Properties, Events and actions
+        Update an SDF model, including Properties, Events and
+        actions
       operationId: updateSdf
       parameters:
         - name: sdfName
           in: query
-          description: sdfName can be a reference to an sdfThing or sdfObject
+          description: |-
+            sdfName can be a reference to an sdfThing or sdfObject
           required: true
           allowReserved: true
           schema:
@@ -693,7 +748,8 @@ paths:
         - NIPC registration APIs
       summary: Delete an sdfObject
       description: |-
-        Delete an sdfObject, including Properties, Events and actions
+        Delete an sdfObject, including Properties, Events and
+        actions
       operationId: deleteSdfObject
       parameters:
         - name: sdfName
@@ -801,7 +857,8 @@ paths:
         - NIPC registration APIs
       summary: Delete registration of a dataApp
       description: |-
-        Delete registration of a dataApp that is able to receive device data. 
+        Delete registration of a dataApp that is able to receive
+        device data. 
       operationId: DeleteDataApp
       parameters:
         - name: dataAppId
@@ -833,7 +890,8 @@ paths:
         - NIPC registration APIs
       summary: Get registration of a dataApp
       description: |-
-        Get registrationdetails of a dataApp that is able to receive device data. 
+        Get registrationdetails of a dataApp that is able to receive
+        device data. 
       operationId: GetDataApp
       parameters:
         - name: dataAppId
@@ -872,7 +930,8 @@ components:
         id:
           type: string
           format: uuid
-          description: A SCIM-generated UUID, can be a device or group
+          description: |-
+            A SCIM-generated UUID, can be a device or group
           example: 12345678-1234-5678-1234-56789abcdef4
 
 ## A property
@@ -893,7 +952,8 @@ components:
         status:
           type: string
           example: COMPLETED
-          description: Status of the action, can be IN_PROGRESS or COMPLETED
+          description: |-
+            Status of the action, can be IN_PROGRESS or COMPLETED
 
 ## A value
     Value:
@@ -926,7 +986,8 @@ components:
       properties:
         event:
           type: string
-          description: percent-encoded JSON pointer to the SDF event object
+          description: |-
+            percent-encoded JSON pointer to the SDF event object
           example: https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected
 
     InstanceId:
@@ -935,7 +996,8 @@ components:
         instanceId:
           type: string
           format: uuid
-          description: A SCIM-generated UUID for the event instance
+          description: |-
+            A SCIM-generated UUID for the event instance
           example: 12345678-1234-5678-1234-56789abcdef4
             
 ## A Connection
@@ -1236,7 +1298,9 @@ components:
           description: Human-readable error title
         detail:
           type: string
-          example: Device ID 12345678-1234-5678-1234-56789abcdef4 does not exist or is not a device
+          example: |-
+            Device ID 12345678-1234-5678-1234-56789abcdef4 does not
+            exist or is not a device
           description: Human-readable error message  
 
 ## Property operations responses

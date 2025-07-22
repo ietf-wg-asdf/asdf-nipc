@@ -23,7 +23,8 @@ servers:
 tags:
   - name:  NIPC API extensions
     description: |-
-      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
+      APIs that simplify application interaction by implementing
+      one or more basic APIs into a single API call.
 
 paths:
 ### Extensions

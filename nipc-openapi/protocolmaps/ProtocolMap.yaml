@@ -2,7 +2,9 @@ openapi: 3.0.3
 info:
   title: Non IP Device Control (NIPC) Protocol Mapping
   description: |-
-    Non IP Device Control (NIPC) Protocol Mapping. When adding a new protocol mapping pls add a reference to the protocol map for all the schemas in this file.
+    Non IP Device Control (NIPC) Protocol Mapping. When adding a
+    new protocol mapping pls add a reference to the protocol map
+    for all the schemas in this file.
   termsOfService: http://swagger.io/terms/
   contact:
     email: bbrinckm@cisco.com

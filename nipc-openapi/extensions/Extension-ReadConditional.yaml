@@ -23,7 +23,8 @@ servers:
 tags:
   - name:  NIPC API extensions
     description: |-
-      APIs that simplify application interaction by implementing one or more basic APIs into a single API call.
+      APIs that simplify application interaction by implementing
+      one or more basic APIs into a single API call.
 
 paths:
 ### Extensions
@@ -45,7 +46,8 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
         in: query
-        description: The SDF property name that needs to be read conditionally.
+        description: |-
+          The SDF property name that needs to be read conditionally.
         required: true
         allowReserved: true
         schema:
@@ -64,12 +66,14 @@ paths:
             Location:
               schema:
                 type: string
-              description: URL to get the conditional read status
+              description: |-
+                URL to get the conditional read status
               example: /12345678-1234-5678-1234-56789abcdef4/extension/property/temperature/read/conditional/status?requestId=12345678-1234-5678-1234-56789abcdef4
             Retry-After:
               schema:
                 type: integer
-              description: Time in seconds to wait before retrying
+              description: |-
+                Time in seconds to wait before retrying
         'default':
           description: Error response
           content:
@@ -126,7 +130,8 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
         in: query
-        description: The SDF property name that needs to be read conditionally.
+        description: |-
+          The SDF property name that needs to be read conditionally.
         required: true
         allowReserved: true
         schema:
@@ -134,7 +139,8 @@ paths:
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
       - name: requestId
         in: query
-        description: Request ID of the conditional read operation
+        description: |-
+          Request ID of the conditional read operation
         required: true
         schema:
           type: string
@@ -179,7 +185,8 @@ paths:
           example: 12345678-1234-5678-1234-56789abcdef4
       - name: propertyName
         in: query
-        description: The SDF property name that needs to be read conditionally.
+        description: |-
+          The SDF property name that needs to be read conditionally.
         required: true
         allowReserved: true
         schema:
