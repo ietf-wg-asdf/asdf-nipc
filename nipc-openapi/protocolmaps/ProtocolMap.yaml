@@ -11,9 +11,7 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.9.0
-externalDocs:
-  description: NIPC IETF draft
+  version: 0.10.0
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 
 components:
@@ -23,7 +21,7 @@ components:
     ProtocolMap-ServiceList:
       type: object
       properties:
-        protocolMap:
+        sdfProtocolMap:
           oneOf:
             - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-ServiceList'
 
@@ -31,7 +29,7 @@ components:
     ProtocolMap-ServiceMap:
       type: object
       properties:
-        protocolMap:
+        sdfProtocolMap:
           oneOf:
             - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-ServiceMap'
             - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-ServiceMap'
@@ -40,7 +38,7 @@ components:
     ProtocolMap-ErrorCodes:
       type: object
       properties:
-        protocolMap:
+        sdfProtocolMap:
           oneOf:  
             - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-ErrorCodes'
             - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-ErrorCodes'
@@ -49,7 +47,7 @@ components:
     ProtocolMap-Broadcast:
       type: object
       properties:
-        protocolMap:
+        sdfProtocolMap:
           oneOf:  
             - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-Broadcast'
             - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-Broadcast'
@@ -58,7 +56,7 @@ components:
     ProtocolMap-Property:
       type: object
       properties:
-        protocolMap:
+        sdfProtocolMap:
           oneOf:  
             - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-Propmap'
             - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-Propmap'
@@ -67,7 +65,7 @@ components:
     ProtocolMap-Event:
       type: object
       properties:
-        protocolMap:
+        sdfProtocolMap:
           oneOf:  
             - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-Event'
             - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-Event'
