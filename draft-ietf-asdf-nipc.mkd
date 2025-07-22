@@ -267,7 +267,7 @@ app as well as a protocol.
 
 ## Protocol mapping {#protocolmap}
 
-An SDF model fully describes a thing, including all its SDF affordances. 
+An SDF model describes a thing, including all its SDF affordances. 
 To leverage an SDF model to perform protocol specific operations on an
 instance of that thing, a mapping of the SDF affordance to a protocol-specific
 attribute is required. In NIPC, this is achieved through protocol mapping. 
