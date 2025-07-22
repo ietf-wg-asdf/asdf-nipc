@@ -546,7 +546,7 @@ Id is the unique uuid of the device. This id is generated when registering
 the device, for example against a SCIM server. As such, this id is a common
 identifier, known both to the application as well as the NIPC Server.
 
-### SDF Bane
+### SDF Name
 
 NIPC operations happen against SDF affordances and are referenced with an
 global sdfName, which is the full path including the namespace.
