@@ -1139,27 +1139,27 @@ components:
               sdfEvent:
                 isPresent:
                   sdfOutputData:
-                    protocolMap:
+                    sdfProtocolMap:
                       ble:
                         type: advertisement
               sdfObject:
                 healthsensor:
                   sdfProperty:
                     heartrate:
-                      protocolMap:
+                      sdfProtocolMap:
                         ble:
                           serviceID: 12345678-1234-5678-1234-56789abcdef4
                           characteristicID: 12345678-1234-5678-1234-56789abcdef4
                   sdfEvent:
                     fallDetected:
                       sdfOutputData:
-                        protocolMap:
+                        sdfProtocolMap:
                           ble:
                             serviceID: 12345678-1234-5678-1234-56789abcdef4
                             characteristicID: 12345678-1234-5678-1234-56789abcdef4
                   sdfAction:
                     start:
-                      protocolMap:
+                      sdfProtocolMap:
                         ble:
                           serviceID: 12345678-1234-5678-1234-56789abcdef4
                           characteristicID: 12345678-1234-5678-1234-56789abcdef4
@@ -1178,20 +1178,20 @@ components:
             healthsensor:
               sdfProperty:
                 heartrate:
-                  protocolMap:
+                  sdfProtocolMap:
                     ble:
                       serviceID: 12345678-1234-5678-1234-56789abcdef4
                       characteristicID: 12345678-1234-5678-1234-56789abcdef4
               sdfEvent:
                 fallDetected:
                   sdfOutputData:
-                    protocolMap:
+                    sdfProtocolMap:
                       ble:
                         serviceID: 12345678-1234-5678-1234-56789abcdef4
                         characteristicID: 12345678-1234-5678-1234-56789abcdef4
               sdfAction:
                 start:
-                  protocolMap:
+                  sdfProtocolMap:
                     ble:
                       serviceID: 12345678-1234-5678-1234-56789abcdef4
                       characteristicID: 12345678-1234-5678-1234-56789abcdef4
@@ -1206,7 +1206,7 @@ components:
               - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
           example:
             heartrate:
-              protocolMap:
+              sdfProtocolMap:
                 ble:
                   serviceID: 12345678-1234-5678-1234-56789abcdef4
                   characteristicID: 12345678-1234-5678-1234-56789abcdef4
@@ -1225,7 +1225,7 @@ components:
           example:
             fallDetected:
               sdfOutputData:
-                protocolMap:
+                sdfProtocolMap:
                   ble:
                     serviceID: 12345678-1234-5678-1234-56789abcdef4
                     characteristicID: 12345678-1234-5678-1234-56789abcdef4
@@ -1240,7 +1240,7 @@ components:
               - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
           example:
             start:
-              protocolMap:
+              sdfProtocolMap:
                 ble:
                   serviceID: 12345678-1234-5678-1234-56789abcdef4
                   characteristicID: 12345678-1234-5678-1234-56789abcdef4

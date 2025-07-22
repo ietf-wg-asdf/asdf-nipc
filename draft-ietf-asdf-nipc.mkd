@@ -244,7 +244,7 @@ to contain all nessary attributes and extensions to support NIPC.
 
 ## Registrations 
 
-NIPC registration APIs allow applications to declare information that is not
+NIPC registrations APIs allow applications to declare information that is not
 related to a device instance. Registrations can be information about an
 interaction model for a class of devices, or information about an application
 that is required to interact with the gateway.
@@ -258,11 +258,11 @@ to protocol-specific ones. The SDF affordances supported by the device, as
 well as its protcol-mappings, are provide to the gateway by means of an SDF
 model registration. SDF models are described in {{!I-D.ietf-asdf-sdf}}. 
 
-### Data application registration
+### Data application registrations
 
 An application authorized to perform NIPC operations on devices needs to be
 able to define which applications can receive streaming event data from the
-gateway. The data-app registration API allows mapping of an event to a data 
+gateway. The data-app registrations API allows mapping of an event to a data 
 app as well as a protocol.
 
 ## Protocol mapping {#protocolmap}
@@ -281,9 +281,11 @@ cluster of an endpoint.
 protocol mapping allows for integration of new protocols in NIPC, new mappings 
 can be created without the need to update the base schema.
 
+a protocol mapping object is a JSON object identified by the sdfProtocolMap keyword.
+
 ~~~~~ aasvg
 
-  protocolmap
+  sdfProtocolMap
     |
     +-----> ble
     |        |
@@ -296,8 +298,8 @@ can be created without the need to update the base schema.
 ~~~~~
 {: #protmap title="Property Mapping"}
 
-As shown in {{protmap}}, protocol-specific properties must be embedded in a
-protocolmap object, for example a "ble" or a "zigbee" object.
+As shown in {{protmap}}, protocol-specific properties must be embedded in an
+sdfProtocolMap object, for example a "ble" or a "zigbee" object.
 
 
 | Attribute | Req |   Type  |          Example                         |
@@ -327,7 +329,7 @@ Example protocol mapping:
         "unit": "beat/min",
         "observable": false,
         "writable": false,
-        "protocolMap": {
+        "sdfProtocolMap": {
           "ble": {
             "serviceID": "12345678-1234-5678-1234-56789abcdef4",
             "characteristicID": 
@@ -417,7 +419,7 @@ headers and URIs, NIPC uses JSON {{!RFC7159}} payloads to convey NIPC
 operations, such as registrations, actions, event and property operations. This
 is the case for both request and response parameters, as well as errors.
 NIPC uses the standard JSON media type "application/json", except for the SDF 
-model registration APIs, where the media type reflects the content as an SDF 
+model registrations APIs, where the media type reflects the content as an SDF 
 model, and hence is media type "application/sdf+json".
 
 ### NIPC publish/subscribe events
@@ -483,13 +485,13 @@ as supported extensions on a server.
 
 ### NIPC Registrations
 
-Registrations leverage the base path + /registration. NIPC supports SDF model
+Registrations leverage the base path + /registrations. NIPC supports SDF model
 registrations and data-app registrations.
 
 paths:
 
-- /registration/model
-- /registration/data-app
+- /registrations/models
+- /registrations/data-apps
 
 ### NIPC Operations
 
@@ -514,15 +516,15 @@ These are described in {{nipc-ops}}.
 The NIPC schema leans heavily on the SDF schema, as defined in
 {{!I-D.ietf-asdf-sdf}}. NIPC operations map directly to SDF affordances.
 
-### SDF model registration
+### SDF model registrations
 
 In order to perform a NIPC operation on a device, an SDF interaction model 
 needs to be declared that provides protcol mappings for the SDF affordances
 the operations will be performed on.
 
-The SDF model can be registered by means of a registration API POST with 
+The SDF model can be registered by means of a registrations API POST with 
 the SDF model in the body of hte request. A registered SDF model can be 
-fetched by a registration API GET with an sdfReference.
+fetched by a registrations API GET with an sdfReference.
 
 ### NIPC Operations
 
@@ -614,7 +616,7 @@ NIPC allows an application to register an SDF model for a class of devices,
 as well as a data application that will receive streaming data from the 
 gateway.
 
-## SDF model registration APIs
+## SDF model registrations APIs
 
 These APIs allow applications to register an SDF model for a class of devices.
 These APIs use the `application/sdf+json` media type, as described in 
@@ -622,13 +624,13 @@ These APIs use the `application/sdf+json` media type, as described in
 
 ### Register an SDF model
 
-Method: `POST /registration/model`
+Method: `POST /registrations/models`
 
-Description: Registers an SDF model for a class of devices
+Description: Registers one or more SDF models for a class of devices
 
 Request Body:
 
- - an SDF model in JSON format, similar to the example in {{thermometer-sdf}}.
+ - an SDF document in JSON format containing one of more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
 
 Response:
 
@@ -650,7 +652,7 @@ where-
 
 ### Get all SDF models
 
-Method: `GET /registration/model`
+Method: `GET /registrations/models`
 
 Description: Gets all SDF models registered with the gateway
 
@@ -674,7 +676,7 @@ where-
 
 ### Get an SDF model
 
-Method: `GET /registration/model`
+Method: `GET /registrations/models`
 
 Description: Gets an SDF model registered with the gateway
 
@@ -690,7 +692,7 @@ The SDF model is returned in JSON format, similar to the example in
 
 ### Delete an SDF model
 
-Method: `DELETE /registration/model`
+Method: `DELETE /registrations/models`
 
 Description: Deletes an SDF model registered with the gateway
 
@@ -717,7 +719,7 @@ where-
 
 ### Update an SDF model
 
-Method: `PUT /registration/model`
+Method: `PUT /registrations/models`
 
 Description: Updates an SDF model registered with the gateway
 
@@ -746,7 +748,7 @@ where-
  - "sdfName" is the reference to the top-level sdfThing or sdfObject 
     in the SDF model
 
-## Data application registration APIs
+## Data application registrations APIs
 
 These APIs allow applications to register a data application that will receive
 streaming data from the gateway. These APIs operate on a data app ID.
@@ -756,7 +758,7 @@ that is registered with the SCIM server. The endpoint app is defined in
 
 ### Register a data application
 
-Method: `POST /registration/data-app`
+Method: `POST /registrations/data-apps`
 
 Description: Registers a data application with the gateway
 
@@ -843,7 +845,7 @@ If successful, the response will be identical to the request body.
 
 ### Update a data application
 
-Method: `PUT /registration/data-app`
+Method: `PUT /registrations/data-apps`
 
 Description: Updates a data application with the gateway
 
@@ -859,7 +861,7 @@ If successful, the response will be identical to the request body.
 
 ### Get a data application
 
-Method: `GET /registration/data-app`
+Method: `GET /registrations/data-apps`
 
 Description: Gets a data application registered with the gateway
 
@@ -874,7 +876,7 @@ application API.
 
 ### Delete a data application
 
-Method: `DELETE /registration/data-app`
+Method: `DELETE /registrations/data-apps`
 
 Description: Deletes a data application registered with the gateway
 
@@ -913,7 +915,7 @@ The SDF affordance can be referenced using the global name of the SDF affordance
 as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
 The SDF global name will be used against the registered SDF model to 
-determine the protocol-specific protocolMap that the NIPC API will operate on. 
+determine the protocol-specific protocolmap that the NIPC API will operate on. 
 
 ## NIPC Property APIs
 
@@ -1478,7 +1480,7 @@ Example body of a BLE connection with specific discovery of properties:
 {
   "retries": 3,
   "retryMultipleAPs": true,
-  "protocolMap": {
+  "sdfProtocolMap": {
     "ble": {
       "services": [
         {
@@ -1535,7 +1537,7 @@ Example of a response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "protocolMap": {
+  "sdfProtocolMap": {
     "ble": [
       {
         "serviceID": "12345678-1234-5678-1234-56789abcdef4",
@@ -1565,7 +1567,7 @@ Example of a response:
 where-
 
   - "id" is the id of the device
-   - "protocolMap" contains an Array of BLE services as shown in
+   - "sdfProtocolMap" contains an Array of BLE services as shown in
    {{BLEservices}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
@@ -1595,7 +1597,7 @@ Example body of an update connection:
 
 ~~~~~
 {
-  "protocolMap": {
+  "sdfProtocolMap": {
     "ble": {
       "services": [
         {
@@ -1636,7 +1638,7 @@ Example of a response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "protocolMap": {
+  "sdfProtocolMap": {
     "ble": [
       {
         "serviceID": "12345678-1234-5678-1234-56789abcdef4",
@@ -1666,7 +1668,7 @@ Example of a response:
 where-
 
   - "id" is the id of the device
-   - "protocolMap" contains an Array of BLE services as shown in
+   - "sdfProtocolMap" contains an Array of BLE services as shown in
    {{BLEservices}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
@@ -1719,7 +1721,7 @@ Example of a response:
 ~~~~~
 {
   "id": "12345678-1234-5678-1234-56789abcdef4",
-  "protocolMap": {
+  "sdfProtocolMap": {
     "ble": [
       {
         "serviceID": "12345678-1234-5678-1234-56789abcdef4",
@@ -1749,7 +1751,7 @@ Example of a response:
 where-
 
   - "id" is the id of the device
-  - "protocolMap" contains an Array of BLE services as shown in {{BLEservices}}
+  - "sdfProtocolMap" contains an Array of BLE services as shown in {{BLEservices}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
