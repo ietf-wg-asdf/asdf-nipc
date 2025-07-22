@@ -14,7 +14,7 @@
               "observable": false,
               "writable": false,
               "readable": true,
-              "protocolMap": {
+              "sdfProtocolMap": {
                 "ble": {
                   "serviceID": "1809",
                   "characteristicID": "2A1D"
@@ -26,7 +26,7 @@
               "observable": false,
               "writable": false,
               "readable": true,
-              "protocolMap": {
+              "sdfProtocolMap": {
                 "ble": {
                   "serviceID": "1809",
                   "characteristicID": "2A21"
@@ -38,7 +38,7 @@
             "temperature_measurement": {
               "description": "Temperature Measurement",
               "sdfOutputData": {
-                "protocolMap": {
+                "sdfProtocolMap": {
                   "ble": {
                     "type": "gatt",
                     "serviceID": "1809",
@@ -50,7 +50,7 @@
             "intermediate_temperature": {
               "description": "Intermediate Temperature",
               "sdfOutputData": {
-                "protocolMap": {
+                "sdfProtocolMap": {
                   "ble": {
                     "type": "gatt",
                     "serviceID": "1809",
@@ -69,7 +69,7 @@
           "observable": false,
           "writable": true,
           "readable": true,
-          "protocolMap": {
+          "sdfProtocolMap": {
             "ble": {
               "serviceID": "1800",
               "characteristicID": "2A00"
@@ -81,7 +81,7 @@
           "observable": false,
           "writable": false,
           "readable": true,
-          "protocolMap": {
+          "sdfProtocolMap": {
             "ble": {
               "serviceID": "1800",
               "characteristicID": "2A01"
@@ -93,7 +93,7 @@
           "observable": false,
           "writable": false,
           "readable": true,
-          "protocolMap": {
+          "sdfProtocolMap": {
             "ble": {
               "serviceID": "180A",
               "characteristicID": "2A29"
@@ -105,7 +105,7 @@
           "observable": false,
           "writable": false,
           "readable": true,
-          "protocolMap": {
+          "sdfProtocolMap": {
             "ble": {
               "serviceID": "180A",
               "characteristicID": "2A24"
@@ -117,7 +117,7 @@
           "observable": false,
           "writable": false,
           "readable": true,
-          "protocolMap": {
+          "sdfProtocolMap": {
             "ble": {
               "serviceID": "180A",
               "characteristicID": "2A27"
@@ -129,7 +129,7 @@
           "observable": false,
           "writable": false,
           "readable": true,
-          "protocolMap": {
+          "sdfProtocolMap": {
             "ble": {
               "serviceID": "180A",
               "characteristicID": "2A26"
@@ -141,7 +141,7 @@
           "observable": false,
           "writable": false,
           "readable": true,
-          "protocolMap": {
+          "sdfProtocolMap": {
             "ble": {
               "serviceID": "180A",
               "characteristicID": "2A23"
@@ -153,7 +153,7 @@
         "isPresent": {
           "description": "BLE advertisements",
           "sdfOutputData": {
-            "protocolMap": {
+            "sdfProtocolMap": {
               "ble": {
                 "type": "advertisements"
               }
@@ -163,7 +163,7 @@
         "isConnected": {
           "description": "BLE connection events",
           "sdfOutputData": {
-            "protocolMap": {
+            "sdfProtocolMap": {
               "ble": {
                 "type": "connection_events"
               }

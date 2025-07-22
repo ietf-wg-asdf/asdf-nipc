@@ -69,17 +69,39 @@ paths:
           type: string
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
+      - name: propertyName
+        in: query
+        description: |-
+          The SDF property name that needs to be written to.
+        required: false
+        allowReserved: true
+        schema:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature"
       requestBody:
+        description: |-
+          The value to be written to the property or properties.
+          If multiple properties are specified, the request body
+          should be application/nipc+json.
         content:
-          application/json:
+          application/nipc+json:
             schema:
               $ref: '#/components/schemas/PropertyValueArray'
+          "*/*":
+            schema:
+              description: |-
+                Any other content type, such as 
+                application/octet-stream, application/json that will 
+                be written to the device.
         required: true
       responses:
+        '204':
+          description: |-
+            Success, no content, used for a single property write
         '200':
-          description: Success
+          description: Success, used for multiple property writes
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf: 
                   - $ref: '#/components/schemas/PropertyValueResponseArray'
@@ -126,11 +148,18 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf: 
                   - $ref: '#/components/schemas/Id'
                   - $ref: '#/components/schemas/PropertyValueReadResponseArray'
+            "*/*":
+              schema:
+                type: string
+                description: |-
+                  Any other content type, such as
+                  application/octet-stream, application/json that 
+                  will be read from the device.
         default:
           description: Error response
           content:
@@ -256,7 +285,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 $ref: '#/components/schemas/EventStatusResponseArray'
         default:
@@ -382,7 +411,7 @@ paths:
         '200':
           description: Success, events retrieved
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 $ref: '#/components/schemas/EventStatusResponseArray'
         default:
@@ -477,7 +506,7 @@ paths:
         '200':
           description: Success, action is active
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 $ref: '#/components/schemas/ActionResponse'
         default:
@@ -510,7 +539,7 @@ paths:
             example: 12345678-1234-5678-1234-56789abcdef4
       requestBody:
         content:
-          application/json:
+          application/nipc+json:
             schema:
               anyOf:
                 - $ref: '#/components/schemas/Connection'
@@ -520,7 +549,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
@@ -552,7 +581,7 @@ paths:
             example: 12345678-1234-5678-1234-56789abcdef4
       requestBody:
         content:
-          application/json:
+          application/nipc+json:
             schema:
               $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceList'
         required: false
@@ -560,7 +589,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
@@ -592,7 +621,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
@@ -625,7 +654,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
@@ -658,7 +687,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 type: array
                 items:
@@ -731,7 +760,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/SdfReference'
@@ -763,7 +792,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/SdfReference'
@@ -794,7 +823,7 @@ paths:
             example: 12345678-1234-5678-1234-56789abcdef4
       requestBody:
         content:
-          application/json:
+          application/nipc+json:
             schema:
               $ref: '#/components/schemas/DataApp'
         required: true
@@ -802,7 +831,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DataApp'
@@ -832,7 +861,7 @@ paths:
             example: 12345678-1234-5678-1234-56789abcdef4
       requestBody:
         content:
-          application/json:
+          application/nipc+json:
             schema:
               $ref: '#/components/schemas/DataApp'
         required: true
@@ -840,7 +869,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DataApp'
@@ -873,7 +902,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DataApp'
@@ -906,7 +935,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/nipc+json:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/DataApp'
