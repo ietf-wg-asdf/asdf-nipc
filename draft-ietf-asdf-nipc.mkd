@@ -773,7 +773,7 @@ Request Body:
 
 The request body also contains one of the following: 
 
- - mqttClient: an empty object that denotes that the data application
+ - mqttClient: a boolean that denotes that the data application
    is an MQTT client that will receive streaming data over MQTT
  - mqttBroker: an object that contains the MQTT broker information
    where the broker will publish the streaming data. 
@@ -812,7 +812,7 @@ Example of a request body:
 r/sdfEvent/fallDetected"
     }
   ],
-  "mqttClient": {}
+  "mqttClient": true
 }
 ~~~~~
 {:json #exregmqttclientrsp title="Example with mqttClient"}
@@ -2047,7 +2047,7 @@ The sequence of operations for this are:
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
     nt/isPresent"
       ],
-      "mqttClient": {}
+      "mqttClient": true
     }
 
     HTTP/1.1 200 OK
@@ -2058,7 +2058,7 @@ The sequence of operations for this are:
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
     nt/isPresent"
       ],
-      "mqttClient": {}
+      "mqttClient": true
     }
     ~~~~~
 
@@ -2080,7 +2080,7 @@ The sequence of operations for this are:
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
     nt/isPresent"
       ],
-      "mqttClient": {}
+      "mqttClient": true
     }
 
     HTTP/1.1 200 OK
@@ -2091,7 +2091,7 @@ The sequence of operations for this are:
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
     nt/isPresent"
       ],
-      "mqttClient": {}
+      "mqttClient": true
     }
     ~~~~~
 

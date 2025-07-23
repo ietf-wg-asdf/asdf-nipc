@@ -1060,7 +1060,7 @@ components:
       type: object
       properties: 
         mqttClient:
-          type: object
+          type: boolean
 
     DataAppMqttBroker:
       type: object
