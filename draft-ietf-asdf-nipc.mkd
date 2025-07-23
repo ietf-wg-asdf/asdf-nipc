@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-IP device control (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-09
+docname: draft-ietf-asdf-nipc-10
 submissionType: IETF
 category: std
 
@@ -1779,9 +1779,9 @@ with the actual response once the operation is complete.
 # NIPC Error Handling
 {: #errorhandling}
 
-The error codes in the NIPC APIs use URI-based error type identifiers 
-as defined in {{!RFC9457}} Problem Details for HTTP APIs. The error codes 
-can be generic or specific to the API category. The error codes are 
+The error types in the NIPC APIs use URI-based error type identifiers 
+as defined in {{iana-problem-details}}. The error types 
+can be generic or specific to the API category. The error types are 
 organized into the following categories:
 
   - Generic: Broadly applicable errors, including authorization, 
@@ -1791,10 +1791,10 @@ organized into the following categories:
   - Protocol specific: Errors related to protocol-specific operations.
   - Extension APIs: Errors related to extension APIs.
 
-The specific error codes are defined in the table below:
+The specific error types are defined in the table below:
 
-| Error Code                                      | Description                                  | Category         |
-|-------------------------------------------------|----------------------------------------------|------------------|
+| Error Type                                 | Description                                  | Category         |
+|--------------------------------------------|----------------------------------------------|------------------|
 | invalid-id                                 | Invalid device ID or gateway doesn't recognize the ID | Generic          |
 | invalid-sdf-url                            | Invalid SDF URL or SDF affordance not found   | Generic           |
 | extension-operation-not-executed           | Operation was not executed since the previous operation failed | Generic |
@@ -2253,13 +2253,16 @@ The well-known URI for NIPC is:
 
     /.well-known/nipc
 
-## Problem Details for HTTP APIs
-
-This document registers new Problem Details types in the "HTTP Problem Type" registry established by {{RFC9457}}.
+## Problem Details for NIPC APIs {#iana-problem-details}
 
 IANA is requested to create a new registry, the "NIPC Problem Type" registry, 
-with following URL: https://www.iana.org/assignments/nipc-problem-types. IANA
-is requested to register the following URIs in the "NIPC Problem Type" 
+with following URL: [](https://www.iana.org/assignments/nipc-problem-types).
+
+Registrations MUST use the prefix []("https://iana.org/assignments/nipc-problem-types#") for the type URI. 
+
+The registration requests MUST use the template defined in {{Section 4.2 of RFC9457}}.
+
+IANA is requested to register the following URIs in the "NIPC Problem Type" 
 registry:
 
 | Problem Type URI                                                                 | Description                                  | Reference         |
