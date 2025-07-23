@@ -418,9 +418,12 @@ NIPC is a protocol that is based on RESTful HTTP {{!RFC9114}}. Along with HTTP
 headers and URIs, NIPC uses JSON {{!RFC7159}} payloads to convey NIPC 
 operations, such as registrations, actions, event and property operations. This
 is the case for both request and response parameters, as well as errors.
-NIPC uses the standard JSON media type "application/nipc+json", except for the SDF 
-model registrations APIs, where the media type reflects the content as an SDF 
+NIPC uses the JSON media type "application/nipc+json" that is registered in
+{{iana-media-types}}, except for the SDF model registrations APIs, 
+where the media type reflects the content as an SDF 
 model, and hence is media type "application/sdf+json".
+The NIPC property APIs also support the use of other media types to 
+describe the content of the property.
 
 ### NIPC publish/subscribe events
 
