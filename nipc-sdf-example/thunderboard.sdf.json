@@ -14,7 +14,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "efd658ae-c400-ef33-76e7-91b00019103b",
                                     "characteristicID": "efd658ae-c401-ef33-76e7-91b00019103b"
@@ -26,7 +26,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "efd658ae-c400-ef33-76e7-91b00019103b",
                                     "characteristicID": "efd658ae-c402-ef33-76e7-91b00019103b"
@@ -44,7 +44,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "181a",
                                     "characteristicID": "c8546913-bf02-45eb-8dde-9f8754f4a32e"
@@ -62,7 +62,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
                                     "characteristicID": "f598dbc5-2f01-4ec5-9936-b3d1aa4f957f"
@@ -74,7 +74,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
                                     "characteristicID": "f598dbc5-2f02-4ec5-9936-b3d1aa4f957f"
@@ -86,7 +86,7 @@
                             "observable": false,
                             "writable": true,
                             "readable": false,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
                                     "characteristicID": "f598dbc5-2f03-4ec5-9936-b3d1aa4f957f"
@@ -98,7 +98,7 @@
                         "hall_state": {
                             "description": "State",
                             "sdfOutputData": {
-                                "protocolMap": {
+                                "sdfProtocolMap": {
                                     "ble": {
                                         "type": "gatt",
                                         "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
@@ -110,7 +110,7 @@
                         "hall_field_strength": {
                             "description": "Field Strength",
                             "sdfOutputData": {
-                                "protocolMap": {
+                                "sdfProtocolMap": {
                                     "ble": {
                                         "type": "gatt",
                                         "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
@@ -129,7 +129,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "181a",
                                     "characteristicID": "2a6d"
@@ -147,7 +147,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "1815",
                                     "characteristicID": "2A56"
@@ -159,7 +159,7 @@
                             "observable": false,
                             "writable": true,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "1815",
                                     "characteristicID": "2A56"
@@ -171,7 +171,7 @@
                         "aio_digital_in": {
                             "description": "Digital",
                             "sdfOutputData": {
-                                "protocolMap": {
+                                "sdfProtocolMap": {
                                     "ble": {
                                         "type": "gatt",
                                         "serviceID": "1815",
@@ -190,7 +190,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "181a",
                                     "characteristicID": "2a6e"
@@ -202,7 +202,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "181a",
                                     "characteristicID": "2a6f"
@@ -220,7 +220,7 @@
                             "observable": false,
                             "writable": true,
                             "readable": false,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "1D14D6EE-FD63-4FA1-BFA4-8F47B42119F0",
                                     "characteristicID": "F7BF3564-FB6D-4E53-88A4-5E37E0326063"
@@ -238,7 +238,7 @@
                             "observable": false,
                             "writable": true,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "fcb89c40-c600-59f3-7dc3-5ece444a401b",
                                     "characteristicID": "fcb89c40-c603-59f3-7dc3-5ece444a401b"
@@ -256,7 +256,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "180F",
                                     "characteristicID": "2A19"
@@ -268,7 +268,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "ec61a454-ed00-a5e8-b8f9-de9ec026ec51",
                                     "characteristicID": "ec61a454-ed01-a5e8-b8f9-de9ec026ec51"
@@ -280,7 +280,7 @@
                         "batt_measurement": {
                             "description": "Battery Level",
                             "sdfOutputData": {
-                                "protocolMap": {
+                                "sdfProtocolMap": {
                                     "ble": {
                                         "type": "gatt",
                                         "serviceID": "180F",
@@ -299,7 +299,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "181a",
                                     "characteristicID": "2a76"
@@ -311,7 +311,7 @@
                             "observable": false,
                             "writable": false,
                             "readable": true,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "181a",
                                     "characteristicID": "c8546913-bfd9-45eb-8dde-9f8754f4a32e"
@@ -329,7 +329,7 @@
                             "observable": false,
                             "writable": true,
                             "readable": false,
-                            "protocolMap": {
+                            "sdfProtocolMap": {
                                 "ble": {
                                     "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
                                     "characteristicID": "71e30b8c-4131-4703-b0a0-b0bbba75856b"
@@ -341,7 +341,7 @@
                         "imu_acceleration": {
                             "description": "Acceleration",
                             "sdfOutputData": {
-                                "protocolMap": {
+                                "sdfProtocolMap": {
                                     "ble": {
                                         "type": "gatt",
                                         "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
@@ -353,7 +353,7 @@
                         "imu_orientation": {
                             "description": "Orientation",
                             "sdfOutputData": {
-                                "protocolMap": {
+                                "sdfProtocolMap": {
                                     "ble": {
                                         "type": "gatt",
                                         "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
@@ -365,7 +365,7 @@
                         "imu_control_point": {
                             "description": "Control Point",
                             "sdfOutputData": {
-                                "protocolMap": {
+                                "sdfProtocolMap": {
                                     "ble": {
                                         "type": "gatt",
                                         "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
@@ -384,7 +384,7 @@
                     "observable": false,
                     "writable": true,
                     "readable": true,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "1800",
                             "characteristicID": "2A00"
@@ -396,7 +396,7 @@
                     "observable": false,
                     "writable": false,
                     "readable": true,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "1800",
                             "characteristicID": "2A01"
@@ -408,7 +408,7 @@
                     "observable": false,
                     "writable": false,
                     "readable": true,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "180A",
                             "characteristicID": "2A29"
@@ -420,7 +420,7 @@
                     "observable": false,
                     "writable": false,
                     "readable": true,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "180A",
                             "characteristicID": "2A24"
@@ -432,7 +432,7 @@
                     "observable": false,
                     "writable": false,
                     "readable": true,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "180A",
                             "characteristicID": "2A25"
@@ -444,7 +444,7 @@
                     "observable": false,
                     "writable": false,
                     "readable": true,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "180A",
                             "characteristicID": "2A27"
@@ -456,7 +456,7 @@
                     "observable": false,
                     "writable": false,
                     "readable": true,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "180A",
                             "characteristicID": "2A26"
@@ -468,7 +468,7 @@
                     "observable": false,
                     "writable": false,
                     "readable": true,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "180A",
                             "characteristicID": "2A23"
@@ -480,7 +480,7 @@
                 "isPresent": {
                     "description": "BLE advertisements",
                     "sdfOutputData": {
-                        "protocolMap": {
+                        "sdfProtocolMap": {
                             "ble": {
                                 "type": "advertisements"
                             }
@@ -490,7 +490,7 @@
                 "isConnected": {
                     "description": "BLE connection events",
                     "sdfOutputData": {
-                        "protocolMap": {
+                        "sdfProtocolMap": {
                             "ble": {
                                 "type": "connection_events"
                             }

@@ -88,7 +88,7 @@ communication to the non-IP protocol that the low-power device supports.
                                                                
     +-------------+              +---------+              +--------+
     | Application |<------------>| Gateway |<------------>| Non-IP |                     
-    |    app      |   IP-based   |         |    Non-IP    | Device |
+    |             |   IP-based   |         |    Non-IP    | Device |
     +-------------+   Operation  +---------+   Operation  +--------+                 
 
 ~~~~~
@@ -418,9 +418,12 @@ NIPC is a protocol that is based on RESTful HTTP {{!RFC9114}}. Along with HTTP
 headers and URIs, NIPC uses JSON {{!RFC7159}} payloads to convey NIPC 
 operations, such as registrations, actions, event and property operations. This
 is the case for both request and response parameters, as well as errors.
-NIPC uses the standard JSON media type "application/json", except for the SDF 
-model registrations APIs, where the media type reflects the content as an SDF 
+NIPC uses the JSON media type "application/nipc+json" that is registered in
+{{iana-media-types}}, except for the SDF model registrations APIs, 
+where the media type reflects the content as an SDF 
 model, and hence is media type "application/sdf+json".
+The NIPC property APIs also support the use of other media types to 
+describe the content of the property.
 
 ### NIPC publish/subscribe events
 
@@ -546,10 +549,10 @@ Id is the unique uuid of the device. This id is generated when registering
 the device, for example against a SCIM server. As such, this id is a common
 identifier, known both to the application as well as the NIPC Server.
 
-### SDFReferences
+### SDF Name
 
 NIPC operations happen against SDF affordances and are referenced with an
-sdfReference, which is the full path including the namespace.
+global sdfName, which is the full path including the namespace.
 
 The operations are either Properties, Events or Actions and their references
 are of type string
@@ -676,7 +679,7 @@ where-
 
 ### Get an SDF model
 
-Method: `GET /registrations/models`
+Method: `GET /registrations/models{?sdfName}`
 
 Description: Gets an SDF model registered with the gateway
 
@@ -692,7 +695,7 @@ The SDF model is returned in JSON format, similar to the example in
 
 ### Delete an SDF model
 
-Method: `DELETE /registrations/models`
+Method: `DELETE /registrations/models{?sdfName}`
 
 Description: Deletes an SDF model registered with the gateway
 
@@ -719,7 +722,7 @@ where-
 
 ### Update an SDF model
 
-Method: `PUT /registrations/models`
+Method: `PUT /registrations/models{?sdfName}`
 
 Description: Updates an SDF model registered with the gateway
 
@@ -758,7 +761,7 @@ that is registered with the SCIM server. The endpoint app is defined in
 
 ### Register a data application
 
-Method: `POST /registrations/data-apps`
+Method: `POST /registrations/data-apps{?dataAppId}`
 
 Description: Registers a data application with the gateway
 
@@ -773,7 +776,7 @@ Request Body:
 
 The request body also contains one of the following: 
 
- - mqttClient: an empty object that denotes that the data application
+ - mqttClient: a boolean that denotes that the data application
    is an MQTT client that will receive streaming data over MQTT
  - mqttBroker: an object that contains the MQTT broker information
    where the broker will publish the streaming data. 
@@ -812,7 +815,7 @@ Example of a request body:
 r/sdfEvent/fallDetected"
     }
   ],
-  "mqttClient": {}
+  "mqttClient": true
 }
 ~~~~~
 {:json #exregmqttclientrsp title="Example with mqttClient"}
@@ -845,7 +848,7 @@ If successful, the response will be identical to the request body.
 
 ### Update a data application
 
-Method: `PUT /registrations/data-apps`
+Method: `PUT /registrations/data-apps{?dataAppId}`
 
 Description: Updates a data application with the gateway
 
@@ -861,7 +864,7 @@ If successful, the response will be identical to the request body.
 
 ### Get a data application
 
-Method: `GET /registrations/data-apps`
+Method: `GET /registrations/data-apps{?dataAppId}`
 
 Description: Gets a data application registered with the gateway
 
@@ -876,7 +879,7 @@ application API.
 
 ### Delete a data application
 
-Method: `DELETE /registrations/data-apps`
+Method: `DELETE /registrations/data-apps{?dataAppId}`
 
 Description: Deletes a data application registered with the gateway
 
@@ -928,9 +931,7 @@ be leveraged without modifying it.
 These APIs support multiple media types based on Content-Type and Accept
 headers to accommodate different data formats. 
 
-When using `application/octet-stream`, the raw binary data is sent 
-directly in the request/response body.
-When using `application/json`, the request and response bodies follow 
+When using `application/nipc+json`, the request and response bodies follow 
 the format shown in the examples above, with binary data encoded as 
 base64 in the "value" field. 
 For other content types, the data is transmitted according to the 
@@ -938,7 +939,7 @@ specific format requirements of that media type.
 
 ### Write multiple values
 
-Method: `PUT /devices/{id}/properties`
+Method: `PUT /devices/{id}/properties{?propertyName}`
 
 Description: Write values to one or more properties on a device
 
@@ -946,9 +947,26 @@ Parameters:
 
  - id: the id of the device
 
+Query Parameters:
+
+  - propertyName: a single property to update. If this parameter is
+    provided, the request body can contain any conten type payload 
+    with the value to write to the property. If this parameter is not
+    provided, the request body MUST contain an application/nipc+json payload
+    with an array of properties to update, each containing a property and a
+    value.
+
 Request Body:
 
-  - an array of properties to update, each containing a property and a value
+  - If the query parameter propertyName is provided, the request body
+    can contain any content type payload with the value to write to the property.
+    The value is the raw binary data to write to the property.
+    
+  or 
+
+  - an array of properties to update, each containing a property and a value.
+    The value is the raw binary data, encoded in base64 with padding as per 
+    {{Section 5 of !RFC4648}}.
 
 Example body updating multiple properties:
 
@@ -971,6 +989,12 @@ Example body updating multiple properties:
 {:json #exupmprop title="Example updating multiple properties"}
 
 Response: 
+
+If the Accept header is set to `application/nipc+json`, the response will be
+an array with a status field set to 200 for each property that was updated, 
+or a problem type object for each property that failed to update.
+
+If the Accept header is set to any other media type and the propertyName query parameter is provided, the response will be 204 No Content with no body.
 
 Example of a response:
 
@@ -1003,7 +1027,7 @@ definition of failed response.
 
 ### Read multiple values
 
-Method: `GET /devices/{id}/properties`
+Method: `GET /devices/{id}/properties{?propertyName*}`
 
 Description: Read values from one or more properties on a device
 
@@ -1013,9 +1037,16 @@ Parameters:
 
 Query Parameters:
 
- - propertyName: a comma separated list of properties to read
+ - propertyName: The property to read. This can be a single property or multiple
+   properties. If multiple properties are provided, the request body MUST
+   contain an application/nipc+json payload with an array of properties to read.
 
 Response:
+
+If the Accept header is set to `application/nipc+json`, the response will be
+an array of properties, each containing a property and a value. The value is
+the raw binary data read from the property, encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
+
 
 Example of a response:
 
@@ -1075,7 +1106,7 @@ the topic will be:
 
 data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>
 
-data-app/12345678-1234-5678-1234-56789abcdef4/thermometer/sdfObject/\
+data-app/12345678-1234-5678-1234-56789abcdef4/thermometer/sdfThing/\
 thermometer/sdfEvent/isPresent
 ~~~~~
 
@@ -1088,7 +1119,7 @@ used as the MQTT topic instead.
 
 ### Enable event reporting
 
-Method: `POST /devices/{id}/events`
+Method: `POST /devices/{id}/events{?eventName}`
 
 Description: Enables an event on a specific device
 
@@ -1124,7 +1155,7 @@ definition of failed response.
 
 ### Disable event reporting
 
-Method: `DELETE /devices/{id}/events`
+Method: `DELETE /devices/{id}/events{?instanceId}`
 
 Description: Disables an event on a specific device
 
@@ -1147,42 +1178,9 @@ HTTP/1.1 204 No Content
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
 
-### Get event status
+### Get status of one or more events
 
-Method: `GET /devices/{id}/events`
-
-Description: Get the status of an event on a specific device
-
-Parameters:
-
-  - id: the id of the device or group of devices
-
-Query Parameters:
-
-  - instanceId: the instance ID of the event to query
-
-Response:
-
-Example of a response:
-
-~~~~~
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
-{
-  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sd\
-fEvent/fallDetected"
-}
-~~~~~
-{:json #exgeteventresp title="Example get event status response"}
-
-where "event" is the event URI that was enabled for this instance.
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-### Get status of multiple events
-
-Method: `GET /devices/{id}/events`
+Method: `GET /devices/{id}/events{?instanceId*}`
 
 Description: Get the status of one or more events on a specific device
 
@@ -1257,7 +1255,7 @@ definition of failed response.
 
 ### Disable event reporting on a group of devices
 
-Method: `DELETE /groups/{id}/events`
+Method: `DELETE /groups/{id}/events{?instanceId}`
 
 Description: Disables an event on a group of devices
 
@@ -1282,40 +1280,7 @@ definition of failed response.
 
 ### Get event status on a group of devices
 
-Method: `GET /groups/{id}/events`
-
-Description: Get the status of an event on a group of devices
-
-Parameters:
-
- - id: the id of the group of devices
-
-Query Parameters:
-
- - instanceId: the instance ID of the event to check
-
-Response:
-
-Example of a response:
-
-~~~~~
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
-{
-  "event": "https://example.com/heartrate#/sdfObject/healthsensor/sd\
-fEvent/fallDetected"
-}
-~~~~~
-{:json #exgetgevntresp title="Example get group event status response"}
-
-where "event" is the event URI that was enabled for this instance.
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-### Get status of multiple events on a group of devices
-
-Method: `GET /groups/{id}/events`
+Method: `GET /groups/{id}/events{?instanceId*}`
 
 Description: Get the status of one or more events on a group of devices
 
@@ -1325,7 +1290,7 @@ Parameters:
 
 Query Parameters:
 
-  - instanceId: a comma separated list of event instance IDs to filter by (optional)
+  - instanceId: a list of event instance IDs to filter by (optional)
 
 Response: 
 
@@ -1362,7 +1327,7 @@ without modifying it.
 
 ### Perform an action
 
-Method: `POST /devices/{id}/actions`
+Method: `POST /devices/{id}/actions{?actionName}`
 
 Description: Perform an action on a specific device
 
@@ -1398,7 +1363,7 @@ The Location header contains the URI for the action instance, which can be used 
 
 ### Check action status
 
-Method: `GET /devices/{id}/actions`
+Method: `GET /devices/{id}/actions{?instanceId}`
 
 Description: Check the status of an action on a specific device
 
@@ -1990,13 +1955,13 @@ The sequence of operations for this are:
 
     POST /registration/model
     Content-Type: application/sdf+json
-    Accept: application/json
+    Accept: application/nipc+json
     Host: localhost
 
     { ... }
 
     HTTP/1.1 200 OK
-    content-type: application/json
+    content-type: application/nipc+json
 
     [
       {
@@ -2016,11 +1981,11 @@ The sequence of operations for this are:
     GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?prop\
     ertyName=https://example.com/thermometer%23/sdfThing/thermometer/\
     sdfProperty/device_name
-    Accept: application/json
+    Accept: application/nipc+json
     Host: localhost
 
     HTTP/1.1 200 OK
-    content-type: application/json
+    content-type: application/nipc+json
 
     [
       {
@@ -2037,7 +2002,7 @@ The sequence of operations for this are:
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
     PUT /devices/12345678-1234-5678-1234-56789abcdef4/properties
-    Content-Type: application/json
+    Content-Type: application/nipc+json
     Host: localhost
 
     [
@@ -2049,7 +2014,7 @@ The sequence of operations for this are:
     ]
 
     HTTP/1.1 200 OK
-    content-type: application/json
+    content-type: application/nipc+json
 
     [
       {
@@ -2076,8 +2041,8 @@ The sequence of operations for this are:
 
     POST /registration/data-app?dataAppId=23456789-1234-5678-1234-567\
     89abcdef4
-    Content-Type: application/json
-    Accept: application/json
+    Content-Type: application/nipc+json
+    Accept: application/nipc+json
     Host: localhost
 
     {
@@ -2085,18 +2050,18 @@ The sequence of operations for this are:
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
     nt/isPresent"
       ],
-      "mqttClient": {}
+      "mqttClient": true
     }
 
     HTTP/1.1 200 OK
-    content-type: application/json
+    content-type: application/nipc+json
 
     {
       "events": [
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
     nt/isPresent"
       ],
-      "mqttClient": {}
+      "mqttClient": true
     }
     ~~~~~
 
@@ -2109,8 +2074,8 @@ The sequence of operations for this are:
 
     POST /registration/data-app?dataAppId=23456789-1234-5678-1234-567\
     89abcdef4
-    Content-Type: application/json
-    Accept: application/json
+    Content-Type: application/nipc+json
+    Accept: application/nipc+json
     Host: localhost
 
     {
@@ -2118,18 +2083,18 @@ The sequence of operations for this are:
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
     nt/isPresent"
       ],
-      "mqttClient": {}
+      "mqttClient": true
     }
 
     HTTP/1.1 200 OK
-    content-type: application/json
+    content-type: application/nipc+json
 
     {
       "events": [
         "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
     nt/isPresent"
       ],
-      "mqttClient": {}
+      "mqttClient": true
     }
     ~~~~~
 
@@ -2159,7 +2124,7 @@ The sequence of operations for this are:
     Host: localhost
 
     HTTP/1.1 200 OK
-    content-type: application/json
+    content-type: application/nipc+json
 
     {
       "event": "https://example.com/thermometer#/sdfThing/thermometer\
@@ -2167,7 +2132,7 @@ The sequence of operations for this are:
     }
     ~~~~~
 
-# Security Considerations
+# Security Considerations {#security-considerations}
 
 ## API authorization 
 
@@ -2188,6 +2153,52 @@ It is possible to further refine roles down to an API basis.
 This section provides guidance to the Internet Assigned Numbers Authority
 (IANA) regarding registration of values related to NIPC, in accordance
 with {{!RFC8126}}.
+
+## Media Type Registration {#iana-media-types}
+
+This document registers the "application/nipc+json" media type 
+for messages of the NIPC APIs defined in this document carrying
+parameters encoded in JSON. 
+
+Type name: application
+
+Subtype name: nipc+json
+
+Required parameters: none
+
+Optional parameters: none
+
+Encoding considerations: Encoding considerations are identical to those specified for the "application/json" media type.
+
+Security considerations: See the {{security-considerations}} section of this document.
+
+Interoperability considerations: none
+
+Published specification: This document, the NIPC API specification.
+
+Applications that use this media type:
+
+Fragment identifier considerations: none
+
+Additional information:
+
+- Deprecated alias names for this type: none
+ 
+- Magic number(s): none
+
+- File extension(s): none
+
+- Macintosh file type code(s): none
+
+Person & email address to contact for further information:
+
+Intended usage: LIMITED USE
+
+Restrictions on usage: To be used for NIPC APIs as defined in this document.
+
+Author:
+
+Change controller: IETF
 
 ## Protocol mapping {#iana-prot-map}
 

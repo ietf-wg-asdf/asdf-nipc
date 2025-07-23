@@ -12,7 +12,7 @@
                     "unit": "beat/min",
                     "observable": false,
                     "writable": false,
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "12345678-1234-5678-1234-56789abcdef4",
                             "characteristicID": "12345678-1234-5678-1234-56789abcdef4"
@@ -24,7 +24,7 @@
                 "fallDetected": {
                     "sdfOutputData": {
                         "type": "boolean",
-                        "protocolMap": {
+                        "sdfProtocolMap": {
                             "ble": {
                                 "type": "gatt",
                                 "serviceID": "12345678-1234-5678-1234-56789abcdef1",
@@ -44,7 +44,7 @@
                                 "type": "number"
                             }
                         },
-                        "protocolMap": {
+                        "sdfProtocolMap": {
                             "ble": {
                                 "type": "advertisements"
                             }
@@ -54,7 +54,7 @@
                 "isConnected": {
                     "sdfOutputData": {
                         "type": "boolean",
-                        "protocolMap": {
+                        "sdfProtocolMap": {
                             "ble": {
                                 "type": "connection_events"
                             }
@@ -65,7 +65,7 @@
             "sdfAction": {
                 "start": {
                     "description": "Start heartrate monitoring",
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "12345678-1234-5678-1234-56789abcdef8",
                             "characteristicID": "12345678-1234-5678-1234-56789abcdef8"
@@ -74,7 +74,7 @@
                 },
                 "stop": {
                     "description": "Stop heartrate monitoring",
-                    "protocolMap": {
+                    "sdfProtocolMap": {
                         "ble": {
                             "serviceID": "12345678-1234-5678-1234-56789abcdef9",
                             "characteristicID": "12345678-1234-5678-1234-56789abcdef9"
