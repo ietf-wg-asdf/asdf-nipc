@@ -2258,7 +2258,9 @@ The well-known URI for NIPC is:
 IANA is requested to create a new registry, the "NIPC Problem Type" registry, 
 with following URL: [](https://www.iana.org/assignments/nipc-problem-types).
 
-The registration requests should use a similar template as defined in {{Section 4.2 of RFC9457}}.
+Registrations MUST use the prefix []("https://iana.org/assignments/nipc-problem-types#") for the type URI. 
+
+The registration requests MUST use the template defined in {{Section 4.2 of RFC9457}}.
 
 IANA is requested to register the following URIs in the "NIPC Problem Type" 
 registry:
