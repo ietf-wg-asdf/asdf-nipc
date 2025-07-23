@@ -639,7 +639,7 @@ paths:
 
 
 ### Registrations
-  /registration/model:
+  /registrations/models:
     post:
       tags:
         - NIPC registration APIs
@@ -775,7 +775,7 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/FailureResponse'
 
-  /registration/data-app:
+  /registrations/data-apps:
     post:
       tags:
         - NIPC registration APIs
