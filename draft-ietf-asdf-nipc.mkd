@@ -372,23 +372,17 @@ are reported over the events publish/subscribe interface.
 ### Connection management for NIPC Operations
 
 For protocols that require connection management before executing an operation,
-a NIPC gateway can perform implicit connection management. When executing a 
+a NIPC gateway will perform implicit connection management. When executing a 
 NIP operation, a NIPC Gateway can set up a connection with a device as well as
 tear down the connection after the operation has completed. A NIPC Gateway
-should support explicit connection management as well. Explicit connection
+may support explicit connection management as well. Explicit connection
 management can be used by an app that wants to perform multiple NIPC operations
 in a single connection. Explicit connection management can be performed by 
-calling the /devices/{id}/manage/connection action API. When after establishing an
+calling the /devices/{id}/connections API. When after establishing an
 explicit connection to a device, an application calls a NIPC Operation, the
 Gateway will leverage the exissting connection and will also not tear the
 connection down after the operation completes. The app will have to explicitly
 close the connection. 
-
-### Management APIs
-
-Management APIs are APIs that perform device connection management and
-protocol-specific operations, but do not use registered affordances. These APIs have embedded
-protocol mappings. They require explicit connection management.
 
 ### Extensions {#extensions}
 
@@ -458,7 +452,6 @@ The collection identifier can be one of the following:
 - /devices: for NIPC operations on devices
 - /groups: for NIPC operations on groups of devices
 - /extensions: for NIPC extension APIs
-- /manage: for NIPC management APIs
 
 The well-known URI `/.well-known/nipc` defined in {{iana-well-known}} can
 be used to discover the base path of the NIPC APIs and the supported versions
@@ -894,10 +887,9 @@ application API.
 
 # NIPC APIs
 
-The primary goal of the NIPC APIs is to exchange data with a Non-IP device, by
-means of reading, writing or streaming NIPC properties to applications.
+The primary goal of the NIPC APIs is to  perform operations on SDF Affordances, such as properties, events & actions.This allows a user of the NIPC API to get or update properties of devices, perform actions on devices, and consume events from devices.
 
-The NIPC APIs are divided into 3 categories:
+The NIPC APIs consists of 3 main collections which reflect SDF Affordances as defined in {{add ref}}: 
 
  - NIPC Property APIs: These APIs allow applications to get and update device 
    properties.
@@ -905,16 +897,13 @@ The NIPC APIs are divided into 3 categories:
    reporting on devices.
  - NIPC Action APIs: These APIs allow applications to perform actions on
    devices.
- - NIPC Management APIs: These APIs allow
-   applications to manage device connections and perform protocol-specific
-   operations.
 
-An SDF model must be registered for the device in order to use these NIPC
-Property, Event and Action APIs. The SDF model can be a top-level sdfThing with
+One or more SDF models must be registered in order to use these NIPC
+Property, Event and Action APIs. The SDF models can be a top-level sdfThing with
 multiple sdfObjects or a top-level sdfObject. These APIs depend on the SDF 
-affordance (i.e. sdfProperty, sdfEvent and sdfAction) objects defined in
+affordances (i.e. sdfProperty, sdfEvent and sdfAction) defined in
 the SDF model and a device ID that is defined in {{I-D.ietf-scim-device-model}}.
-The SDF affordance can be referenced using the global name of the SDF affordance
+An SDF affordance can be referenced using the global name of the SDF affordance
 as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
 The SDF global name will be used against the registered SDF model to 
@@ -1341,8 +1330,7 @@ Query Parameters:
 
 Request Body:
 
-The request body is optional and can contain binary data if the underlying protocol 
-allows an action with a value.
+The request body is optional and may contain a value. The media type of the value can be defined by the underlying protocol, for example it could be octet-stream for binary data.
 
 Response:
 
@@ -1391,15 +1379,15 @@ where "status" indicates the current state of the action (e.g., "IN_PROGRESS" or
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
 
-## NIPC Management APIs
+## NIPC explicit connections management APIs
 
-These APIs allow applications to manage device connections, but do not use
-registered properties, events or actions. These APIs do not perform an implicit
-connection, so a connection must be established before calling these APIs.
+A lot of protocols do not require connection management, so for these protocols, these APIs will not apply.
+NIPC Gateways perform implicit connection management for protocols that require connection management (such as BLE), so in principle the user of the NIPC API does not have to perform connection management. In some cases however, a user might want to keep a connection open, perform an action, evaluate the result and perform a second action based on that result. In this case it is useful to perform explicit connection management so the connections remains established to execute subsequent actions.  These APIs allow applications to explicitly manage device connections.
+The examples in this section will be based on BLE, which requires connection management.
 
 ### Connect to a device
 
-Method: `POST /devices/{id}/manage/connection`
+Method: `POST /devices/{id}/connections`
 
 Description: Connect to a device
 
@@ -1468,8 +1456,8 @@ where in the BLE protocol object:
  - "cached" refers to whether the services need to be cached for 
    subsequent connects, in order not to perform service discovery on
    each request.
- - "cacheIdlepurge" defines how long the cache should be maintained 
-   before purging
+ - "cacheIdlepurge" defines how long (in seconds) the cache should be maintained 
+   before purging.
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
    notification (on by default)
@@ -1540,7 +1528,7 @@ definition of failed response.
 
 ### Update a connection
 
-Method: `PUT /devices/{id}/manage/connection`
+Method: `PUT /devices/{id}/connections`
 
 Description: Update cached ServiceMap for a device. Full service discovery will
 be performed, unless specific services are described in the API body.
@@ -1641,7 +1629,7 @@ definition of failed response.
 
 ### Disconnect from a device
 
-Method: `DELETE /devices/{id}/manage/connection`
+Method: `DELETE /devices/{id}/connections`
 
 Description: Disconnect from a device
 
@@ -2209,8 +2197,7 @@ The registry must contain following attributes:
 - Protocol map name
 - Protocol name
 - Description
-- Reference of the document describing the protocol mapping. This document 
-  must be an RFC.
+- Reference of the specification describing the protocol mapping. This specification must be reviewed by an expert.
 
 Following protocol mappings are described in this document:
 

@@ -516,7 +516,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
                
-  /devices/{id}/manage/connection:
+  /devices/{id}/connections:
     post:
       tags:
         - NIPC management APIs
