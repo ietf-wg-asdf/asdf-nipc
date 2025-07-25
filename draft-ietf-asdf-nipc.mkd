@@ -887,10 +887,9 @@ application API.
 
 # NIPC APIs
 
-The primary goal of the NIPC APIs is to exchange data with a Non-IP device, by
-means of reading, writing or streaming NIPC properties to applications.
+The primary goal of the NIPC APIs is to  perform operations on SDF Affordances, such as properties, events & actions.This allows a user of the NIPC API to get or update properties of devices, perform actions on devices, and consume events from devices.
 
-The NIPC APIs are divided into 3 categories:
+The NIPC APIs consists of 3 main collections which reflect SDF Affordances as defined in {{add ref}}: 
 
  - NIPC Property APIs: These APIs allow applications to get and update device 
    properties.
@@ -899,12 +898,12 @@ The NIPC APIs are divided into 3 categories:
  - NIPC Action APIs: These APIs allow applications to perform actions on
    devices.
 
-An SDF model must be registered for the device in order to use these NIPC
-Property, Event and Action APIs. The SDF model can be a top-level sdfThing with
+One or more SDF models must be registered in order to use these NIPC
+Property, Event and Action APIs. The SDF models can be a top-level sdfThing with
 multiple sdfObjects or a top-level sdfObject. These APIs depend on the SDF 
-affordance (i.e. sdfProperty, sdfEvent and sdfAction) objects defined in
+affordances (i.e. sdfProperty, sdfEvent and sdfAction) defined in
 the SDF model and a device ID that is defined in {{I-D.ietf-scim-device-model}}.
-The SDF affordance can be referenced using the global name of the SDF affordance
+An SDF affordance can be referenced using the global name of the SDF affordance
 as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
 The SDF global name will be used against the registered SDF model to 
@@ -2199,8 +2198,7 @@ The registry must contain following attributes:
 - Protocol map name
 - Protocol name
 - Description
-- Reference of the document describing the protocol mapping. This document 
-  must be an RFC.
+- Reference of the specification describing the protocol mapping. This specification must be reviewed by an expert.
 
 Following protocol mappings are described in this document:
 
