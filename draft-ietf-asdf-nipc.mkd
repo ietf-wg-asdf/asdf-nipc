@@ -1330,8 +1330,7 @@ Query Parameters:
 
 Request Body:
 
-The request body is optional and can contain binary data if the underlying protocol 
-allows an action with a value.
+The request body is optional and may contain a value. The media type of the value can be defined by the underlying protocol, for example it could be octet-stream for binary data.
 
 Response:
 
