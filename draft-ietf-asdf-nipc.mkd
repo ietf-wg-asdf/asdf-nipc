@@ -448,6 +448,7 @@ Additionally a version number may be added, for example:
 
 After the base or version number, the path must contain a collection identifier.
 The collection identifier can be one of the following:
+
 - /registrations: for NIPC registration APIs
 - /devices: for NIPC operations on devices
 - /groups: for NIPC operations on groups of devices
@@ -1456,7 +1457,7 @@ where in the BLE protocol object:
  - "cached" refers to whether the services need to be cached for 
    subsequent connects, in order not to perform service discovery on
    each request.
- - "cacheIdlepurge" defines how long (in seconds) the cache should be maintained 
+ - "cacheIdlePurge" defines how long (in seconds) the cache should be maintained 
    before purging.
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
