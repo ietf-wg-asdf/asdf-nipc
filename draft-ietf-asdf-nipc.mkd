@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-IP device control (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-10
+docname: draft-ietf-asdf-nipc-11
 submissionType: IETF
 category: std
 
@@ -889,7 +889,7 @@ application API.
 
 The primary goal of the NIPC APIs is to  perform operations on SDF Affordances, such as properties, events & actions.This allows a user of the NIPC API to get or update properties of devices, perform actions on devices, and consume events from devices.
 
-The NIPC APIs consists of 3 main collections which reflect SDF Affordances as defined in {{add ref}}: 
+The NIPC APIs consists of 3 main collections which reflect SDF Affordances as defined in {{Section 1.2 of I-D.ietf-asdf-sdf}}: 
 
  - NIPC Property APIs: These APIs allow applications to get and update device 
    properties.
@@ -1657,7 +1657,7 @@ definition of failed response.
 
 ### Get connection status
 
-Method: `GET /devices/{id}/manage/connection`
+Method: `GET /devices/{id}/connections`
 
 Description: Get connection status for a device. Success when device(s)
 is/are connected, includes service map for the device if available.
