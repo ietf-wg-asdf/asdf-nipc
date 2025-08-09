@@ -220,7 +220,15 @@ components:
           enum:
             - nordic
             - silabs
-
+        controlProperty:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/upgradecontrol"
+          description: sdfName of the property used for control of the firmware upgrade
+        dataProperty:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/upgradedata"
+          description: sdfName of the property used for firmware transfer
+  
     ExtensionErrorCodes:
       type: object
       properties:
