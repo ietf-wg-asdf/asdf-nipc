@@ -56,6 +56,7 @@ informative:
       -
         org: Bluetooth SIG
     date: 2017
+...
 
 --- abstract
 
