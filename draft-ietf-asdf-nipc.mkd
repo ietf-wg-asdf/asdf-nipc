@@ -181,7 +181,7 @@ to applications wishing to communicate with non-IP devices in the network
 domain served by the gateway.
 Applications implementing Non-IP Control can leverage RESTful interfaces
 to communicate with Non-IP devices in the network domain and subscribe to
-events levering a CBOR-based pub/sub interface.
+events leveraging a CBOR-based pub/sub interface.
 
 ## Terminology
 
@@ -256,7 +256,7 @@ The SDF model for a class of devices determines how a gateway may interact with
 these devices in a protocol-neutral way. In order to do that, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
 to protocol-specific ones. The SDF affordances supported by the device, as
-well as its protcol-mappings, are provide to the gateway by means of an SDF
+well as its protocol-mappings, are provide to the gateway by means of an SDF
 model registration. SDF models are described in {{!I-D.ietf-asdf-sdf}}. 
 
 ### Data application registrations
@@ -379,9 +379,9 @@ tear down the connection after the operation has completed. A NIPC Gateway
 may support explicit connection management as well. Explicit connection
 management can be used by an app that wants to perform multiple NIPC operations
 in a single connection. Explicit connection management can be performed by 
-calling the /devices/{id}/connections API. When after establishing an
+calling the /devices/{id}/connections API. After establishing an
 explicit connection to a device, an application calls a NIPC Operation, the
-Gateway will leverage the exissting connection and will also not tear the
+Gateway will leverage the existing connection and will also not tear the
 connection down after the operation completes. The app will have to explicitly
 close the connection. 
 
@@ -459,7 +459,7 @@ The well-known URI `/.well-known/nipc` defined in {{iana-well-known}} can
 be used to discover the base path of the NIPC APIs and the supported versions
 and extensions. The response to a GET request on this URI MUST be a JSON
 document that contains the base path, and optionally the supported versions and  
-extension APIs. The paths can be a URI template as defined in {{!RFC6570}}.
+extension APIs. The paths MUST be a URI template as defined in {{!RFC6570}}.
 The following is an example of a template defining the NIPC base path as well
 as supported extensions on a server.
 
@@ -517,11 +517,11 @@ The NIPC schema leans heavily on the SDF schema, as defined in
 ### SDF model registrations
 
 In order to perform a NIPC operation on a device, an SDF interaction model 
-needs to be declared that provides protcol mappings for the SDF affordances
+needs to be declared that provides protocol mappings for the SDF affordances
 the operations will be performed on.
 
 The SDF model can be registered by means of a registrations API POST with 
-the SDF model in the body of hte request. A registered SDF model can be 
+the SDF model in the body of the request. A registered SDF model can be 
 fetched by a registrations API GET with an sdfReference.
 
 ### NIPC Operations
@@ -569,7 +569,7 @@ compound statements, and thus require the gateway to execute multiple
 NIPC operations. In this case the NIPC gateway will return HTTP status
 code 202 after receiving the request and verifying it is able to execute it.
 The client can then perform an HTTP GET of the extension API to get the
-execution status for the request. If a callback URL was address was defined in
+execution status for the request. If a callback URL address was defined in
 the request, the NIPC Gateway can optionally perform a callback with a
 response to the compound request after the compound statement completes.
 
