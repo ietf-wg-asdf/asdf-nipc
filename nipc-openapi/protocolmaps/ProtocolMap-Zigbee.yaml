@@ -60,11 +60,11 @@ components:
 
     ProtocolMap-Zigbee-Property:
       required:
-        - propertyID
+        - attributeID
         - propertyType
       type: object
       properties:
-        propertyID:
+        attributeID:
           type: integer
           format: int32
           example: 1
@@ -92,7 +92,7 @@ components:
           required:
             - endpointID
             - clusterID
-            - propertyID
+            - attributeID
           type: object
           properties:
             endpointID:
@@ -103,7 +103,7 @@ components:
               type: integer
               format: int32
               example: 6
-            propertyID:
+            attributeID:
               type: integer
               format: int32
               example: 16

@@ -56,6 +56,7 @@ informative:
       -
         org: Bluetooth SIG
     date: 2017
+...
 
 --- abstract
 
@@ -180,7 +181,7 @@ to applications wishing to communicate with non-IP devices in the network
 domain served by the gateway.
 Applications implementing Non-IP Control can leverage RESTful interfaces
 to communicate with Non-IP devices in the network domain and subscribe to
-events levering a CBOR-based pub/sub interface.
+events leveraging a CBOR-based pub/sub interface.
 
 ## Terminology
 
@@ -255,7 +256,7 @@ The SDF model for a class of devices determines how a gateway may interact with
 these devices in a protocol-neutral way. In order to do that, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
 to protocol-specific ones. The SDF affordances supported by the device, as
-well as its protcol-mappings, are provide to the gateway by means of an SDF
+well as its protocol-mappings, are provide to the gateway by means of an SDF
 model registration. SDF models are described in {{!I-D.ietf-asdf-sdf}}. 
 
 ### Data application registrations
@@ -378,9 +379,9 @@ tear down the connection after the operation has completed. A NIPC Gateway
 may support explicit connection management as well. Explicit connection
 management can be used by an app that wants to perform multiple NIPC operations
 in a single connection. Explicit connection management can be performed by 
-calling the /devices/{id}/connections API. When after establishing an
+calling the /devices/{id}/connections API. After establishing an
 explicit connection to a device, an application calls a NIPC Operation, the
-Gateway will leverage the exissting connection and will also not tear the
+Gateway will leverage the existing connection and will also not tear the
 connection down after the operation completes. The app will have to explicitly
 close the connection. 
 
@@ -458,7 +459,7 @@ The well-known URI `/.well-known/nipc` defined in {{iana-well-known}} can
 be used to discover the base path of the NIPC APIs and the supported versions
 and extensions. The response to a GET request on this URI MUST be a JSON
 document that contains the base path, and optionally the supported versions and  
-extension APIs. The paths can be a URI template as defined in {{!RFC6570}}.
+extension APIs. The paths MUST be a URI template as defined in {{!RFC6570}}.
 The following is an example of a template defining the NIPC base path as well
 as supported extensions on a server.
 
@@ -516,11 +517,11 @@ The NIPC schema leans heavily on the SDF schema, as defined in
 ### SDF model registrations
 
 In order to perform a NIPC operation on a device, an SDF interaction model 
-needs to be declared that provides protcol mappings for the SDF affordances
+needs to be declared that provides protocol mappings for the SDF affordances
 the operations will be performed on.
 
 The SDF model can be registered by means of a registrations API POST with 
-the SDF model in the body of hte request. A registered SDF model can be 
+the SDF model in the body of the request. A registered SDF model can be 
 fetched by a registrations API GET with an sdfReference.
 
 ### NIPC Operations
@@ -568,7 +569,7 @@ compound statements, and thus require the gateway to execute multiple
 NIPC operations. In this case the NIPC gateway will return HTTP status
 code 202 after receiving the request and verifying it is able to execute it.
 The client can then perform an HTTP GET of the extension API to get the
-execution status for the request. If a callback URL was address was defined in
+execution status for the request. If a callback URL address was defined in
 the request, the NIPC Gateway can optionally perform a callback with a
 response to the compound request after the compound statement completes.
 
@@ -640,11 +641,11 @@ Example of a response:
  }
 ]
 ~~~~~
-{:json #exregresp title="Example register SDF model response"}
+{:json #exregresp title="Example of a response to an SDF model registration"}
 
 where-
 
- - "sdfName" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
 ### Get all SDF models
@@ -661,6 +662,9 @@ Example of a response:
 [
  {
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
+ },
+ {
+  "sdfName": "https://example.com/thermometer#/sdfObject/thermometer"
  }
 ]
 ~~~~~
@@ -668,7 +672,7 @@ Example of a response:
 
 where-
 
- - "sdfName" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
 ### Get an SDF model
@@ -679,7 +683,7 @@ Description: Gets an SDF model registered with the gateway
 
 Query Parameters: 
 
- - sdfName: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the name of the top-level sdfThing or sdfObject 
     in the SDF model.
 
 Response:
@@ -695,7 +699,7 @@ Description: Deletes an SDF model registered with the gateway
 
 Query Parameters: 
 
- - sdfName: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the name of the top-level sdfThing or sdfObject 
     in the SDF model.
 
 Response:
@@ -711,7 +715,7 @@ Example of a response:
 
 where-
 
- - "sdfName" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
 ### Update an SDF model
@@ -722,7 +726,7 @@ Description: Updates an SDF model registered with the gateway
 
 Query Parameters: 
 
- - sdfName: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the name of the top-level sdfThing or sdfObject 
     in the SDF model.
 
 Request Body:
@@ -742,7 +746,7 @@ Example of a response:
 
 where-
 
- - "sdfName" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
 ## Data application registrations APIs
@@ -909,6 +913,7 @@ as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
 The SDF global name will be used against the registered SDF model to 
 determine the protocol-specific protocolmap that the NIPC API will operate on. 
+The SDF global name is also percent-encoded as per {{Section 2.1 of !RFC3986}}.
 
 ## NIPC Property APIs
 
@@ -1074,7 +1079,7 @@ connection can be established as part of the same API call implicitly. If a
 connection is already active for this device, the existing connection will be
 leveraged without modifying it.
 
-The event is a global name reference to an `sdfEvent`. 
+The event is the global name of an `sdfEvent`. 
 
 The ID in the path is the id of the device or group of devices.
 An event can be enabled on a group of devices if it is supported by the
@@ -1121,8 +1126,8 @@ Query Parameters:
 
  - eventName: the event to enable
 
-The eventName is a URL encoded string that is the absolute URI that is a global
-name reference to an `sdfEvent`. 
+The eventName is a URL encoded string that is the absolute URI that is the global
+name of an `sdfEvent`. 
 
 Response:
 
@@ -1221,8 +1226,8 @@ Query Parameters:
 
  - eventName: the event to enable
 
-The eventName is a URL encoded string that is the absolute URI that is a global
-name reference to an `sdfEvent`. 
+The eventName is a URL encoded string that is the absolute URI that is the global
+name of an `sdfEvent`. 
 
 Response:
 
@@ -1968,8 +1973,8 @@ The sequence of operations for this are:
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
     GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?prop\
-    ertyName=https://example.com/thermometer%23/sdfThing/thermometer/\
-    sdfProperty/device_name
+    ertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2F\
+    thermometer%2FsdfProperty%2Fdevice_name
     Accept: application/nipc+json
     Host: localhost
 
@@ -2093,8 +2098,8 @@ The sequence of operations for this are:
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
     POST /devices/12345678-1234-5678-1234-56789abcdef4/events?eventNa\
-    me=https://example.com/thermometer%23/sdfThing/thermometer/sdfEve\
-    nt/isPresent
+    me=https%23%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
+    meter%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
 
