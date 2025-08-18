@@ -645,7 +645,7 @@ Example of a response:
 
 where-
 
- - "sdfName" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
 ### Get all SDF models
@@ -669,7 +669,7 @@ Example of a response:
 
 where-
 
- - "sdfName" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
 ### Get an SDF model
@@ -680,7 +680,7 @@ Description: Gets an SDF model registered with the gateway
 
 Query Parameters: 
 
- - sdfName: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the name of the top-level sdfThing or sdfObject 
     in the SDF model.
 
 Response:
@@ -696,7 +696,7 @@ Description: Deletes an SDF model registered with the gateway
 
 Query Parameters: 
 
- - sdfName: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the name of the top-level sdfThing or sdfObject 
     in the SDF model.
 
 Response:
@@ -712,7 +712,7 @@ Example of a response:
 
 where-
 
- - "sdfName" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
 ### Update an SDF model
@@ -723,7 +723,7 @@ Description: Updates an SDF model registered with the gateway
 
 Query Parameters: 
 
- - sdfName: the reference to the top-level sdfThing or sdfObject 
+ - sdfName: the name of the top-level sdfThing or sdfObject 
     in the SDF model.
 
 Request Body:
@@ -743,7 +743,7 @@ Example of a response:
 
 where-
 
- - "sdfName" is the reference to the top-level sdfThing or sdfObject 
+ - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
 ## Data application registrations APIs
@@ -1075,7 +1075,7 @@ connection can be established as part of the same API call implicitly. If a
 connection is already active for this device, the existing connection will be
 leveraged without modifying it.
 
-The event is a global name reference to an `sdfEvent`. 
+The event is the global name of an `sdfEvent`. 
 
 The ID in the path is the id of the device or group of devices.
 An event can be enabled on a group of devices if it is supported by the
@@ -1122,8 +1122,8 @@ Query Parameters:
 
  - eventName: the event to enable
 
-The eventName is a URL encoded string that is the absolute URI that is a global
-name reference to an `sdfEvent`. 
+The eventName is a URL encoded string that is the absolute URI that is the global
+name of an `sdfEvent`. 
 
 Response:
 
@@ -1222,8 +1222,8 @@ Query Parameters:
 
  - eventName: the event to enable
 
-The eventName is a URL encoded string that is the absolute URI that is a global
-name reference to an `sdfEvent`. 
+The eventName is a URL encoded string that is the absolute URI that is the global
+name of an `sdfEvent`. 
 
 Response:
 
