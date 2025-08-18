@@ -641,7 +641,7 @@ Example of a response:
  }
 ]
 ~~~~~
-{:json #exregresp title="Example register SDF model response"}
+{:json #exregresp title="Example of a response to an SDF model registration"}
 
 where-
 
@@ -662,6 +662,9 @@ Example of a response:
 [
  {
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
+ },
+ {
+  "sdfName": "https://example.com/thermometer#/sdfObject/thermometer"
  }
 ]
 ~~~~~
