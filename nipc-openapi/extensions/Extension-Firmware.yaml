@@ -220,6 +220,9 @@ components:
           enum:
             - nordic
             - silabs
+        checksum:
+          type: string
+          description: firmware checksum
         controlProperty:
           type: string
           example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/upgradecontrol"
