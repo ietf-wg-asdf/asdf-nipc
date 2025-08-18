@@ -910,6 +910,7 @@ as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
 
 The SDF global name will be used against the registered SDF model to 
 determine the protocol-specific protocolmap that the NIPC API will operate on. 
+The SDF global name is also percent-encoded as per {{Section 2.1 of !RFC3986}}.
 
 ## NIPC Property APIs
 
@@ -1969,8 +1970,8 @@ The sequence of operations for this are:
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
     GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?prop\
-    ertyName=https://example.com/thermometer%23/sdfThing/thermometer/\
-    sdfProperty/device_name
+    ertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2F\
+    thermometer%2FsdfProperty%2Fdevice_name
     Accept: application/nipc+json
     Host: localhost
 
@@ -2094,8 +2095,8 @@ The sequence of operations for this are:
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
     POST /devices/12345678-1234-5678-1234-56789abcdef4/events?eventNa\
-    me=https://example.com/thermometer%23/sdfThing/thermometer/sdfEve\
-    nt/isPresent
+    me=https%23%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
+    meter%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
 
