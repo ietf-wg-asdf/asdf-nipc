@@ -63,8 +63,7 @@ informative:
 This memo specifies RESTful application layer interface for gateways 
 providing operations against non-IP devices, as well as a CBOR-based 
 publish-subscribe interface for streaming data. The described interfaces are
-extensible. The specification also defines a protocol mapping function to
-to map this interface to commonly used non-IP protocols. 
+extensible.
 
 --- middle
 
@@ -255,9 +254,10 @@ that is required to interact with the gateway.
 The SDF model for a class of devices determines how a gateway may interact with
 these devices in a protocol-neutral way. In order to do that, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
-to protocol-specific ones. The SDF affordances supported by the device, as
-well as its protocol-mappings, are provide to the gateway by means of an SDF
-model registration. SDF models are described in {{!I-D.ietf-asdf-sdf}}. 
+to protocol-specific ones as defined in {{!I-D.mohan-asdf-sdf-protocol-mapping}}. 
+The SDF affordances supported by the device, as well as its protocol-mappings,
+are provide to the gateway by means of an SDF model registration. 
+SDF models are described in {{!I-D.ietf-asdf-sdf}}.
 
 ### Data application registrations
 
@@ -265,87 +265,6 @@ An application authorized to perform NIPC operations on devices needs to be
 able to define which applications can receive streaming event data from the
 gateway. The data-app registrations API allows mapping of an event to a data 
 app as well as a protocol.
-
-## Protocol mapping {#protocolmap}
-
-An SDF model describes a thing, including all its SDF affordances. 
-To leverage an SDF model to perform protocol specific operations on an
-instance of that thing, a mapping of the SDF affordance to a protocol-specific
-attribute is required. In NIPC, this is achieved through protocol mapping. 
-
-Protocol mapping is required to map a protocol agnostic affordance to a 
-protocol-specific operation, as implementations of the same affordance will
-differ between protocols. For example BLE will address a property as a service
-characteristic, while a property in Zigbee is addressed as a property in a
-cluster of an endpoint. 
-
-protocol mapping allows for integration of new protocols in NIPC, new mappings 
-can be created without the need to update the base schema.
-
-a protocol mapping object is a JSON object identified by the sdfProtocolMap keyword.
-
-~~~~~ aasvg
-
-  sdfProtocolMap
-    |
-    +-----> ble
-    |        |
-    |        +--> BLE property
-    |
-    +-----> zigbee
-             |
-             +--> Zigbee property
-
-~~~~~
-{: #protmap title="Property Mapping"}
-
-As shown in {{protmap}}, protocol-specific properties must be embedded in an
-sdfProtocolMap object, for example a "ble" or a "zigbee" object.
-
-
-| Attribute | Req |   Type  |          Example                         |
-+-----------+-----+---------+------------------------------------------|
-| ble       |  T  |  object | an object with BLE-specific attributes   |
-| zigbee    |  T  |  object | an object with Zigbee-specific attributes|
-{: #proobj title="Protocol objects"}
-
-where-
-
- - "ble" is an object containing properties that are specific to the BLE
-   protocol.
- - "zigbee" is an object containing properties that are specific to the
-   Zigbee protocol.
- - Other protocol mapping objects can be added by creating a new protocol
-   object
-
-Example protocol mapping:
-
-~~~~~
-"sdfObject": {
-  "healthsensor": {
-    "sdfProperty": {
-      "heartrate": {
-        "description": "The current measured heart rate",
-        "type": "number",
-        "unit": "beat/min",
-        "observable": false,
-        "writable": false,
-        "sdfProtocolMap": {
-          "ble": {
-            "serviceID": "12345678-1234-5678-1234-56789abcdef4",
-            "characteristicID": 
-              "12345678-1234-5678-1234-56789abcdef4"
-          }
-        }
-      }
-    }
-  }
-}
-~~~~~
-{: #exprotmap title="Example property mapping"}
-
-A protocol map is provided as part of the SDF model, in the SDF affordance 
-definition. Alternatively, it can be provided directly in a NIPC API.
 
 ## NIPC Operations {#nipc-ops}
 
@@ -1726,24 +1645,23 @@ NIPC is extensible in two ways:
  
 ## Protocol extensions
 
-As described in {{protocolmap}}, NIPC supports mapping protocol specific
-properties to NIPC properties. BLE and Zigbee are used as examples, but protocol
+NIPC supports mapping protocol specific properties to NIPC properties
+as described in {{!I-D.mohan-asdf-sdf-protocol-mapping}}.
+BLE and Zigbee are used as examples, but protocol
 mapping is extensible to other protocols, so now non-IP protocols can be 
 supported by NIPC without a schema change.
 
 The protocol objects need to be extended with the new
 protocol as well. Protocol objects will be extended as follows:
 
-| Attribute  | Req |   Type |          Example                         |
-+------------+-----+--------+------------------------------------------|
-| ble        |  T  | object | an object with BLE-specific properties   |
-| zigbee     |  T  | object | an object with Zigbee-specific properties|
-| newProtocol|  T  | object | an object with newProtocol-specific props|
+| Attribute  |   Type |          Example                         |
++------------+--------+------------------------------------------|
+| ble        | object | an object with BLE-specific properties   |
+| zigbee     | object | an object with Zigbee-specific properties|
+| newProtocol| object | an object with newProtocol-specific props|
 {: #newprotext title="Adding Protocol mappings"}
 
 In the new protocol object, protocol specific properties can be added.
-
-Protocol mappings need to be IANA registered, see {{iana-prot-map}}.
  
 ## API extensions {#apiextensions}
 
@@ -2193,24 +2111,6 @@ Restrictions on usage: To be used for NIPC APIs as defined in this document.
 Author:
 
 Change controller: IETF
-
-## Protocol mapping {#iana-prot-map}
-
-IANA is requested to create a new registry called "NIPC protocol mapping".
-
-The registry must contain following attributes:
-
-- Protocol map name
-- Protocol name
-- Description
-- Reference of the specification describing the protocol mapping. This specification must be reviewed by an expert.
-
-Following protocol mappings are described in this document:
-
-| Protocol map | Protocol Name               | Description                                 | Reference       |
-|--------------|-----------------------------|---------------------------------------------|-----------------|
-| ble          | Bluetooth Low Energy (BLE)  | Protocol mapping for BLE devices            | This document   |
-| zigbee       | Zigbee                      | Protocol mapping for Zigbee devices         | This document   |
 
 ## API extensions {#iana-api-ext}
 
