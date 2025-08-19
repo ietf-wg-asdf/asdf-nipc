@@ -16,7 +16,7 @@ externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-11"
+  - url: "{gw_host}/nipc/draft-12"
     variables:
       gw_host:
         default: localhost
@@ -83,9 +83,7 @@ paths:
                     schema:
                       anyOf:
                         - $ref: '../NIPC.yaml#/components/schemas/Id'
-                        - allOf:
-                          - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
-                          - $ref: '#/components/schemas/ExtensionErrorCodes'
+                        - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
               responses:
                 '200':
                   description: OK
@@ -147,9 +145,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
-                  - $ref: '#/components/schemas/ExtensionErrorCodes'
+                - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
   /extensions/{id}/firmware/status:
     get:
       tags:
@@ -231,13 +227,3 @@ components:
           type: string
           example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/upgradedata"
           description: sdfName of the property used for firmware transfer
-  
-    ExtensionErrorCodes:
-      type: object
-      properties:
-        nipcStatus:
-          type: integer
-          format: int32
-          enum:
-            - 1600 # Firmware rollback
-            - 1601 # Firmware update failed

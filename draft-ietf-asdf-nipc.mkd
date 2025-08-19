@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-IP device control (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-11
+docname: draft-ietf-asdf-nipc-12
 submissionType: IETF
 category: std
 

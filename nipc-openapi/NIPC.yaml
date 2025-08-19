@@ -19,7 +19,7 @@ externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-11"
+  - url: "{gw_host}/nipc/draft-12"
     variables:
       gw_host:
         default: localhost
