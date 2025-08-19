@@ -220,7 +220,7 @@ components:
           enum:
             - nordic
             - silabs
-        checksum:
+        sha256Checksum:
           type: string
           description: firmware checksum
         controlProperty:
