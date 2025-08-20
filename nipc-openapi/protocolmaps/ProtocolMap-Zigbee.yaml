@@ -115,13 +115,3 @@ components:
     ProtocolMap-Zigbee-Event:
       allOf:  
         - $ref: '#/components/schemas/ProtocolMap-Zigbee-Propmap'
-
-## Zigbee Error codes
-    ProtocolMap-Zigbee-ErrorCodes:
-      type: object
-      properties:
-        nipcStatus:
-          type: integer
-          format: int32
-          enum:
-            - 1021 # Zigbee join failed

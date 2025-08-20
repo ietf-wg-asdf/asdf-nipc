@@ -390,7 +390,6 @@ as supported extensions on a server.
   ],
   "extensions": [
     "/extensions/{id}/bulk",
-    "/extensions/{id}/firmware",
     "/extensions/{id}/properties/blob",
     "/extensions/{id}/properties/file",
     "/extensions/{id}/properties/read/conditional",
@@ -874,7 +873,7 @@ Request Body:
 
   - If the query parameter propertyName is provided, the request body
     can contain any content type payload with the value to write to the property.
-    The value is the raw binary data to write to the property.
+    The value is the data to write to the property.
     
   or 
 
@@ -2131,7 +2130,6 @@ Following API extensions are described in this document:
 | /extension/{id}/properties/file              | File write API       | Write a file with multiple property ops        | {{NIPCextensions}} |
 | /extension/{id}/properties/blob              | Binary write API     | Write a binary blob with multiple property ops | {{NIPCextensions}} |
 | /extensions/{id}/properties/read/conditional | Read conditional API | Read a property until a condition is fulfilled | {{NIPCextensions}} |
-| /extensions/{id}/firmware                    | Firmware upgrade API | Firmware upgrade API, leveraging mutiple opsed | {{NIPCextensions}} |
 | /extensions/{id}/manage/transmit             | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
 
 ## Well-known URIs {#iana-well-known}
@@ -2271,15 +2269,6 @@ file "Extension-Bulk.yaml"
 <CODE BEGINS>
 file "Extension-File.yaml"
 {::include nipc-openapi/extensions/Extension-File.yaml.folded}
-<CODE ENDS>
-~~~~~
-
-## NIPC API firmware update extension
-
-~~~~~
-<CODE BEGINS>
-file "Extension-Firmware.yaml"
-{::include nipc-openapi/extensions/Extension-Firmware.yaml.folded}
 <CODE ENDS>
 ~~~~~
 
