@@ -63,17 +63,167 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Extension-File'
+              allOf:
+                - $ref: '#/components/schemas/Extension-File'
+                - $ref: './Extension-Async.yaml#/components/schemas/Extension-Callback'
         required: true
       responses:
-        '204':
-          description: Success, no content
+        '202':
+          description: Accepted
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file/status?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&requestId=12345678-1234-5678-1234-56789abcdef4
+              description: |-
+                URL to get the file write status
+            Retry-After:
+              schema:
+                type: integer
+              description: |-
+                Time in seconds to wait before retrying
         'default':
           description: Error response
           content:
             application/json:
               schema:
-                $ref: '../NIPC.yaml#/components/schemas/FailureResponse' 
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+      callbacks:
+        callbackEvent:
+          "{$request.body#/callback.url}":
+            post:
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      anyOf:
+                        - allOf:
+                          - $ref: '../NIPC.yaml#/components/schemas/Id'
+                          - $ref: '../NIPC.yaml#/components/schemas/PropertyValue'
+                        - $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+                    examples:
+                      successExample:
+                        summary: Success
+                        value:
+                          id: 12345678-1234-5678-1234-56789abcdef4
+                          property: https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware
+                      failedResponse:
+                        summary: Failed
+                        value:
+                          id: 12345678-1234-5678-1234-56789abcdef4
+                          status: 400
+                          type: https://www.iana.org/assignments/nipc-problem-types#invalid-id
+                          title: Invalid ID
+                          detail: "Invalid request"
+                          property: https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware
+              responses:
+                '200':
+                  description: Success
+    get:
+      tags:
+        - NIPC API extensions
+      summary: Get the status of a file write operation
+      description: |-
+        Get the status of a file write operation. This will return
+        the status of the file write operation, including any errors
+        that may have occurred.
+      operationId: getFileWriteStatus
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the device. Group ID is not allowed.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: propertyName
+        in: query
+        description: |-
+          The SDF property name that needs to be written to.
+        required: true
+        schema:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware"
+      - name: requestId
+        in: query
+        description: |-
+          The request ID for the file write operation.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      responses:
+        '204':
+          description: Success, no content
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '../NIPC.yaml#/components/schemas/FailureResponse'
+  /extensions/{id}/properties/file/status:
+    get:
+      tags:
+        - NIPC API extensions
+      summary: Get the status of a file write operation
+      description: |-
+        Get the status of a file write operation. This will return
+        the status of the file write operation, including any errors
+        that may have occurred.
+      operationId: getFileWriteStatus
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the device. Group ID is not allowed.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      - name: propertyName
+        in: query
+        description: |-
+          The SDF property name that needs to be written to.
+        required: true
+        schema:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware"
+      - name: requestId
+        in: query
+        description: |-
+          The request ID for the file write operation.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
+      responses:
+        '200':
+          description: Success, returns the status of the file write operation.
+          content:
+            application/json:
+              schema:
+                $ref: './Extension-Async.yaml#/components/schemas/Extension-StatusResponse'
+        '303':
+          description: See Other
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&requestId=12345678-1234-5678-1234-56789abcdef4
+              description: URL to get the file write response
+          content:
+            application/json:
+              schema:
+                $ref: './Extension-Async.yaml#/components/schemas/Extension-StatusResponse'
+              examples:
+                successExample:
+                  summary: Completed
+                  value:
+                    id: 12345678-1234-5678-1234-56789abcdef4
+                    status: COMPLETED
 
 components:
   schemas:
@@ -87,5 +237,8 @@ components:
         fileURL:
           type: string
           example: "https://domain.com/firmware.dat"
-        chunksize:
+        chunkSize:
           type: integer
+        sha256Checksum:
+          type: string
+          description: firmware checksum
