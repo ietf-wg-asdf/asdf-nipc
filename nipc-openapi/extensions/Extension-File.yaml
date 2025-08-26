@@ -237,8 +237,17 @@ components:
         fileURL:
           type: string
           example: "https://domain.com/firmware.dat"
+          description: |-
+            URL to the firmware file. 
+            The HTTP method is assumed to be a GET.
         chunkSize:
           type: integer
         sha256Checksum:
           type: string
           description: firmware checksum
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            x-api-key: fjelk-3dl33f-2wdsd
