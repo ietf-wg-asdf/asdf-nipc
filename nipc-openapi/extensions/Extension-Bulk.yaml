@@ -333,7 +333,7 @@ components:
             data:
               value: dGVzdA==
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
             data:
               fileURL: https://example.com/firmware.bin
               chunkSize: 20
@@ -361,7 +361,7 @@ components:
             response:
               status: 200
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
             response:
               status: 204
           - method: PUT
