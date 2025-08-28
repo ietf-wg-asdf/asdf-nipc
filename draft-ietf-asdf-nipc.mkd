@@ -1736,7 +1736,7 @@ The appropriate HTTP status code is returned in the response.
 
 The publish/subscribe interface, or data streaming interface, is an MQTT
 publishing interface. Pub/sub topics can be created and managed by means
-of the /registration/data-app API.
+of the /registrations/data-apps API.
 
 In this memo, we propose the data format to be CBOR {{!RFC8949}}.
 
@@ -1864,7 +1864,7 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registration/model
+    POST /registrations/models
     Content-Type: application/sdf+json
     Accept: application/nipc+json
     Host: localhost
@@ -1950,7 +1950,7 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registration/data-app?dataAppId=23456789-1234-5678-1234-567\
+    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-567\
     89abcdef4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
@@ -1983,7 +1983,7 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registration/data-app?dataAppId=23456789-1234-5678-1234-567\
+    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-567\
     89abcdef4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
