@@ -1299,7 +1299,9 @@ components:
             - https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered
             - https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use
             - https://www.iana.org/assignments/nipc-problem-types#property-not-readable
+            - https://www.iana.org/assignments/nipc-problem-types#property-read-failed
             - https://www.iana.org/assignments/nipc-problem-types#property-not-writable
+            - https://www.iana.org/assignments/nipc-problem-types#property-write-failed
             - https://www.iana.org/assignments/nipc-problem-types#event-already-enabled
             - https://www.iana.org/assignments/nipc-problem-types#event-not-enabled
             - https://www.iana.org/assignments/nipc-problem-types#event-not-registered

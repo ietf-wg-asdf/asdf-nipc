@@ -12,6 +12,8 @@ info:
     name: TBD
     url: TBD
   version: 0.10.0
+externalDocs:
+  description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 
 components:
@@ -33,15 +35,6 @@ components:
           oneOf:
             - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-ServiceMap'
             - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-ServiceMap'
-        
-## Protocol Map for Error Codes
-    ProtocolMap-ErrorCodes:
-      type: object
-      properties:
-        sdfProtocolMap:
-          oneOf:  
-            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-ErrorCodes'
-            - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-ErrorCodes'
 
 ## Protocol Map for Broadcasts
     ProtocolMap-Broadcast:
