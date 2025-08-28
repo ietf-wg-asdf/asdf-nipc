@@ -2164,7 +2164,9 @@ registry:
 | https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered | SDF model already registered                  | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use        | SDF model in use                              | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#property-not-readable   | Property not readable                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#property-read-failed    | Property read failed                          | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#property-not-writable   | Property not writable                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#property-write-failed   | Property write failed                         | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#event-already-enabled   | Event already enabled                         | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#event-not-enabled       | Event not enabled                             | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#event-not-registered    | Event not registered for any data application | This document   |
