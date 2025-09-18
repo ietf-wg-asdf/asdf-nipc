@@ -10,12 +10,12 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.9.0
+  version: 0.13.0
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-12"
+  - url: "{gw_host}/nipc/draft-13"
     variables:
       gw_host:
         default: localhost
@@ -204,6 +204,14 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/Extension-BulkOperation"
+            trigger:
+              type: string
+              description: |-
+                When to trigger the operations. If not specified, the operations are triggered immediately.
+              default: immediate
+              enum:
+                - immediate
+                - advertisement
 
     ## Extension that defines an operation in a bulk API
     Extension-BulkOperation:
@@ -225,6 +233,7 @@ components:
                 - /devices/{id}/properties?propertyName={propertyName}
                 - /devices/{id}/actions/?actionName={actionName}
                 - /extensions/{id}/properties/read/conditional?propertyName={propertyName}
+                - /extensions/{id}/events/conditional?eventName={eventName}
                 - /extensions/{id}/properties/file?propertyName={propertyName}
               example: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             data:
@@ -259,6 +268,7 @@ components:
                 - /devices/{id}/properties?propertyName={propertyName}
                 - /devices/{id}/actions/?actionName={actionName}
                 - /extensions/{id}/properties/read/conditional?propertyName={propertyName}
+                - /extensions/{id}/events/conditional?eventName={eventName}
               example: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               anyOf:
@@ -332,6 +342,11 @@ components:
             path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FstartOTA
             data:
               value: dGVzdA==
+          - method: POST
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/events/conditional?eventName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FotaStarted
+            data:
+              value: MQ==
+              timeout: 5
           - method: PUT
             path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
             data:
@@ -360,6 +375,10 @@ components:
             path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FstartOTA
             response:
               status: 200
+          - method: POST
+            path: /extensions/12345678-1234-5678-1234-56789abcdef4/events/conditional?eventName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FotaStarted
+            response:
+              value: MQ==
           - method: PUT
             path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
             response:

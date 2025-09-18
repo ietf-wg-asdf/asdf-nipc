@@ -393,6 +393,7 @@ as supported extensions on a server.
     "/extensions/{id}/properties/blob",
     "/extensions/{id}/properties/file",
     "/extensions/{id}/properties/read/conditional",
+    "/extensions/{id}/events/conditional",
     "/extensions/{id}/properties/write"
   ]
 }
@@ -2130,6 +2131,7 @@ Following API extensions are described in this document:
 | /extension/{id}/properties/file              | File write API       | Write a file with multiple property ops        | {{NIPCextensions}} |
 | /extension/{id}/properties/blob              | Binary write API     | Write a binary blob with multiple property ops | {{NIPCextensions}} |
 | /extensions/{id}/properties/read/conditional | Read conditional API | Read a property until a condition is fulfilled | {{NIPCextensions}} |
+| /extensions/{id}/events/conditional          | Event conditional API| Enable an event until a condition is fulfilled | {{NIPCextensions}} |
 | /extensions/{id}/manage/transmit             | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
 
 ## Well-known URIs {#iana-well-known}
@@ -2280,6 +2282,15 @@ file "Extension-File.yaml"
 <CODE BEGINS>
 file "Extension-ReadConditional.yaml"
 {::include nipc-openapi/extensions/Extension-ReadConditional.yaml.folded}
+<CODE ENDS>
+~~~~~
+
+## NIPC API conditional event extension
+
+~~~~~
+<CODE BEGINS>
+file "Extension-EventConditional.yaml"
+{::include nipc-openapi/extensions/Extension-EventConditional.yaml.folded}
 <CODE ENDS>
 ~~~~~
 

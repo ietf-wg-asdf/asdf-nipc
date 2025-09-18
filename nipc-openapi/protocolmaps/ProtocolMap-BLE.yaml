@@ -129,6 +129,9 @@ components:
       properties:
         ble:
           type: object
+          properties:
+            connectable:
+              type: boolean
 
 ## Protocol Mapping for BLE Property
     ProtocolMap-BLE-Propmap:

@@ -4,6 +4,7 @@ YAML_SOURCES= nipc-openapi/NIPC.yaml \
 	nipc-openapi/extensions/Extension-File.yaml \
 	nipc-openapi/extensions/Extension-Property.yaml \
 	nipc-openapi/extensions/Extension-ReadConditional.yaml \
+	nipc-openapi/extensions/Extension-EventConditional.yaml \
 	nipc-openapi/protocolmaps/ProtocolMap-BLE.yaml \
 	nipc-openapi/protocolmaps/ProtocolMap-Zigbee.yaml \
 	nipc-openapi/protocolmaps/ProtocolMap.yaml
