@@ -60,10 +60,7 @@ informative:
 
 --- abstract
 
-This memo specifies RESTful application layer interface for gateways 
-providing operations against non-IP devices, as well as a CBOR-based 
-publish-subscribe interface for streaming data. The described interfaces are
-extensible.
+This memo describes an API that allows applications to perform operations against a gateway serving one or more devices described by an SDF model. The document describes RESTful application layer interface to perform operations on those devices, as well as a CBOR-based publish-subscribe interface for streaming data. 
 
 --- middle
 
@@ -311,8 +308,8 @@ complex set of NIPC operations in a single API call, or may want to perform
 an operation that can deliver an outcome more efficiently than a NIPC API. 
 An example of an extension that uses compound operation is the bulk API.
 
-Extensions must leverage the /extension path element. In order to assure
-inter-operability, extensions should be IANA registered {{iana-api-ext}}.
+Extensions must leverage the /extensions path element. In order to assure
+inter-operability, extensions must be IANA registered {{iana-api-ext}}.
 
 ## Events publish subscribe interface
 
@@ -421,10 +418,10 @@ For example:
 The second parameter in the path refers to the NIPC operation that the API will
 perform on the device. This can be:
 
- - property
- - event
- - action
- - extension
+ - properties
+ - events
+ - actions
+ - extensions
 
 These are described in {{nipc-ops}}.
 
@@ -487,7 +484,7 @@ The exception to the above are NIPC extensions, {{apiextensions}}. These contain
 compound statements, and thus require the gateway to execute multiple
 NIPC operations. In this case the NIPC gateway will return HTTP status
 code 202 after receiving the request and verifying it is able to execute it.
-The client can then perform an HTTP GET of the extension API to get the
+The client can then perform an HTTP GET of the extensions API to get the
 execution status for the request. If a callback URL address was defined in
 the request, the NIPC Gateway can optionally perform a callback with a
 response to the compound request after the compound statement completes.
@@ -676,6 +673,12 @@ This ID corresponds to the endpoint app ID of the telemetry endpoint app
 that is registered with the SCIM server. The endpoint app is defined in 
 {{Section 6 of I-D.ietf-scim-device-model}}. 
 
+Apart from the endpoint, the API also registers the protocol the data-app supports. These can be one of the following:
+- mqttClient: The data-app is an MQTT client, which means that the gateway is an MQTT broker.
+- mqttBroker: The data-app is an MQTT broker. The registration API has to include the MQTT broker configuration data, such as the URI, credentials and MQTT topic to publish to.
+- webhook: The data-app supports a webhook the gateway can pusbish to. The registration API has to include the webhook URI & credentials.
+- websocket: The data-app supports a websocket interface. The registration API has to include the websocket URI & credentials.
+
 ### Register a data application
 
 Method: `POST /registrations/data-apps{?dataAppId}`
@@ -700,9 +703,8 @@ The request body also contains one of the following:
     - URI: the URI of the MQTT broker
     - username: the username to authenticate with the MQTT broker
     - password: the password to authenticate with the MQTT broker
-    - brokerCACert: the CA certificate of the MQTT broker (optional)
-    - customTopic: the custom topic to publish the streaming data to
-      (optional)
+    - brokerCACert: the base64-encoded CA certificate of the MQTT broker (optional)
+    - customTopic: By default, the topic will be composed of <dataAppId>/<eventName>. You can configure a custom topic to publish the streaming data to (optional)
  - webhook: an object that contains a webhook URL along with any 
     credentials that are required to authenticate the webhook. 
     The webhook URL is the endpoint where the streaming data will be sent.
@@ -710,7 +712,7 @@ The request body also contains one of the following:
     - headers: An object that contains the headers to be sent with the webhook
       request. The headers can contain any authentication information
       required by the webhook server.
-    - serverCACert: the CA certificate of the webhook server (optional)
+    - serverCACert: the base64-encoded CA certificate of the webhook server (optional)
  - websocket: an object that contains a websocket URL along with any 
    credentials that are required to authenticate the websocket. 
    The websocket URL is the endpoint where the streaming data will be sent.
@@ -718,7 +720,7 @@ The request body also contains one of the following:
     - headers: An object that contains the headers to be sent with the websocket
       request. The headers can contain any authentication information
       required by the websocket server.
-    - serverCACert: the CA certificate of the websocket server (optional)
+    - serverCACert: the base64-encoded CA certificate of the websocket server (optional)
 
 Example of a request body:
 
@@ -874,7 +876,7 @@ Request Body:
 
   - If the query parameter propertyName is provided, the request body
     can contain any content type payload with the value to write to the property.
-    The value is the raw binary data to write to the property.
+    The value is encoded as per the content type of the payload.
     
   or 
 
@@ -1665,16 +1667,14 @@ In the new protocol object, protocol specific properties can be added.
  
 ## API extensions {#apiextensions}
 
-/extension
+/extensions
 
-The extension APIs allow for extensibility of the APIs, either IANA 
-registered extensions ({{iana-api-ext}}) or vendor-specific extensions.
-Extension APIs must leverage the basic NIPC defined APIs and combine them in 
+The extension APIs allow for extensibility of the APIs. Extensions must be IANA registered.
+Extension APIs can leverage the basic NIPC defined APIs and combine them in 
 compound statements in order to streamline application operation against
-devices, make operations more expediant and convenient in one API call.
-In principle they do not add any basic functionality. In
-the OpenAPI model {{NIPCextensions}} below, we have defined a few example 
-extensions.
+devices, make operations more expediant and convenient in one API call. an example of this is the bulk API extension.
+They can also introduce new functionality that is specific to a use case or protocol, such as the BLE transmit API.
+the OpenAPI model {{NIPCextensions}} below, we have defined a few example extensions.
 
 The extensions can contain long running operations, such as firmware updates,
 or other bulk operations that can be performed on a device. For long 
@@ -2127,9 +2127,9 @@ Following API extensions are described in this document:
 
 | Extension URI                                | Extension name       | Description                                    | Model reference    |
 |----------------------------------------------|----------------------|------------------------------------------------|--------------------|
-| /extension/{id}/bulk                         | Bulk API             | Call multiple NIPC's in a single request       | {{NIPCextensions}} |
-| /extension/{id}/properties/file              | File write API       | Write a file with multiple property ops        | {{NIPCextensions}} |
-| /extension/{id}/properties/blob              | Binary write API     | Write a binary blob with multiple property ops | {{NIPCextensions}} |
+| /extensions/{id}/bulk                         | Bulk API             | Call multiple NIPC's in a single request       | {{NIPCextensions}} |
+| /extensions/{id}/properties/file              | File write API       | Write a file with multiple property ops        | {{NIPCextensions}} |
+| /extensions/{id}/properties/blob              | Binary write API     | Write a binary blob with multiple property ops | {{NIPCextensions}} |
 | /extensions/{id}/properties/read/conditional | Read conditional API | Read a property until a condition is fulfilled | {{NIPCextensions}} |
 | /extensions/{id}/firmware                    | Firmware upgrade API | Firmware upgrade API, leveraging mutiple opsed | {{NIPCextensions}} |
 | /extensions/{id}/manage/transmit             | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
