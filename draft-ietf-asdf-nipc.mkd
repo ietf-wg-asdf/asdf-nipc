@@ -704,7 +704,8 @@ The request body also contains one of the following:
     - username: the username to authenticate with the MQTT broker
     - password: the password to authenticate with the MQTT broker
     - brokerCACert: the base64-encoded CA certificate of the MQTT broker (optional)
-    - customTopic: By default, the topic will be composed of <dataAppId>/<eventName>. You can configure a custom topic to publish the streaming data to (optional)
+    - customTopic: By default, the topic will be composed of `data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>`.
+      You can configure a custom topic to publish the streaming data to (optional)
  - webhook: an object that contains a webhook URL along with any 
     credentials that are required to authenticate the webhook. 
     The webhook URL is the endpoint where the streaming data will be sent.
