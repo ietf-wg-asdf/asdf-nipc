@@ -1726,7 +1726,7 @@ The specific error types are defined in the table below:
 | protocolmap-ble-invalid-service-or-characteristic | Invalid BLE service or characteristic ID | Protocol specific     |
 | protocolmap-zigbee-connection-timeout      | Zigbee connection timeout                     | Protocol specific |
 | protocolmap-zigbee-invalid-endpoint-or-cluster | Invalid Zigbee endpoint or cluster ID     | Protocol specific |
-| extension-broadcast-invalid-data           | Invalid transmit data                         | Transmit APIs     |
+| extension-transmit-invalid-data            | Invalid transmit data                         | Transmit APIs     |
 | extension-firmware-rollback                | Firmware rollback                             | Extension APIs    |
 | extension-firmware-update-failed           | Firmware update failed                        | Extension APIs    |
 {: #errorcodes title="Error Codes"}
@@ -2132,7 +2132,7 @@ Following API extensions are described in this document:
 | /extension/{id}/properties/blob              | Binary write API     | Write a binary blob with multiple property ops | {{NIPCextensions}} |
 | /extensions/{id}/properties/read/conditional | Read conditional API | Read a property until a condition is fulfilled | {{NIPCextensions}} |
 | /extensions/{id}/events/conditional          | Event conditional API| Enable an event until a condition is fulfilled | {{NIPCextensions}} |
-| /extensions/{id}/manage/transmit             | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
+| /extensions/{id}/transmit                 | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
 
 ## Well-known URIs {#iana-well-known}
 

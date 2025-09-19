@@ -66,7 +66,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional/status?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ftemperature&requestId=12345678-1234-5678-1234-56789abcdef4
+                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional/status?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ftemperature&instanceId=12345678-1234-5678-1234-56789abcdef4
               description: |-
                 URL to get the conditional read status
             Retry-After:
@@ -138,10 +138,10 @@ paths:
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
-      - name: requestId
+      - name: instanceId
         in: query
         description: |-
-          Request ID of the conditional read operation
+          Instance ID of the conditional read operation
         required: true
         schema:
           type: string
@@ -193,9 +193,9 @@ paths:
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
-      - name: requestId
+      - name: instanceId
         in: query
-        description: Request ID of the conditional read operation
+        description: Instance ID of the conditional read operation
         required: true
         schema:
           type: string
@@ -215,7 +215,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ftemperature&requestId=12345678-1234-5678-1234-56789abcdef4
+                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ftemperature&instanceId=12345678-1234-5678-1234-56789abcdef4
               description: URL to get the conditional read response
           content:
             application/json:
