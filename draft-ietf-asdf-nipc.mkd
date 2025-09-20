@@ -674,6 +674,7 @@ that is registered with the SCIM server. The endpoint app is defined in
 {{Section 6 of I-D.ietf-scim-device-model}}. 
 
 Apart from the endpoint, the API also registers the protocol the data-app supports. These can be one of the following:
+
 - mqttClient: The data-app is an MQTT client, which means that the gateway is an MQTT broker.
 - mqttBroker: The data-app is an MQTT broker. The registration API has to include the MQTT broker configuration data, such as the URI, credentials and MQTT topic to publish to.
 - webhook: The data-app supports a webhook the gateway can pusbish to. The registration API has to include the webhook URI & credentials.
