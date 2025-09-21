@@ -10,12 +10,12 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.9.0
+  version: 0.13.0
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-12"
+  - url: "{gw_host}/nipc/draft-13"
     variables:
       gw_host:
         default: localhost
@@ -66,9 +66,9 @@ paths:
             Location:
               schema:
                 type: string
+                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional/status?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ftemperature&instanceId=12345678-1234-5678-1234-56789abcdef4
               description: |-
                 URL to get the conditional read status
-              example: /12345678-1234-5678-1234-56789abcdef4/extension/property/temperature/read/conditional/status?requestId=12345678-1234-5678-1234-56789abcdef4
             Retry-After:
               schema:
                 type: integer
@@ -105,7 +105,8 @@ paths:
                         value:
                           id: 12345678-1234-5678-1234-56789abcdef4
                           status: 400
-                          nipcStatus: 1000
+                          type: https://www.iana.org/assignments/nipc-problem-types#invalid-id
+                          title: Invalid ID
                           detail: "Invalid request"
                           property: https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature
                           value: dGVzdA==
@@ -137,10 +138,10 @@ paths:
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
-      - name: requestId
+      - name: instanceId
         in: query
         description: |-
-          Request ID of the conditional read operation
+          Instance ID of the conditional read operation
         required: true
         schema:
           type: string
@@ -192,9 +193,9 @@ paths:
         schema:
           type: string
           example: "#/sdfObject/thermostat/sdfProperty/temperature"
-      - name: requestId
+      - name: instanceId
         in: query
-        description: Request ID of the conditional read operation
+        description: Instance ID of the conditional read operation
         required: true
         schema:
           type: string
@@ -207,21 +208,19 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/Extension-StatusResponse'
+                $ref: './Extension-Async.yaml#/components/schemas/Extension-StatusResponse'
         '303':
           description: See Other
           headers:
             Location:
               schema:
                 type: string
+                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ftemperature&instanceId=12345678-1234-5678-1234-56789abcdef4
               description: URL to get the conditional read response
-              example: /12345678-1234-5678-1234-56789abcdef4/extension/property/temperature/read/conditional?requestId=12345678-1234-5678-1234-56789abcdef4
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: '#/components/schemas/Extension-StatusResponse'
+                $ref: './Extension-Async.yaml#/components/schemas/Extension-StatusResponse'
               examples:
                 successExample:
                   summary: Completed
@@ -232,43 +231,10 @@ paths:
 components:
   schemas:
 # Extensions
-    Extension-Callback:
-      type: object
-      properties:
-        callback:
-          type: object
-          properties:
-            url:
-              description: |-
-                URL to send the callback to
-                (default is the same as the request URL)
-              type: string
-              example: "http://localhost:8080/callback"
-            headers:
-              description: |-
-                Headers to include in the callback
-                (default is empty)
-              type: object
-              example:
-                x-api-key: "1234567890"
-              additionalProperties:
-                type: string
-
-    Extension-StatusResponse:
-      type: object
-      properties:
-        status:
-          description: |-
-            Status of the callback
-          type: string
-          enum:
-            - IN_PROGRESS
-            - COMPLETED
-
     Extension-ConditionalRead:
       allOf:
         - $ref: '../NIPC.yaml#/components/schemas/Value'
-        - $ref: '#/components/schemas/Extension-Callback'
+        - $ref: './Extension-Async.yaml#/components/schemas/Extension-Callback'
         - type: object
           properties:
             maxRepeat:

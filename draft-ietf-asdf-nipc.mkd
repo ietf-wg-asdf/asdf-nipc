@@ -387,10 +387,10 @@ as supported extensions on a server.
   ],
   "extensions": [
     "/extensions/{id}/bulk",
-    "/extensions/{id}/firmware",
     "/extensions/{id}/properties/blob",
     "/extensions/{id}/properties/file",
     "/extensions/{id}/properties/read/conditional",
+    "/extensions/{id}/events/conditional",
     "/extensions/{id}/properties/write"
   ]
 }
@@ -704,7 +704,8 @@ The request body also contains one of the following:
     - username: the username to authenticate with the MQTT broker
     - password: the password to authenticate with the MQTT broker
     - brokerCACert: the base64-encoded CA certificate of the MQTT broker (optional)
-    - customTopic: By default, the topic will be composed of <dataAppId>/<eventName>. You can configure a custom topic to publish the streaming data to (optional)
+    - customTopic: By default, the topic will be composed of `data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>`.
+      You can configure a custom topic to publish the streaming data to (optional)
  - webhook: an object that contains a webhook URL along with any 
     credentials that are required to authenticate the webhook. 
     The webhook URL is the endpoint where the streaming data will be sent.
@@ -1726,7 +1727,7 @@ The specific error types are defined in the table below:
 | protocolmap-ble-invalid-service-or-characteristic | Invalid BLE service or characteristic ID | Protocol specific     |
 | protocolmap-zigbee-connection-timeout      | Zigbee connection timeout                     | Protocol specific |
 | protocolmap-zigbee-invalid-endpoint-or-cluster | Invalid Zigbee endpoint or cluster ID     | Protocol specific |
-| extension-broadcast-invalid-data           | Invalid transmit data                         | Transmit APIs     |
+| extension-transmit-invalid-data            | Invalid transmit data                         | Transmit APIs     |
 | extension-firmware-rollback                | Firmware rollback                             | Extension APIs    |
 | extension-firmware-update-failed           | Firmware update failed                        | Extension APIs    |
 {: #errorcodes title="Error Codes"}
@@ -1737,7 +1738,7 @@ The appropriate HTTP status code is returned in the response.
 
 The publish/subscribe interface, or data streaming interface, is an MQTT
 publishing interface. Pub/sub topics can be created and managed by means
-of the /registration/data-app API.
+of the /registrations/data-apps API.
 
 In this memo, we propose the data format to be CBOR {{!RFC8949}}.
 
@@ -1865,7 +1866,7 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registration/model
+    POST /registrations/models
     Content-Type: application/sdf+json
     Accept: application/nipc+json
     Host: localhost
@@ -1951,7 +1952,7 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registration/data-app?dataAppId=23456789-1234-5678-1234-567\
+    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-567\
     89abcdef4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
@@ -1984,7 +1985,7 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registration/data-app?dataAppId=23456789-1234-5678-1234-567\
+    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-567\
     89abcdef4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
@@ -2131,8 +2132,8 @@ Following API extensions are described in this document:
 | /extensions/{id}/properties/file              | File write API       | Write a file with multiple property ops        | {{NIPCextensions}} |
 | /extensions/{id}/properties/blob              | Binary write API     | Write a binary blob with multiple property ops | {{NIPCextensions}} |
 | /extensions/{id}/properties/read/conditional | Read conditional API | Read a property until a condition is fulfilled | {{NIPCextensions}} |
-| /extensions/{id}/firmware                    | Firmware upgrade API | Firmware upgrade API, leveraging mutiple opsed | {{NIPCextensions}} |
-| /extensions/{id}/manage/transmit             | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
+| /extensions/{id}/events/conditional          | Event conditional API| Enable an event until a condition is fulfilled | {{NIPCextensions}} |
+| /extensions/{id}/transmit                 | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
 
 ## Well-known URIs {#iana-well-known}
 
@@ -2166,7 +2167,9 @@ registry:
 | https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered | SDF model already registered                  | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use        | SDF model in use                              | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#property-not-readable   | Property not readable                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#property-read-failed    | Property read failed                          | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#property-not-writable   | Property not writable                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#property-write-failed   | Property write failed                         | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#event-already-enabled   | Event already enabled                         | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#event-not-enabled       | Event not enabled                             | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#event-not-registered    | Event not registered for any data application | This document   |
@@ -2274,21 +2277,21 @@ file "Extension-File.yaml"
 <CODE ENDS>
 ~~~~~
 
-## NIPC API firmware update extension
-
-~~~~~
-<CODE BEGINS>
-file "Extension-Firmware.yaml"
-{::include nipc-openapi/extensions/Extension-Firmware.yaml.folded}
-<CODE ENDS>
-~~~~~
-
 ## NIPC API conditional read extension
 
 ~~~~~
 <CODE BEGINS>
 file "Extension-ReadConditional.yaml"
 {::include nipc-openapi/extensions/Extension-ReadConditional.yaml.folded}
+<CODE ENDS>
+~~~~~
+
+## NIPC API conditional event extension
+
+~~~~~
+<CODE BEGINS>
+file "Extension-EventConditional.yaml"
+{::include nipc-openapi/extensions/Extension-EventConditional.yaml.folded}
 <CODE ENDS>
 ~~~~~
 

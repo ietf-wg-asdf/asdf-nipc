@@ -129,6 +129,9 @@ components:
       properties:
         ble:
           type: object
+          properties:
+            connectable:
+              type: boolean
 
 ## Protocol Mapping for BLE Property
     ProtocolMap-BLE-Propmap:
@@ -175,14 +178,3 @@ components:
             characteristicID:
               type: string
               example: 12345678-1234-5678-1234-56789abcdef1
-
-## BLE Error codes
-    ProtocolMap-BLE-ErrorCodes:
-      type: object
-      properties:
-        nipcStatus:
-          type: integer
-          format: int32
-          enum:
-            - 1011 # BLE bonding failed
-            - 1013 # BLE service discovery failed
