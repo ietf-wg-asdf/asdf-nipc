@@ -251,7 +251,7 @@ that is required to interact with the gateway.
 The SDF model for a class of devices determines how a gateway may interact with
 these devices in a protocol-neutral way. In order to do that, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
-to protocol-specific ones as defined in {{!I-D.mohan-asdf-sdf-protocol-mapping}}. 
+to protocol-specific ones as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}. 
 The SDF affordances supported by the device, as well as its protocol-mappings,
 are provide to the gateway by means of an SDF model registration. 
 SDF models are described in {{!I-D.ietf-asdf-sdf}}.
@@ -1650,7 +1650,7 @@ NIPC is extensible in two ways:
 ## Protocol extensions
 
 NIPC supports mapping protocol specific properties to NIPC properties
-as described in {{!I-D.mohan-asdf-sdf-protocol-mapping}}.
+as described in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
 BLE and Zigbee are used as examples, but protocol
 mapping is extensible to other protocols, so now non-IP protocols can be 
 supported by NIPC without a schema change.
