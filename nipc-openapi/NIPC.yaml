@@ -372,8 +372,12 @@ paths:
           format: uuid
           example: 12345678-1234-5678-1234-56789abcdef4
       responses:
-        '204':
-          description: Success, no content
+        '200':
+          description: Success, event disabled
+          content:
+            application/nipc+json:
+              schema:
+                $ref: '#/components/schemas/GroupEventStatusResponseArray'
         default:
           description: Error response
           content:
@@ -402,18 +406,16 @@ paths:
           Instance IDs of the events that need to be filtered
         required: false
         schema:
-          type: array
-          items:
-            type: string
-            format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+          type: string
+          format: uuid
+          example: 12345678-1234-5678-1234-56789abcdef4
       responses:
         '200':
           description: Success, events retrieved
           content:
             application/nipc+json:
               schema:
-                $ref: '#/components/schemas/EventStatusResponseArray'
+                $ref: '#/components/schemas/GroupEventStatusResponseArray'
         default:
           description: Error response
           content:
@@ -1370,3 +1372,21 @@ components:
       items:
           $ref: '#/components/schemas/EventStatusResponseArrayItem'
 
+    GroupEventStatusResponse:
+      type: object
+      oneOf:
+        - allOf:
+          - $ref: '#/components/schemas/Event'
+          - type: object
+            properties:
+              deviceId:
+                type: string
+                format: uuid
+                example: 12345678-1234-5678-1234-56789abcdef4
+        - $ref: '#/components/schemas/FailureResponse'
+
+    GroupEventStatusResponseArray:
+      type: array
+      items:
+          $ref: '#/components/schemas/GroupEventStatusResponse'
+    

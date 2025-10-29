@@ -1187,10 +1187,40 @@ Query Parameters:
 
 Response:
 
-Returns HTTP status code 204 No Content on successful disable.
+Returns HTTP status code 200 with a list of the event status for the group of devices.
+If the event was successfully disabled on a device, the response will contain
+the device ID and SDF event name for that device. If the event could not be disabled
+on a device, the response will contain a problem type error response for that device.
 
 ~~~~~
-HTTP/1.1 204 No Content
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
+[
+  {
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected",
+    "deviceId": "12345678-1234-5678-1234-56789abcdef4"
+  },
+  {
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected",
+    "deviceId": "12345678-1234-5678-1234-56789abcdef5"
+  },
+  {
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected",
+    "deviceId": "12345678-1234-5678-1234-56789abcdef6"
+  },
+  {
+    "type": "https://www.iana.org/assignments/nipc-problem-types#eve\
+nt-not-enabled",
+    "status": 400,
+    "title": "Event Not Enabled",
+    "deviceId": "12345678-1234-5678-1234-56789abcdef7",
+    "detail": "Failed to disable the event for device 12345678-1234-\
+5678-1234-56789abcdef7"
+  }
+]
 ~~~~~
 
 A failure will generate a standard failed response. Please refer to {{failure}}
@@ -1198,7 +1228,7 @@ definition of failed response.
 
 ### Get event status on a group of devices
 
-Method: `GET /groups/{id}/events{?instanceId*}`
+Method: `GET /groups/{id}/events{?instanceId}`
 
 Description: Get the status of one or more events on a group of devices
 
@@ -1208,9 +1238,14 @@ Parameters:
 
 Query Parameters:
 
-  - instanceId: a list of event instance IDs to filter by (optional)
+  - instanceId: The instance ID of the event to get the status for
 
 Response: 
+
+Returns HTTP status code 200 with a list of the event status for the group of devices.
+If the event was successfully enabled on a device, the response will contain
+the device ID and SDF event name for that device. If the event could not be enabled
+on a device, the response will contain a problem type error response for that device.
 
 Example of a response:
 
@@ -1219,9 +1254,28 @@ Example of a response:
 
 [
   {
-    "instanceId": "87654321-4321-8765-4321-fedcba9876543",
     "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected"
+sdfEvent/fallDetected",
+    "deviceId": "12345678-1234-5678-1234-56789abcdef4"
+  },
+  {
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected",
+    "deviceId": "12345678-1234-5678-1234-56789abcdef5"
+  },
+  {
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected",
+    "deviceId": "12345678-1234-5678-1234-56789abcdef6"
+  },
+  {
+    "type": "https://www.iana.org/assignments/nipc-problem-types#eve\
+nt-not-enabled",
+    "status": 400,
+    "title": "Event Not Enabled",
+    "deviceId": "12345678-1234-5678-1234-56789abcdef7",
+    "detail": "Failed to disable the event for device 12345678-1234-\
+5678-1234-56789abcdef7"
   }
 ]
 ~~~~~
@@ -1939,7 +1993,7 @@ The sequence of operations for this are:
     ]
     ~~~~~
 
-## Enabling an Event
+## Enabling an Event on a Device
 
 In this example, we will onboard a device, and setup an advertisement
 subscription event for that device.
@@ -1978,8 +2032,8 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-567\
-    89abcdef4
+    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-5\
+    6789abcdef4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
     Host: localhost
@@ -2037,6 +2091,128 @@ The sequence of operations for this are:
     /sdfEvent/isPresent"
     }
     ~~~~~
+
+## Enabling an Event on a Group of Devices
+
+In this example, we will enable an advertisement subscription event
+for a group of devices.
+
+The sequence of operations for this are:  
+
+  - Onboard devices and endpoint app using the SCIM Interface (out of scope of this
+   memo)
+  - Register an SDF model for the devices
+
+    ~~~~~
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
+    POST /registrations/models
+    Content-Type: application/sdf+json
+    Accept: application/nipc+json
+    Host: localhost
+
+    { ... }
+
+    HTTP/1.1 200 OK
+    content-type: application/nipc+json
+
+    [
+      {
+        "sdfName": "https://example.com/thermometer#/sdfThing/thermom\
+    eter"
+      }
+    ]
+    ~~~~~
+
+    Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
+    
+  - Register the data app with the event 
+
+    ~~~~~
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
+    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-5\
+    6789abcdef4
+    Content-Type: application/nipc+json
+    Accept: application/nipc+json
+    Host: localhost
+
+    {
+      "events": [
+        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
+    nt/isPresent"
+      ],
+      "mqttClient": true
+    }
+
+    HTTP/1.1 200 OK
+    content-type: application/nipc+json
+
+    {
+      "events": [
+        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
+    nt/isPresent"
+      ],
+      "mqttClient": true
+    }
+    ~~~~~
+
+  - Enable the advertisement event on a group of devices
+
+    ~~~~
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
+    POST /groups/87654321-4321-8765-4321-fedcba9876543/events?eventNa\
+    me=https%23%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
+    meter%2FsdfEvent%2FisPresent
+    Host: localhost
+    Content-Length: 0
+
+    HTTP/1.1 201 Created
+    Location: /groups/87654321-4321-8765-4321-fedcba9876543/events?in\
+    stanceId=11223344-5566-7788-99aa-bbccddeeff00
+    ~~~~
+
+  - Check the status of the event
+
+    ~~~~~
+    ============== NOTE: '\' line wrapping per RFC 8792 ==============
+
+    GET /groups/87654321-4321-8765-4321-fedcba9876543/events?instance\
+    Id=11223344-5566-7788-99aa-bbccddeeff00
+    Host: localhost
+
+    HTTP/1.1 200 OK
+    content-type: application/nipc+json
+
+    [
+      {
+        "event": "https://example.com/heartrate#/sdfObject/healthsen\
+    sor/sdfEvent/fallDetected",
+        "deviceId": "12345678-1234-5678-1234-56789abcdef4"
+      },
+      {
+        "event": "https://example.com/heartrate#/sdfObject/healthsen\
+    sor/sdfEvent/fallDetected",
+        "deviceId": "12345678-1234-5678-1234-56789abcdef5"
+      },
+      {
+        "event": "https://example.com/heartrate#/sdfObject/healthsen\
+    sor/sdfEvent/fallDetected",
+        "deviceId": "12345678-1234-5678-1234-56789abcdef6"
+      },
+      {
+        "type": "https://www.iana.org/assignments/nipc-problem-types\
+    #event-not-enabled",
+        "status": 400,
+        "title": "Event Not Enabled",
+        "deviceId": "12345678-1234-5678-1234-56789abcdef7",
+        "detail": "Failed to disable the event for device 12345678-1\
+    234-5678-1234-56789abcdef7"
+      }
+    ]
+    ~~~~~
+
 
 # Security Considerations {#security-considerations}
 
