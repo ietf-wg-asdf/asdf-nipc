@@ -397,6 +397,13 @@ as supported extensions on a server.
 ~~~~~
 {: #ex-wellknown title="Example response for /.well-known/nipc"}
 
+A formal CBOR definition of the well-known response is as follows:
+
+~~~~ CDDL
+{::include cddl/nipc_well_known.cddl}
+~~~~
+{:cddl}
+
 ### NIPC Registrations
 
 Registrations leverage the base path + /registrations. NIPC supports SDF model

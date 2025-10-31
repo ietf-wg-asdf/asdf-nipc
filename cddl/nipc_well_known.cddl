@@ -1,0 +1,5 @@
+NipcWellKnown = {
+  base_path: text,
+  ? versions: [* uri / text],
+  ? extensions: [* uri / text]
+}
