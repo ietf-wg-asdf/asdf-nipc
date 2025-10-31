@@ -671,13 +671,13 @@ These APIs allow applications to register a data application that will receive
 streaming data from the gateway. These APIs operate on a data app ID.
 This ID corresponds to the endpoint app ID of the telemetry endpoint app 
 that is registered with the SCIM server. The endpoint app is defined in 
-{{Section 6 of I-D.ietf-scim-device-model}}. 
+{{Section 6 of I-D.ietf-scim-device-model}}.
 
-Apart from the endpoint, the API also registers the protocol the data-app supports. These can be one of the following:
+Apart from the endpoint app ID, the API also registers the protocol the data-app supports. These can be one of the following:
 
 - mqttClient: The data-app is an MQTT client, which means that the gateway is an MQTT broker.
 - mqttBroker: The data-app is an MQTT broker. The registration API has to include the MQTT broker configuration data, such as the URI, credentials and MQTT topic to publish to.
-- webhook: The data-app supports a webhook the gateway can pusbish to. The registration API has to include the webhook URI & credentials.
+- webhook: The data-app supports a webhook the gateway can publish to. The registration API has to include the webhook URI & credentials.
 - websocket: The data-app supports a websocket interface. The registration API has to include the websocket URI & credentials.
 
 ### Register a data application
@@ -701,28 +701,30 @@ The request body also contains one of the following:
    is an MQTT client that will receive streaming data over MQTT
  - mqttBroker: an object that contains the MQTT broker information
    where the broker will publish the streaming data. 
-    - URI: the URI of the MQTT broker
+    - URI: the URI of the MQTT broker.
     - username: the username to authenticate with the MQTT broker
     - password: the password to authenticate with the MQTT broker
     - brokerCACert: the base64-encoded CA certificate of the MQTT broker (optional)
-    - customTopic: By default, the topic will be composed of `data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>`.
+    - customTopic: By default, the topic will be composed of `data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>`, as described in {{nipc-event-apis}}.
       You can configure a custom topic to publish the streaming data to (optional)
  - webhook: an object that contains a webhook URL along with any 
     credentials that are required to authenticate the webhook. 
     The webhook URL is the endpoint where the streaming data will be sent.
-    - URI: the webhook URL
+    - URI: the webhook URL. The URL MUST include the scheme used by the webhook server (e.g., "https://"). It is upto the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type
+      "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
     - headers: An object that contains the headers to be sent with the webhook
       request. The headers can contain any authentication information
-      required by the webhook server.
-    - serverCACert: the base64-encoded CA certificate of the webhook server (optional)
+      required by the webhook server. Each header is represented as a key-value pair in the object.
+    - serverCACert: the CA certificate of the webhook server, encoded as per {{!RFC7468}} and newlines encoded as '\n' (optional)
  - websocket: an object that contains a websocket URL along with any 
    credentials that are required to authenticate the websocket. 
    The websocket URL is the endpoint where the streaming data will be sent.
-    - URI: the websocket URL
+    - URI: the websocket URL. The URL MUST include the scheme used by the websocket server (e.g., "wss://"). It is upto the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type
+      "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
     - headers: An object that contains the headers to be sent with the websocket
       request. The headers can contain any authentication information
-      required by the websocket server.
-    - serverCACert: the base64-encoded CA certificate of the websocket server (optional)
+      required by the websocket server. Each header is represented as a key-value pair in the object.
+    - serverCACert: the CA certificate of the websocket server, encoded as per {{!RFC7468}} and newlines encoded as '\n' (optional)
 
 Example of a request body:
 
@@ -994,7 +996,7 @@ where-
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
 
-## NIPC Event APIs
+## NIPC Event APIs {#nipc-event-apis}
 
 These APIs allow applications to enable or disable event reporting on devices.
 These operations may require a connection to the device to be established. This
@@ -1768,6 +1770,7 @@ The specific error types are defined in the table below:
 | extension-operation-not-executed           | Operation was not executed since the previous operation failed | Generic |
 | sdf-model-already-registered               | SDF model already registered                  | Generic           |
 | sdf-model-in-use                           | SDF model in use                              | Generic           |
+| unsupported-uri-scheme                     | Unsupported URI scheme                        | Generic           |
 | property-not-readable                      | Property not readable                         | Property APIs     |
 | property-not-writable                      | Property not writable                         | Property APIs     |
 | event-already-enabled                      | Event already enabled                         | Event APIs        |
@@ -2335,6 +2338,7 @@ registry:
 | https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed | Operation was not executed since the previous operation failed | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered | SDF model already registered                  | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use        | SDF model in use                              | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme  | Unsupported URI scheme                        | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#property-not-readable   | Property not readable                         | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#property-read-failed    | Property read failed                          | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#property-not-writable   | Property not writable                         | This document   |
