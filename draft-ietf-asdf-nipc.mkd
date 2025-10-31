@@ -268,34 +268,24 @@ app as well as a protocol.
 NIPC operations are protocol-neutral operations on SDF affordances, more 
 specifically properties, actions & events. NIPC operations can happen against
 affordances that were registered in an SDF model. If connection management is
-required to execute a NIPC operation, it is assumed that the gateway implictly
-establishes and tears down required connections. 
+required to execute a NIPC operation, it is assumed that the gateway implicitly
+establishes and tears down required connections.
 
-### Properties APIs
+The NIPC APIs that perform NIPC operations are organized in 3 main categories:
 
-Property APIs allow applications perform operations on properties, such as to
-read or write values to them.
-
-### Actions
-
-Action APIs perform actions on devices, such as enabling or disabling a feature
-on a device.
-
-### Events
-
-Event APIs allow apps to enable or disable event reporting on devices. Events
-are reported over the events publish/subscribe interface.
+- Properties APIs: These APIs allow applications perform operations on properties, such as to read or write values to them.
+- Actions APIs: These APIs perform actions on devices, such as enabling or disabling a feature on a device.
+- Events APIs: These APIs allow apps to enable or disable event reporting on devices. Events are reported over the events publish/subscribe interface.
 
 ### Connection management for NIPC Operations
 
 For protocols that require connection management before executing an operation,
 a NIPC gateway will perform implicit connection management. When executing a 
-NIP operation, a NIPC Gateway can set up a connection with a device as well as
+NIPC operation, a NIPC Gateway can set up a connection with a device as well as
 tear down the connection after the operation has completed. A NIPC Gateway
 may support explicit connection management as well. Explicit connection
 management can be used by an app that wants to perform multiple NIPC operations
-in a single connection. Explicit connection management can be performed by 
-calling the /devices/{id}/connections API. After establishing an
+in a single connection. Explicit connection management can be performed by calling the APIs in {{nipc-connection-management-apis}}. After establishing an
 explicit connection to a device, an application calls a NIPC Operation, the
 Gateway will leverage the existing connection and will also not tear the
 connection down after the operation completes. The app will have to explicitly
@@ -309,7 +299,7 @@ an operation that can deliver an outcome more efficiently than a NIPC API.
 An example of an extension that uses compound operation is the bulk API.
 
 Extensions must leverage the /extensions path element. In order to assure
-inter-operability, extensions must be IANA registered {{iana-api-ext}}.
+inter-operability, extensions must be IANA registered in the registry in {{iana-api-ext}}.
 
 ## Events publish subscribe interface
 
@@ -1376,7 +1366,7 @@ where "status" indicates the current state of the action (e.g., "IN_PROGRESS" or
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
 
-## NIPC explicit connections management APIs
+## NIPC explicit connections management APIs {#nipc-connection-management-apis}
 
 A lot of protocols do not require connection management, so for these protocols, these APIs will not apply.
 NIPC Gateways perform implicit connection management for protocols that require connection management (such as BLE), so in principle the user of the NIPC API does not have to perform connection management. In some cases however, a user might want to keep a connection open, perform an action, evaluate the result and perform a second action based on that result. In this case it is useful to perform explicit connection management so the connections remains established to execute subsequent actions.  These APIs allow applications to explicitly manage device connections.
