@@ -444,16 +444,16 @@ fetched by a registrations API GET with an sdfReference.
 
 NIPC operations require 2 key parameters:
 1) A device ID identifying the device the operation should be executed on
-2) an SDF reference for the SDF affordance the operations pertains to
+2) an SDF name for the SDF affordance the operations pertains to
 
 #### Device ID
 
 All NIPC operations are executed against a device or a group of devices.
 Devices or groups of devices are identified by a unique uuid.
 
-| Attribute     | Req |   Type  |          Example                     |
-+---------------+-----+---------+--------------------------------------|
-| id            |  T  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
+| Attribute     | Type |          Example                     |
+|---------------+------+--------------------------------------|
+| id            | uuid | 12345678-1234-5678-1234-56789abcdef4 |
 {: #devicedef title="Definition of a device our group of devices"}
 
 Id is the unique uuid of the device. This id is generated when registering
@@ -470,10 +470,12 @@ are of type string
 
 For example:
 
-| Attribute | Req |   Type  |          Example                      |
-+-----------+-----+---------+---------------------------------------|
-| Property  |  T  |  string | https://example.com/heartrate#/<br/>sdfObject/thermostat/sdfProperty/temperature |
-{: #nipcopsdef title="Definition of a NIPC operation on a property"}
+| NIPC Operation | Example SDF Name used in the API                                              |
+|-----------|------------------------------------------------------------------------------------|
+| Property  | https://example.com/heartrate#/<br/>sdfObject/thermostat/sdfProperty/temperature   |
+| Event     | https://example.com/heartrate#<br/>/sdfObject/healthsensor/sdfEvent/fallDetected   |
+| Action    | https://example.com/heartrate#/<br/>sdfObject/thermostat/sdfAction/resetThermostat |
+{: #nipcopsdef title="Example SDF names for NIPC operations"}
 
 ### Responses 
 
