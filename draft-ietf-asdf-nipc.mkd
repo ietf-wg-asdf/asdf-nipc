@@ -564,6 +564,9 @@ where-
  - "sdfName" is the name of the top-level sdfThing or sdfObject 
     in the SDF model
 
+The `sdfName` in the response is wrapped in an object to allow for future
+extensions to the response. 
+
 ### Get all SDF models
 
 Method: `GET /registrations/models`
