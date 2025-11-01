@@ -73,7 +73,7 @@ environments and use cases such as building management, healthcare, workplaces,
 manufacturing, logistics and hospitality are often battery-powered. With 
 limited power budget, they may not be able to support the IP protocol on their
 wired or wireless interfaces, hence they support protocols that require a lower
-power budget. Promiment examples of such protocols are {{BLE53}} and
+power budget. Prominent examples of such protocols are {{BLE53}} and
 {{Zigbee22}}. These devices typically do require to communicate with devices
 or applications that are connected to IP-based networking infrastructure. 
 Therefore, applications on the IP network that need to communicate or receive
@@ -101,7 +101,7 @@ infrastructure of both gateways and non-IP networks being deployed on a case
 by case basis, each connecting separately into the IP network, with a distinct
 set of APIs. At the same time, wireless access points supporting both IP-based 
 wireless connectivity as well as non-IP based wireless technologies are
-deployed ubiquitiously. Many of these wireless access points are equipped with
+deployed ubiquitously. Many of these wireless access points are equipped with
 radios that can transmit and receive different frame types, such as {{BLE53}}
 and {{Zigbee22}}. This specification aims to define a Gateway API for these 
 Non-IP protocols that can be leveraged by this wireless infrastructure in order
@@ -235,10 +235,10 @@ identity declared to the NIPC gateway. We refer to this as 'onboarding'. Apart
 from the device identity, it is also necessary that the device object contains
 all required information to bootstrap trust with the device, as well as
 establish connectivity, as NIPC operations assume that connectivity is there. 
-Allthough onboarding could theoretically be performed in other ways, it is
+Although onboarding could theoretically be performed in other ways, it is
 strongly recommended to leverage {{!RFC7644}} with
 {{!I-D.ietf-scim-device-model}}, as the SCIM device schema has been developed
-to contain all nessary attributes and extensions to support NIPC.
+ to contain all necessary attributes and extensions to support NIPC.
 
 ## Registrations 
 
@@ -254,7 +254,7 @@ these devices in a protocol-neutral way. In order to do that, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
 to protocol-specific ones as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}. 
 The SDF affordances supported by the device, as well as its protocol-mappings,
-are provide to the gateway by means of an SDF model registration. 
+are provided to the gateway by means of an SDF model registration. 
 SDF models are described in {{!I-D.ietf-asdf-sdf}}.
 
 ### Data application registrations
@@ -713,7 +713,7 @@ The request body also contains one of the following:
  - webhook: an object that contains a webhook URL along with any 
     credentials that are required to authenticate the webhook. 
     The webhook URL is the endpoint where the streaming data will be sent.
-    - URI: the webhook URL. The URL MUST include the scheme used by the webhook server (e.g., "https://"). It is upto the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type
+    - URI: the webhook URL. The URL MUST include the scheme used by the webhook server (e.g., "https://"). It is up to the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type
       "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
     - headers: An object that contains the headers to be sent with the webhook
       request. The headers can contain any authentication information
@@ -722,7 +722,7 @@ The request body also contains one of the following:
  - websocket: an object that contains a websocket URL along with any 
    credentials that are required to authenticate the websocket. 
    The websocket URL is the endpoint where the streaming data will be sent.
-    - URI: the websocket URL. The URL MUST include the scheme used by the websocket server (e.g., "wss://"). It is upto the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type
+    - URI: the websocket URL. The URL MUST include the scheme used by the websocket server (e.g., "wss://"). It is up to the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type
       "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
     - headers: An object that contains the headers to be sent with the websocket
       request. The headers can contain any authentication information
@@ -822,7 +822,7 @@ application API.
 
 The primary goal of the NIPC APIs is to  perform operations on SDF Affordances, such as properties, events & actions.This allows a user of the NIPC API to get or update properties of devices, perform actions on devices, and consume events from devices.
 
-The NIPC APIs consists of 3 main collections which reflect SDF Affordances as defined in {{Section 1.2 of I-D.ietf-asdf-sdf}}: 
+The NIPC APIs consist of 3 main collections which reflect SDF Affordances as defined in {{Section 1.2 of I-D.ietf-asdf-sdf}}: 
 
  - NIPC Property APIs: These APIs allow applications to get and update device 
    properties.
@@ -848,7 +848,7 @@ The SDF global name is also percent-encoded as per {{Section 2.1 of !RFC3986}}.
 These APIs allow applications to get and update device properties. 
 These operations may require a connection to the device to be established. 
 This connection can be established as part of the same API call implicitly.
-If a connection is already active for this device, the existing connection willi
+If a connection is already active for this device, the existing connection will
 be leveraged without modifying it.
 
 These APIs support multiple media types based on Content-Type and Accept
@@ -873,7 +873,7 @@ Parameters:
 Query Parameters:
 
   - propertyName: a single property to update. If this parameter is
-    provided, the request body can contain any conten type payload 
+    provided, the request body can contain any content type payload 
     with the value to write to the property. If this parameter is not
     provided, the request body MUST contain an application/nipc+json payload
     with an array of properties to update, each containing a property and a
@@ -1390,7 +1390,7 @@ Request Body:
     service discovery is performed to discover all supported properties when
     connecting to a device. Optionally, service discovery may be limited to
     properties defined in the "ble" protocol extension. The services to be 
-    discovered can be added in an array. Property discover can be buffered
+    discovered can be added in an array. Property discovery can be buffered
     across connections, so the API also supports caching parameters. 
 
 Example body of a connection without specific discovery of properties:
@@ -1457,7 +1457,7 @@ Response:
 Success responses include a protocol mapping with an array of 
 discovered properties, as defined in the specific protocol.
 For example, for BLE, this is an array of supported services, which in turn
-contains an array of charateristics, which in turn contains an array of
+contains an array of characteristics, which in turn contains an array of
 descriptors, as shown in {{BLEservices}}.
 
 ~~~~~
@@ -1465,7 +1465,7 @@ descriptors, as shown in {{BLEservices}}.
      - serviceID
         |
         |> characteristics
-            - charactericID
+            - characteristicID
             - flags
                |
                |> Descriptors
@@ -1531,7 +1531,7 @@ Request Body:
     service discovery is performed to discover all supported properties when
     connecting to a device. Optionally, service discovery may be limited to
     properties defined in the "ble" protocol extension. The services to be 
-    discovered can be added in an array. Property discover can be buffered
+    discovered can be added in an array. Property discovery can be buffered
     across connections, so the API also supports caching parameters. 
 
 Example body of an update connection:
@@ -1560,7 +1560,7 @@ where in the BLE protocol object:
  - "cached" refers to whether the services need to be cached for 
    subsequent connects, in order not to perform service discovery on
    each request
- - "cacheIdlepurge" defines how long the cache should be maintained 
+ - "cacheIdlePurge" defines how long the cache should be maintained 
    before purging
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
@@ -1571,7 +1571,7 @@ Response:
 Success responses include a protocol mapping with an array of 
 discovered properties, as defined in the specific protocol.
 For example, for BLE, this is an array of supported services, which in turn
-contains an array of charateristics, which in turn contains an array of
+contains an array of characteristics, which in turn contains an array of
 descriptors, as shown in {{BLEservices}}.
 
 Example of a response:
@@ -1733,7 +1733,7 @@ In the new protocol object, protocol specific properties can be added.
 The extension APIs allow for extensibility of the APIs. Extensions must be IANA registered.
 Extension APIs can leverage the basic NIPC defined APIs and combine them in 
 compound statements in order to streamline application operation against
-devices, make operations more expediant and convenient in one API call. an example of this is the bulk API extension.
+devices, make operations more expedient and convenient in one API call. An example of this is the bulk API extension.
 They can also introduce new functionality that is specific to a use case or protocol, such as the BLE transmit API.
 the OpenAPI model {{NIPCextensions}} below, we have defined a few example extensions.
 
