@@ -242,10 +242,10 @@ to contain all nessary attributes and extensions to support NIPC.
 
 ## Registrations 
 
-NIPC registrations APIs allow applications to declare information that is not
-related to a device instance. Registrations can be information about an
-interaction model for a class of devices, or information about an application
-that is required to interact with the gateway.
+NIPC registration APIs allow applications to declare information such
+as an interaction model for a class of devices, or information about an
+application that is required to interact with the gateway. These APIs do
+not perform any operations on a specific device.
 
 ### SDF model registrations
 
