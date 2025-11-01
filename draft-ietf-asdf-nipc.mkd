@@ -195,12 +195,13 @@ Non-IP protocols, such as BLE or Zigbee, typically define a number of basic
 operations that are similar across protocols. Examples of this are read and 
 write data. NIPC provides a unified API to support those operations.
 
-To perform NIPC operations on a device, the gateways needs 2 things:
-1) Information about the instance of the device or thing: The device must be
+To perform NIPC operations on a device, the gateway has 2 prerequisites:
+
+1. Information about the instance of the device or thing: The device must be
 onboarded on the gateway (e.g. by means of SCIM). This allows the NIPC Gateway
-to retrieve the device object, identified by an id referenced in the path of 
+to retrieve the device object, identified by an ID referenced in the path of 
 the NIPC API.
-2) Information about the interaction model: The Gateway must be able to perform
+2. Information about the interaction model: The Gateway must be able to perform
 protocol-neutral operations, and hence requires a mapping of protocol-neutral
 operations to protocol specific operations. These are supplied to the gateway
 by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
@@ -210,7 +211,7 @@ by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
     +------------+   
     |    SCIM    |                      
     |   object   |           +----------------+          
-    |    {id}    +---------->|                |
+    |    {ID}    +---------->|                |
     +------------+           | NIPC Operation |
                              |    - Property  |
                              |    - Action    |
@@ -407,7 +408,7 @@ paths:
 ### NIPC Operations
 
 Every NIPC Operations API pertains to either a device or group of devices, identified by
-an id, hence the id will be reflected as the first parameter in the path. 
+an ID, hence the ID will be reflected as the first parameter in the path. 
 For example:
 
       "https://example.com/nipc/v1/{id}"
@@ -453,8 +454,8 @@ Devices or groups of devices are identified by a unique uuid.
 | id            | uuid | 12345678-1234-5678-1234-56789abcdef4 |
 {: #devicedef title="Definition of a device our group of devices"}
 
-Id is the unique uuid of the device. This id is generated when registering
-the device, for example against a SCIM server. As such, this id is a common
+ID is the unique uuid of the device. This ID is generated when registering
+the device, for example against a SCIM server. As such, this ID is a common
 identifier, known both to the application as well as the NIPC Server.
 
 ### SDF Name
@@ -690,7 +691,7 @@ Description: Registers a data application with the gateway
 
 Query Parameters: 
 
- - dataAppId: the id of the data application
+ - dataAppId: the ID of the data application
 
 Request Body:
 
@@ -779,7 +780,7 @@ Description: Updates a data application with the gateway
 
 Query Parameters: 
 
- - dataAppId: the id of the data application
+ - dataAppId: the ID of the data application
 
 Request Body: Same as the request body for the register data application API.
 
@@ -795,7 +796,7 @@ Description: Gets a data application registered with the gateway
 
 Query Parameters: 
 
- - dataAppId: the id of the data application
+ - dataAppId: the ID of the data application
 
 Response:
 
@@ -810,7 +811,7 @@ Description: Deletes a data application registered with the gateway
 
 Query Parameters: 
 
- - dataAppId: the id of the data application
+ - dataAppId: the ID of the data application
 
 Response:
 
@@ -867,7 +868,7 @@ Description: Write values to one or more properties on a device
 
 Parameters: 
 
- - id: the id of the device
+ - id: the ID of the device
 
 Query Parameters:
 
@@ -955,7 +956,7 @@ Description: Read values from one or more properties on a device
 
 Parameters: 
 
- - id: the id of the device
+ - id: the ID of the device
 
 Query Parameters:
 
@@ -1008,7 +1009,7 @@ leveraged without modifying it.
 
 The event is the global name of an `sdfEvent`. 
 
-The ID in the path is the id of the device or group of devices.
+The ID in the path is the ID of the device or group of devices.
 An event can be enabled on a group of devices if it is supported by the
 underlying protocol. For example, if the underlying protocol is BLE, 
 the event can be enabled on a group of devices if the event is an 
@@ -1047,7 +1048,7 @@ Description: Enables an event on a specific device
 
 Parameters: 
 
- - id: the id of the device
+ - id: the ID of the device
 
 Query Parameters:
 
@@ -1083,7 +1084,7 @@ Description: Disables an event on a specific device
 
 Parameters:
 
-  - id: the id of the device or group of devices
+  - id: the ID of the device or group of devices
 
 Query Parameters:
 
@@ -1108,7 +1109,7 @@ Description: Get the status of one or more events on a specific device
 
 Parameters:
 
- - id: the id of the device or group of devices
+ - id: the ID of the device or group of devices
 
 Query Parameters:
 
@@ -1147,7 +1148,7 @@ Description: Enables an event on a group of devices
 
 Parameters: 
 
- - id: the id of the group of devices
+ - id: the ID of the group of devices
 
 Query Parameters:
 
@@ -1183,7 +1184,7 @@ Description: Disables an event on a group of devices
 
 Parameters:
 
-  - id: the id of the group of devices
+  - id: the ID of the group of devices
 
 Query Parameters:
 
@@ -1238,7 +1239,7 @@ Description: Get the status of one or more events on a group of devices
 
 Parameters:
 
- - id: the id of the group of devices
+ - id: the ID of the group of devices
 
 Query Parameters:
 
@@ -1309,7 +1310,7 @@ Description: Perform an action on a specific device
 
 Parameters:
 
-  - id: the id of the device
+  - id: the ID of the device
 
 Query Parameters:
 
@@ -1344,7 +1345,7 @@ Description: Check the status of an action on a specific device
 
 Parameters:
 
-  - id: the id of the device
+  - id: the ID of the device
 
 Query Parameters:
 
@@ -1380,7 +1381,7 @@ Description: Connect to a device
 
 Parameters:
 
-  - id: the id of the device
+  - id: the ID of the device
 
 Request Body:
 
@@ -1506,7 +1507,7 @@ Example of a response:
 
 where-
 
-  - "id" is the id of the device
+  - "id" is the ID of the device
    - "sdfProtocolMap" contains an Array of BLE services as shown in
    {{BLEservices}}
 
@@ -1522,7 +1523,7 @@ be performed, unless specific services are described in the API body.
 
 Parameters:
 
-  - id: the id of the device
+  - id: the ID of the device
 
 Request Body:
 
@@ -1607,7 +1608,7 @@ Example of a response:
 
 where-
 
-  - "id" is the id of the device
+  - "id" is the ID of the device
    - "sdfProtocolMap" contains an Array of BLE services as shown in
    {{BLEservices}}
 
@@ -1622,7 +1623,7 @@ Description: Disconnect from a device
 
 Parameters:
 
-  - id: the id of the device
+  - id: the ID of the device
 
 Response:
 
@@ -1637,7 +1638,7 @@ Example of a response:
 ~~~~~
 {:json #exdisconnresp title="Example disconnect response"}
 
-where "id" is the id of the device.
+where "id" is the ID of the device.
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1652,7 +1653,7 @@ Failure when a device is not connected.
 
 Parameters:
 
-  - id: the id of the device
+  - id: the ID of the device
 
 Response:
 
@@ -1690,7 +1691,7 @@ Example of a response:
 
 where-
 
-  - "id" is the id of the device
+  - "id" is the ID of the device
   - "sdfProtocolMap" contains an Array of BLE services as shown in {{BLEservices}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
