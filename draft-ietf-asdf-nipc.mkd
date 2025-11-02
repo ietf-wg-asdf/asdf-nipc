@@ -272,8 +272,8 @@ In order to perform a NIPC operation on a device, the device has to have its
 identity declared to the NIPC gateway. We refer to this as 'onboarding'. Apart
 from the device identity, it is also necessary that the device object contains
 all required information to bootstrap trust with the device, as well as
-establish connectivity, as NIPC operations assume that connectivity is there. 
-Allthough onboarding could theoretically be performed in other ways, it is
+establish connectivity, as NIPC operations assume that connectivity can be set up without explicitly calling an API
+Allthough onboarding could theoretically be performed in differen§ ways, it is
 strongly recommended to leverage {{!RFC7644}} with
 {{!I-D.ietf-scim-device-model}}, as the SCIM device schema has been developed
 to contain all nessary attributes and extensions to support NIPC.
@@ -281,16 +281,18 @@ to contain all nessary attributes and extensions to support NIPC.
 ## Registrations 
 
 NIPC registrations APIs allow applications to declare information that is not
-related to a device instance. Registrations can be information about an
-interaction model for a class of devices, or information about an application
-that is required to interact with the gateway.
+related to a device instance, such as information to a device class, or an application authorization
+NIPC supports 2 types of registrations:
+- Registering an SDF model for a class of devices.
+- Registering an authorization for a data application. This authorizes an application to receive streaming event data from devices.
+Optionally a pointer to the model and the data-app registration can be included in the SCIM object for the device. See {{!I-D.ietf-scim-device-model}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for more information.
 
 ### SDF model registrations
 
 The SDF model for a class of devices determines how a gateway may interact with
 these devices in a protocol-neutral way. In order to do that, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
-to protocol-specific ones as defined in {{!I-D.mohan-asdf-sdf-protocol-mapping}}. 
+to protocol-specific ones as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}. 
 The SDF affordances supported by the device, as well as its protocol-mappings,
 are provide to the gateway by means of an SDF model registration. 
 SDF models are described in {{!I-D.ietf-asdf-sdf}}.
