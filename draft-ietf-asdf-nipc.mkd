@@ -385,6 +385,8 @@ delivered over either:
 - Webhook
 - Websocket
 
+CBOR was selected for the publish/subscribe interface as Non-IP payloads are typically binary. CBOR encodes binary payloads efficiently, and is more compact than JSON, therefore reducing the amount of data that needs to be transmitted to the application.
+
 ## Paths
 
 ### General {#paths-general}
@@ -489,16 +491,16 @@ NIPC operations require 2 key parameters:
 #### Device ID
 
 All NIPC operations are executed against a device or a group of devices.
-Devices or groups of devices are identified by a unique uuid.
+Devices or groups of devices are identified by a unique UUID, adhering to the {{!RFC9562}}.
 
 | Attribute     | Req |   Type  |          Example                     |
 +---------------+-----+---------+--------------------------------------|
 | id            |  T  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
 {: #devicedef title="Definition of a device our group of devices"}
 
-Id is the unique uuid of the device. This id is generated when registering
-the device, for example against a SCIM server. As such, this id is a common
-identifier, known both to the application as well as the NIPC Server.
+Id is the unique uuid of the device. This id is generated when onboarding
+the device, for example by a SCIM server. This identifier is returned to the application.As such, this id is a common
+identifier, known both to the application as well as the NIPC Server. If the server is not collocated with the SCIM server, the NIPC server will have to retrieve the device object from the SCIM server by means of the id.
 
 ### SDF Name
 
