@@ -261,7 +261,7 @@ by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 {: #prereq title="NIPC prerequisites"}
 
 Once these 2 prerequisites have been fulfilled, applications that are
-authorized can perform NIPC operations on device ids. NIPC operations
+authorized can perform NIPC operations on device ids. Please review {{security-considerations}} for more information on authorization. NIPC operations
 are operations on properties, or constitute actions or events on devices,
 as per the affordances defined in an SDF model.
 
