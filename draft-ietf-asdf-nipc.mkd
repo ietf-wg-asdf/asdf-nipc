@@ -123,7 +123,7 @@ In order to perform NIPC operations on a device, 2 prerequisites must be fulfill
 - The device must be onboarded on the gateway. Onboarding declares a device instance to the gateway. This allows the NIPC Gateway to retrieve the device object, identified by an id referenced in the path of the NIPC API. The definition of the onboarding function is out of scope of this document, but can be provided by a provisioning interface such as {{!RFC7644}} leveraging {{!I-D.ietf-scim-device-model}}.
 - An interaction model for the class of devices must be registered with the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 
-A non-IP gateway must provide at least following functions:
+A non-IP gateway provides following functions:
 
  - Authentication and authorization of application clients that
    will leverage the gateway API to communicate with Non-IP devices.
