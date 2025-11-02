@@ -116,28 +116,28 @@ A standardized Non-IP Gateway interface has following benefits:
 
 ## Non-IP Gateway
 
-A non-IP gateway MUST provide at least following functions:
+A non-IP gateway is an application layer gateway that allows Applications on IP networks to communicate with Non-IP devices leveraging NIPC APIs.
+NIPC APIs consist of reading or writing properties of devices, performing actions on devices, as well as enabling or disabling events on devices.
+
+In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
+- The device must be onboarded on the gateway. Onboarding declares a device instance to the gateway. This allows the NIPC Gateway to retrieve the device object, identified by an id referenced in the path of the NIPC API. The definition of the onboarding function is out of scope of this document, but can be provided by a provisioning interface such as {{!RFC7644}} leveraging {{!I-D.ietf-scim-device-model}}.
+- An interaction model for the class of devices must be registered with the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
+
+A non-IP gateway must provide at least following functions:
 
  - Authentication and authorization of application clients that
    will leverage the gateway API to communicate with Non-IP devices.
- - Access to a database of onboarded devices. Onboarding ensures that 
-   the Non-IP Gateway can identify a specific device and has sufficient context
-   about the device to service gateway API requests.
- - The ability to consume an interaction model for a class of devices. This 
-   allows the gateway to understand how to interact with a device.
- - An API that allows for bi-directional communication to non-IP devices.
+ - Access to a database of onboarded devices. 
+ - The ability to consume an interaction model for a class of devices.  
+ - An API that allows for reading or writing properties of devices, performing actions on devices, as well as enabling or disabling events on devices.
+ - The ability to manage connections to Non-IP devices, either implicitly
+   when performing a NIPC operation, or explicitly by means of a connection
+   management API.
+ - The ability to stream events from Non-IP devices to applications on the IP network
+   by means of a publish/subscribe interface. 
  - One or more channels to process requests, responses, and asymmetric
    communications with the non-IP radio resources (Access Points)
    at its disposal.
- - The ability to stream telemetry received from non-IP devices in real-time
-   to applications on the IP network.
-
-The definition of the onboarding function is out of scope of this document, but
-can be provided by a provisioning interface such as {{!RFC7644}} leveraging 
-{{!I-D.ietf-scim-device-model}}. NIPC performs operations on a device or group
-object, hence it requires device onboarding to be performed prior to performing
-a NIPC operation on a device. NIPC APIs will reference a device or group id 
-generated at the time of onboarding as a unique identifier. 
 
 The Application gateway is a network function, so its goal is to proxy payloads 
 between Non-IP and IP networks. It is not intended to be a middleware function
