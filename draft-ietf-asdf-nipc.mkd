@@ -66,7 +66,7 @@ This memo describes an API that allows applications to perform operations agains
 
 # Introduction
 
-## Scope
+## Motivation
 
 Low-power sensors, actuators and other connected devices introduced in
 environments and use cases such as building management, healthcare, workplaces,
@@ -96,50 +96,48 @@ a particular protocol, such as a BLE GATT REST API for BLE Gateways
 ({{Gatt-REST-API}}), however they have been limited to a single protocol or
 a particular use case. In absence of an open standard describing how
 applications on an IP network communicate with non-IP devices, bespoke and
-vendor-specific implementations have proliferated. This results in parallel
-infrastructure of both gateways and non-IP networks being deployed on a case
-by case basis, each connecting separately into the IP network, with a distinct
-set of APIs. At the same time, wireless access points supporting both IP-based 
-wireless connectivity as well as non-IP based wireless technologies are
-deployed ubiquitiously. Many of these wireless access points are equipped with
-radios that can transmit and receive different frame types, such as {{BLE53}}
-and {{Zigbee22}}. This specification aims to define a Gateway API for these 
-Non-IP protocols that can be leveraged by this wireless infrastructure in order
-to connect Non-IP devices into IP networks. The specification aims to be
+vendor-specific implementations have proliferated. The implication of this is
+that every use case deployment requires implementation of a new API, and possibly
+requires its own gateway, which results in proliferation of network infrastructure.
+This specification aims to define a Gateway API for these Non-IP protocols
+that can be leveraged by a Network Gateway connected to a wireless network. 
+The API aims to enable a Gateway to support any non-IP protocol. The gateway
+can simultaneously support multiple applications and multiple non-IP protocols
+as well as different versions of the same protocol. The specification is
 extensible, in order to support existing and future non-IP protocols.
 
 A standardized Non-IP Gateway interface has following benefits:
 
- - Avoid the need for parallel Non-IP infrastructure.
- - Avoid the need for applications to perform bespoke integrations for
+ - Avoid the need for applications to perform new and bespoke integrations for
    different environments.
+ - Avoid having to deploy multiple Gateway functions to support multiple non-IP use cases.
  - Faster and more cost-effective adoption of Non-IP devices in IP network
    environments.
 
 ## Non-IP Gateway
 
-A non-IP gateway MUST provide at least following functions:
+A non-IP gateway is an application layer gateway that allows Applications on IP networks to communicate with Non-IP devices leveraging NIPC APIs.
+NIPC APIs consist of reading or writing properties of devices, performing actions on devices, as well as enabling or disabling events on devices.
+
+In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
+- The device must be onboarded on the gateway. Onboarding declares a device instance to the gateway. This allows the NIPC Gateway to retrieve the device object, identified by an id referenced in the path of the NIPC API. The definition of the onboarding function is out of scope of this document, but can be provided by a provisioning interface such as {{!RFC7644}} leveraging {{!I-D.ietf-scim-device-model}}.
+- An interaction model for the class of devices must be registered with the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
+
+A non-IP gateway provides following functions:
 
  - Authentication and authorization of application clients that
    will leverage the gateway API to communicate with Non-IP devices.
- - Access to a database of onboarded devices. Onboarding ensures that 
-   the Non-IP Gateway can identify a specific device and has sufficient context
-   about the device to service gateway API requests.
- - The ability to consume an interaction model for a class of devices. This 
-   allows the gateway to understand how to interact with a device.
- - An API that allows for bi-directional communication to non-IP devices.
+ - Access to a database of onboarded devices. 
+ - The ability to consume an interaction model for a class of devices.  
+ - An API that allows for reading or writing properties of devices, performing actions on devices, as well as enabling or disabling events on devices.
+ - The ability to manage connections to Non-IP devices, either implicitly
+   when performing a NIPC operation, or explicitly by means of a connection
+   management API.
+ - The ability to stream events from Non-IP devices to applications on the IP network
+   by means of a publish/subscribe interface. 
  - One or more channels to process requests, responses, and asymmetric
    communications with the non-IP radio resources (Access Points)
    at its disposal.
- - The ability to stream telemetry received from non-IP devices in real-time
-   to applications on the IP network.
-
-The definition of the onboarding function is out of scope of this document, but
-can be provided by a provisioning interface such as {{!RFC7644}} leveraging 
-{{!I-D.ietf-scim-device-model}}. NIPC performs operations on a device or group
-object, hence it requires device onboarding to be performed prior to performing
-a NIPC operation on a device. NIPC APIs will reference a device or group id 
-generated at the time of onboarding as a unique identifier. 
 
 The Application gateway is a network function, so its goal is to proxy payloads 
 between Non-IP and IP networks. It is not intended to be a middleware function
@@ -187,6 +185,46 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 14 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
 capitals, as shown here.
 
+## Glossary
+
+ - NIPC: Non-IP Control, the application layer interface defined in this
+   document.
+ - NIPC Gateway: An application layer gateway that implements the NIPC
+   interface.
+ - SDF: Semantic Device Format, a standardized format to describe devices
+   and their interaction models, as defined in {{!I-D.ietf-asdf-sdf}}.
+ - SDF Affordance: An interaction point on a device as defined in an SDF
+   model. Examples of affordances are properties, actions & events.
+ - SDF Global Name: Absolute URI (with fragment) identifying an SDF affordance.
+ - SCIM: System for Cross-domain Identity Management, a standardized
+   protocol to manage identity information, as defined in {{!RFC7644}}.
+ - ALG: Application Layer Gateway.
+ - Non-IP Device: Device using a non-IP protocol (e.g. BLE, Zigbee) requiring a gateway for IP interaction.
+ - ALG: Application Layer Gateway.
+ - SDF Affordance: Actionable element in SDF (property, event, action).
+ - SDF Global Name: Absolute URI (with fragment) identifying an SDF affordance.
+ - Protocol Mapping / sdfProtocolMap: Mapping from protocol-neutral SDF affordances to protocol-specific operations.
+ - BLE: Bluetooth Low Energy protocol.
+ - Zigbee: Low-power mesh networking protocol.
+ - GATT: Generic Attribute Profile used in BLE for services/characteristics/descriptors.
+ - Service (BLE): Top-level GATT grouping of characteristics.
+ - Characteristic (BLE): GATT data element supporting read/write/notify.
+ - Descriptor (BLE): Metadata element attached to a characteristic.
+ - Bonding (BLE): Procedure to establish trusted, reusable security keys.
+ - Service Discovery (BLE): Procedure to enumerate GATT services/characteristics/descriptors.
+ - Device Onboarding: Registration of a device identity and metadata before NIPC operations.
+ - Device ID / Group ID: UUID identifying a device or a group of devices.
+ - UUID: Universally unique identifier (128-bit).
+ - Data Application / Data App: Registered application receiving streamed event data.
+ - MQTT: Publish/subscribe messaging protocol used for streaming.
+ - Webhook: HTTP callback endpoint for push delivery.
+ - Websocket: Bidirectional TCP-based message channel over HTTP.
+ - Publish/Subscribe Interface: Streaming channel for events (CBOR-encoded payloads).
+ - CBOR: Concise Binary Object Representation; compact binary data format.
+ - CDDL: Concise Data Definition Language; schema language for CBOR data.
+ - JSON: JavaScript Object Notation; text encoding used for API payloads.
+ - Access Point (AP): Network element with non-IP radio interface communicating with devices.
+
 # Architecture
 
 ## Overview
@@ -197,7 +235,7 @@ write data. NIPC provides a unified API to support those operations.
 
 To perform NIPC operations on a device, the gateways needs 2 things:
 1) Information about the instance of the device or thing: The device must be
-onboarded on the gateway (e.g. by means of SCIM). This allows the NIPC Gateway
+onboarded on the gateway (e.g. by means of SCIM with {{!I-D.ietf-scim-device-model}}). This allows the NIPC Gateway
 to retrieve the device object, identified by an id referenced in the path of 
 the NIPC API.
 2) Information about the interaction model: The Gateway must be able to perform
@@ -223,7 +261,7 @@ by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 {: #prereq title="NIPC prerequisites"}
 
 Once these 2 prerequisites have been fulfilled, applications that are
-authorized can perform NIPC operations on device ids. NIPC operations
+authorized can perform NIPC operations on device ids. Please review {{security-considerations}} for more information on authorization. NIPC operations
 are operations on properties, or constitute actions or events on devices,
 as per the affordances defined in an SDF model.
 
@@ -233,8 +271,8 @@ In order to perform a NIPC operation on a device, the device has to have its
 identity declared to the NIPC gateway. We refer to this as 'onboarding'. Apart
 from the device identity, it is also necessary that the device object contains
 all required information to bootstrap trust with the device, as well as
-establish connectivity, as NIPC operations assume that connectivity is there. 
-Allthough onboarding could theoretically be performed in other ways, it is
+establish connectivity, as NIPC operations assume that connectivity can be set up without explicitly calling an API
+Allthough onboarding could theoretically be performed in differen§ ways, it is
 strongly recommended to leverage {{!RFC7644}} with
 {{!I-D.ietf-scim-device-model}}, as the SCIM device schema has been developed
 to contain all nessary attributes and extensions to support NIPC.
@@ -242,16 +280,18 @@ to contain all nessary attributes and extensions to support NIPC.
 ## Registrations 
 
 NIPC registrations APIs allow applications to declare information that is not
-related to a device instance. Registrations can be information about an
-interaction model for a class of devices, or information about an application
-that is required to interact with the gateway.
+related to a device instance, such as information to a device class, or an application authorization
+NIPC supports 2 types of registrations:
+- Registering an SDF model for a class of devices.
+- Registering an authorization for a data application. This authorizes an application to receive streaming event data from devices.
+Optionally a pointer to the model and the data-app registration can be included in the SCIM object for the device. See {{!I-D.ietf-scim-device-model}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for more information.
 
 ### SDF model registrations
 
 The SDF model for a class of devices determines how a gateway may interact with
 these devices in a protocol-neutral way. In order to do that, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
-to protocol-specific ones as defined in {{!I-D.mohan-asdf-sdf-protocol-mapping}}. 
+to protocol-specific ones as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}. 
 The SDF affordances supported by the device, as well as its protocol-mappings,
 are provide to the gateway by means of an SDF model registration. 
 SDF models are described in {{!I-D.ietf-asdf-sdf}}.
@@ -344,6 +384,8 @@ delivered over either:
 - MQTT
 - Webhook
 - Websocket
+
+CBOR was selected for the publish/subscribe interface as Non-IP payloads are typically binary. CBOR encodes binary payloads efficiently, and is more compact than JSON, therefore reducing the amount of data that needs to be transmitted to the application.
 
 ## Paths
 
@@ -449,16 +491,16 @@ NIPC operations require 2 key parameters:
 #### Device ID
 
 All NIPC operations are executed against a device or a group of devices.
-Devices or groups of devices are identified by a unique uuid.
+Devices or groups of devices are identified by a unique UUID, adhering to the {{!RFC9562}}.
 
 | Attribute     | Req |   Type  |          Example                     |
 +---------------+-----+---------+--------------------------------------|
 | id            |  T  |  uuid   | 12345678-1234-5678-1234-56789abcdef4 |
 {: #devicedef title="Definition of a device our group of devices"}
 
-Id is the unique uuid of the device. This id is generated when registering
-the device, for example against a SCIM server. As such, this id is a common
-identifier, known both to the application as well as the NIPC Server.
+Id is the unique uuid of the device. This id is generated when onboarding
+the device, for example by a SCIM server. This identifier is returned to the application.As such, this id is a common
+identifier, known both to the application as well as the NIPC Server. If the server is not collocated with the SCIM server, the NIPC server will have to retrieve the device object from the SCIM server by means of the id.
 
 ### SDF Name
 
