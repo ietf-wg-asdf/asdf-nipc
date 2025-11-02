@@ -212,7 +212,6 @@ capitals, as shown here.
  - Descriptor (BLE): Metadata element attached to a characteristic.
  - Bonding (BLE): Procedure to establish trusted, reusable security keys.
  - Service Discovery (BLE): Procedure to enumerate GATT services/characteristics/descriptors.
- - SCIM: System for Cross-domain Identity Management (used to onboard devices/apps).
  - Device Onboarding: Registration of a device identity and metadata before NIPC operations.
  - Device ID / Group ID: UUID identifying a device or a group of devices.
  - UUID: Universally unique identifier (128-bit).
@@ -236,7 +235,7 @@ write data. NIPC provides a unified API to support those operations.
 
 To perform NIPC operations on a device, the gateways needs 2 things:
 1) Information about the instance of the device or thing: The device must be
-onboarded on the gateway (e.g. by means of SCIM). This allows the NIPC Gateway
+onboarded on the gateway (e.g. by means of SCIM with {{!I-D.ietf-scim-device-model}}). This allows the NIPC Gateway
 to retrieve the device object, identified by an id referenced in the path of 
 the NIPC API.
 2) Information about the interaction model: The Gateway must be able to perform
