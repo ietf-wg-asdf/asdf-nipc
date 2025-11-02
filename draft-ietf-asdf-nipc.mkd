@@ -66,7 +66,7 @@ This memo describes an API that allows applications to perform operations agains
 
 # Introduction
 
-## Scope
+## Motivation
 
 Low-power sensors, actuators and other connected devices introduced in
 environments and use cases such as building management, healthcare, workplaces,
@@ -96,23 +96,21 @@ a particular protocol, such as a BLE GATT REST API for BLE Gateways
 ({{Gatt-REST-API}}), however they have been limited to a single protocol or
 a particular use case. In absence of an open standard describing how
 applications on an IP network communicate with non-IP devices, bespoke and
-vendor-specific implementations have proliferated. This results in parallel
-infrastructure of both gateways and non-IP networks being deployed on a case
-by case basis, each connecting separately into the IP network, with a distinct
-set of APIs. At the same time, wireless access points supporting both IP-based 
-wireless connectivity as well as non-IP based wireless technologies are
-deployed ubiquitiously. Many of these wireless access points are equipped with
-radios that can transmit and receive different frame types, such as {{BLE53}}
-and {{Zigbee22}}. This specification aims to define a Gateway API for these 
-Non-IP protocols that can be leveraged by this wireless infrastructure in order
-to connect Non-IP devices into IP networks. The specification aims to be
+vendor-specific implementations have proliferated. The implication of this is
+that every use case deployment requires implementation of a new API, and possibly
+requires its own gateway, which results in proliferation of network infrastructure.
+This specification aims to define a Gateway API for these Non-IP protocols
+that can be leveraged by a Network Gateway connected to a wireless network. 
+The API aims to enable a Gateway to support any non-IP protocol. The gateway
+can simultaneously support multiple applications and multiple non-IP protocols
+as well as different versions of the same protocol. The specification is
 extensible, in order to support existing and future non-IP protocols.
 
 A standardized Non-IP Gateway interface has following benefits:
 
- - Avoid the need for parallel Non-IP infrastructure.
- - Avoid the need for applications to perform bespoke integrations for
+ - Avoid the need for applications to perform new and bespoke integrations for
    different environments.
+ - Avoid having to deploy multiple Gateway functions to support multiple non-IP use cases.
  - Faster and more cost-effective adoption of Non-IP devices in IP network
    environments.
 
@@ -186,6 +184,47 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "OPTIONAL" in this document are to be interpreted as described in BCP
 14 {{!RFC2119}} {{!RFC8174}} when, and only when, they appear in all
 capitals, as shown here.
+
+## Glossary
+
+ - NIPC: Non-IP Control, the application layer interface defined in this
+   document.
+ - NIPC Gateway: An application layer gateway that implements the NIPC
+   interface.
+ - SDF: Semantic Device Format, a standardized format to describe devices
+   and their interaction models, as defined in {{!I-D.ietf-asdf-sdf}}.
+ - SDF Affordance: An interaction point on a device as defined in an SDF
+   model. Examples of affordances are properties, actions & events.
+ - SDF Global Name: Absolute URI (with fragment) identifying an SDF affordance.
+ - SCIM: System for Cross-domain Identity Management, a standardized
+   protocol to manage identity information, as defined in {{!RFC7644}}.
+ - ALG: Application Layer Gateway.
+ - Non-IP Device: Device using a non-IP protocol (e.g. BLE, Zigbee) requiring a gateway for IP interaction.
+ - ALG: Application Layer Gateway.
+ - SDF Affordance: Actionable element in SDF (property, event, action).
+ - SDF Global Name: Absolute URI (with fragment) identifying an SDF affordance.
+ - Protocol Mapping / sdfProtocolMap: Mapping from protocol-neutral SDF affordances to protocol-specific operations.
+ - BLE: Bluetooth Low Energy protocol.
+ - Zigbee: Low-power mesh networking protocol.
+ - GATT: Generic Attribute Profile used in BLE for services/characteristics/descriptors.
+ - Service (BLE): Top-level GATT grouping of characteristics.
+ - Characteristic (BLE): GATT data element supporting read/write/notify.
+ - Descriptor (BLE): Metadata element attached to a characteristic.
+ - Bonding (BLE): Procedure to establish trusted, reusable security keys.
+ - Service Discovery (BLE): Procedure to enumerate GATT services/characteristics/descriptors.
+ - SCIM: System for Cross-domain Identity Management (used to onboard devices/apps).
+ - Device Onboarding: Registration of a device identity and metadata before NIPC operations.
+ - Device ID / Group ID: UUID identifying a device or a group of devices.
+ - UUID: Universally unique identifier (128-bit).
+ - Data Application / Data App: Registered application receiving streamed event data.
+ - MQTT: Publish/subscribe messaging protocol used for streaming.
+ - Webhook: HTTP callback endpoint for push delivery.
+ - Websocket: Bidirectional TCP-based message channel over HTTP.
+ - Publish/Subscribe Interface: Streaming channel for events (CBOR-encoded payloads).
+ - CBOR: Concise Binary Object Representation; compact binary data format.
+ - CDDL: Concise Data Definition Language; schema language for CBOR data.
+ - JSON: JavaScript Object Notation; text encoding used for API payloads.
+ - Access Point (AP): Network element with non-IP radio interface communicating with devices.
 
 # Architecture
 
