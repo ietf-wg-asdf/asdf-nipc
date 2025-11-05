@@ -32,7 +32,7 @@ components:
                   serviceID:
                     type: string
                     format: uuid
-                    example: 12345678-1234-5678-1234-56789abcdef4
+                    example: 00001809-0000-1000-8000-00805f9b34fb
             cached:
               description: |-
                 If we can cache information, then device doesn't need
@@ -78,7 +78,7 @@ components:
         serviceID:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 00001809-0000-1000-8000-00805f9b34fb
         characteristics:
           type: array
           items:
@@ -94,7 +94,7 @@ components:
         characteristicID:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 00002a1c-0000-1000-8000-00805f9b34fb
         flags:
           type: array
           example:
@@ -119,7 +119,7 @@ components:
         descriptorID:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 00002902-0000-1000-8000-00805f9b34fb
 
 ##  Protocol Mapping for BLE Broadcast
     ProtocolMap-BLE-Broadcast:
@@ -148,11 +148,11 @@ components:
             serviceID:
               type: string
               format: uuid
-              example: 12345678-1234-5678-1234-56789abcdef4
+              example: 00001809-0000-1000-8000-00805f9b34fb
             characteristicID:
               type: string
               format: uuid
-              example: 12345678-1234-5678-1234-56789abcdef4
+              example: 00002a1c-0000-1000-8000-00805f9b34fb
               
 ## Defines different types of BLE events
     ProtocolMap-BLE-Event:
@@ -174,7 +174,7 @@ components:
                 - advertisements
             serviceID:
               type: string
-              example: 12345678-1234-5678-1234-56789abcdef0
+              example: 00001809-0000-1000-8000-00805f9b34fb
             characteristicID:
               type: string
-              example: 12345678-1234-5678-1234-56789abcdef1
+              example: 00002a1c-0000-1000-8000-00805f9b34fb
