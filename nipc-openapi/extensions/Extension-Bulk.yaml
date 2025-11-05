@@ -43,7 +43,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       requestBody:
         content:
           application/json:
@@ -62,7 +62,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/12345678-1234-5678-1234-56789abcdef4/bulk/status?instanceId=12345678-1234-5678-1234-56789abcdef4
+                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/bulk/status?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
               description: URL to get the bulk status response
         "401":
           description: Unauthorized
@@ -112,7 +112,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
         - name: instanceId
           in: query
           description: Instance ID of the bulk operation
@@ -120,7 +120,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       responses:
         "200":
           description: OK
@@ -154,7 +154,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
         - name: instanceId
           in: query
           description: Instance ID of the bulk operation
@@ -162,7 +162,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       responses:
         "200":
           description: OK
@@ -178,7 +178,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/12345678-1234-5678-1234-56789abcdef4/bulk?instanceId=12345678-1234-5678-1234-56789abcdef4
+                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/bulk?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
               description: URL to get the bulk response
           content:
             application/json:
@@ -235,7 +235,7 @@ components:
                 - /extensions/{id}/properties/read/conditional?propertyName={propertyName}
                 - /extensions/{id}/events/conditional?eventName={eventName}
                 - /extensions/{id}/properties/file?propertyName={propertyName}
-              example: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+              example: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             data:
               type: object
               oneOf:
@@ -269,7 +269,7 @@ components:
                 - /devices/{id}/actions/?actionName={actionName}
                 - /extensions/{id}/properties/read/conditional?propertyName={propertyName}
                 - /extensions/{id}/events/conditional?eventName={eventName}
-              example: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+              example: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               anyOf:
                 - $ref: "../NIPC.yaml#/components/schemas/Value"
@@ -282,13 +282,13 @@ components:
       value:
         operations:
           - method: GET
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             data:
               value: dGVzdA==
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             data:
               value: dGVzdA==
               maxRepeat: 5
@@ -298,15 +298,15 @@ components:
       value:
         operations:
           - method: GET
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               value: dGVzdA==
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               status: 200
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               value: dGVzdA==
     errorBulkResponse:
@@ -314,21 +314,21 @@ components:
       value:
         operations:
           - method: GET
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               type: https://www.iana.org/assignments/nipc-problem-types#property-not-readable
               status: 400
               title: Property not readable
               detail: Property https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/temperature is not readable
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               type: https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed
               status: 400
               title: Operation not executed
               detail: Operation was not executed since the previous operation failed
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ftemperature
             response:
               type: https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed
               status: 400
@@ -339,32 +339,32 @@ components:
       value:
         operations:
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FstartOTA
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FstartOTA
             data:
               value: dGVzdA==
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/events/conditional?eventName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FotaStarted
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events/conditional?eventName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FotaStarted
             data:
               value: MQ==
               timeout: 5
           - method: PUT
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
             data:
               fileURL: https://example.com/firmware.bin
               chunkSize: 20
               sha256Checksum: abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FfinishOTA
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FfinishOTA
             data:
               value: dGVzdA==
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FupdateStatus
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FupdateStatus
             data:
               value: MQ==
               maxRepeat: 5
               retryTime: 1
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FactivateOTA
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FactivateOTA
             data:
               value: dGVzdA==
     firmwareUpgradeResponse:
@@ -372,26 +372,26 @@ components:
       value:
         operations:
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FstartOTA
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FstartOTA
             response:
               status: 200
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/events/conditional?eventName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FotaStarted
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events/conditional?eventName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FotaStarted
             response:
               value: MQ==
           - method: PUT
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Ffirmware
             response:
               status: 204
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FfinishOTA
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FfinishOTA
             response:
               status: 200
           - method: POST
-            path: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FupdateStatus
+            path: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/read/conditional?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FupdateStatus
             response:
               value: MQ==
           - method: PUT
-            path: /devices/12345678-1234-5678-1234-56789abcdef4/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FactivateOTA
+            path: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2FactivateOTA
             data:
               status: 200

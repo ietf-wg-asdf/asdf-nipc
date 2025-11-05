@@ -50,7 +50,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: propertyName
         in: query
         description: |-
@@ -74,7 +74,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file/status?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&instanceId=12345678-1234-5678-1234-56789abcdef4
+                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/file/status?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
               description: |-
                 URL to get the file write status
             Retry-After:
@@ -105,12 +105,12 @@ paths:
                       successExample:
                         summary: Success
                         value:
-                          id: 12345678-1234-5678-1234-56789abcdef4
+                          id: 02ee282c-8915-4b2e-bbd2-88966773134a
                           property: https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware
                       failedResponse:
                         summary: Failed
                         value:
-                          id: 12345678-1234-5678-1234-56789abcdef4
+                          id: 02ee282c-8915-4b2e-bbd2-88966773134a
                           status: 400
                           type: https://www.iana.org/assignments/nipc-problem-types#invalid-id
                           title: Invalid ID
@@ -136,7 +136,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: propertyName
         in: query
         description: |-
@@ -153,7 +153,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       responses:
         '204':
           description: Success, no content
@@ -181,7 +181,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: propertyName
         in: query
         description: |-
@@ -198,7 +198,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       responses:
         '200':
           description: Success, returns the status of the file write operation.
@@ -212,7 +212,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/12345678-1234-5678-1234-56789abcdef4/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&instanceId=12345678-1234-5678-1234-56789abcdef4
+                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
               description: URL to get the file write response
           content:
             application/json:
@@ -222,7 +222,7 @@ paths:
                 successExample:
                   summary: Completed
                   value:
-                    id: 12345678-1234-5678-1234-56789abcdef4
+                    id: 02ee282c-8915-4b2e-bbd2-88966773134a
                     status: COMPLETED
 
 components:
