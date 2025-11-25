@@ -111,10 +111,7 @@ A NIPC gateway provides following functions:
  - Maintain a repository of onboarded device objects.
  - Accept and validate SDF interaction model registrations.
  - Expose APIs for property, action, and event operations.
- - Perform implicit connection management where required; optionally support explicit connection management.
- - The ability to manage connections to Non-IP devices, either implicitly
-   when performing a NIPC operation, or explicitly by means of a connection
-   management API.
+ - Perform implicit connection management to devices where required; optionally support explicit connection management.
  - Stream events (publish/subscribe) to authorized data applications.
  - Proxy payloads between networks without interpreting or modifying application data.
  - Operate one or more channels to supported wired or wireless networks.
@@ -142,7 +139,8 @@ The gateway’s role is to proxy traffic between IP and non-IP networks; it is n
 
 ~~~~~
 {: #arch title="Basic Architecture"}
-Figure {{arch}} illustrates the basic components: applications, the NIPC application‑layer gateway (ALG), an access point (AP), and a device (D). The applications, ALG, and AP reside on an IP network; the AP provides a wireless or wired interface to the device. Applications often operate in a different administrative domain than the ALG and AP, so the ALG will ahve to support authorization. The ALG bridges the IP application domain and the device network, be it an IP-based or non-IP device network. This enables applications to perform operations on devices attached to those device networks. Applications use RESTful NIPC APIs for property, action, and event operations, and a CBOR‑based publish/subscribe interface for event streaming.
+
+{{arch}} illustrates the basic components: applications, the NIPC application‑layer gateway (ALG), an access point (AP), and a device (D). The applications, ALG, and AP reside on an IP network; the AP provides a wireless or wired interface to the device. Applications often operate in a different administrative domain than the ALG and AP, so the ALG will ahve to support authorization. The ALG bridges the IP application domain and the device network, be it an IP-based or non-IP device network. This enables applications to perform operations on devices attached to those device networks. Applications use a JSON-based {{!RFC8259}} RESTful NIPC APIs for property, action, and event operations, and a CBOR‑based {{!RFC8949}} publish/subscribe interface for event streaming.
 
 ## Terminology
 
