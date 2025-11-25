@@ -1,7 +1,7 @@
 ---
-title: An Application Layer Interface for Non-IP device control (NIPC)
+title: An Application Layer Interface for Non-Internet-Connected Physical Components (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-14
+docname: draft-ietf-asdf-nipc-15
 submissionType: IETF
 category: std
 
@@ -68,25 +68,14 @@ This memo describes an API that allows applications to perform operations agains
 
 ## Motivation
 
-Low-power sensors, actuators and other connected devices introduced in
-environments and use cases such as building management, healthcare, workplaces,
-manufacturing, logistics and hospitality are often battery-powered. With 
-limited power budget, they may not be able to support the IP protocol on their
-wired or wireless interfaces, hence they support protocols that require a lower
-power budget. Prominent examples of such protocols are {{BLE53}} and
-{{Zigbee22}}. These devices typically need to communicate with devices
-or applications that are connected to IP-based networking infrastructure. 
-Therefore, applications on the IP network that need to communicate or receive
-telemetry from these non-IP low-power devices must do so through a gateway 
-function on the IP network. This gateway function then translates the 
-communication to the non-IP protocol that the low-power device supports. 
+Low‑power sensors, actuators, and other connected devices deployed for building management, healthcare, workplace, manufacturing, logistics, and hospitality use cases are often resource and battery constrained. Many lack native IP connectivity and instead attach via heterogeneous non‑IP operational networks. Common non‑IP protocols include BLE {{BLE53}} and Zigbee {{Zigbee22}}. When IP is available, constrained application protocols such as CoAP {{?RFC7252}} may be used. These devices still need to exchange data with IP‑based applications. Accordingly, applications on the IP network obtain telemetry from and issue operations to such devices through an application‑layer gateway. This gateway bridges the application network and one or more separate operational networks where devices are connected, allowing applications on the IP network to perform operations on devices connected to these other operational networks.
 
 ~~~~~ aasvg
                                                                
     +-------------+              +---------+              +--------+
-    | Application |<------------>| Gateway |<------------>| Non-IP |                     
-    |             |   IP-based   |         |    Non-IP    | Device |
-    +-------------+   Operation  +---------+   Operation  +--------+                 
+    | Application |<------------>| Gateway |<------------>| Device |                     
+    |             | Application  |         |    Device    |        |
+    +-------------+   network    +---------+    network   +--------+                 
 
 ~~~~~
 {: #gw title="Gateway for non-IP Devices"}
@@ -95,53 +84,43 @@ There have been efforts to define Gateway functions for devices that support
 a particular protocol, such as a BLE GATT REST API for BLE Gateways
 ({{Gatt-REST-API}}), however they have been limited to a single protocol or
 a particular use case. In absence of an open standard describing how
-applications on an IP network communicate with non-IP devices, bespoke and
-vendor-specific implementations have proliferated. The implication of this is
-that every use case deployment requires implementation of a new API, and possibly
-requires its own gateway, which results in proliferation of network infrastructure.
-This specification aims to define a Gateway API for these Non-IP protocols
-that can be leveraged by a Network Gateway connected to a wireless network. 
-The API aims to enable a Gateway to support any non-IP protocol. The gateway
-can simultaneously support multiple applications and multiple non-IP protocols
-as well as different versions of the same protocol. The specification is
-extensible, in order to support existing and future non-IP protocols.
+applications on an IP network communicate with devices on other operational networks, bespoke and
+vendor-specific implementations have proliferated. 
+Each deployment then requires: (1) defining or adapting yet another API, and (2) deploying additional gateway functions, increasing operational and integration cost. 
+This specification defines a single, extensible application layer interface for cross-network and cross-protocol device interaction through a network gateway. The intent is to support multiple network and network protocols (and versions) concurrently, allow incremental addition of new protocols via mapping, and reduce redundant infrastructure by enabling multiple applications to share one standardized gateway function.
 
-A standardized Non-IP Gateway interface has following benefits:
+A standardized Application Layer Gateway interface has following benefits:
 
- - Avoid the need for applications to perform new and bespoke integrations for
-   different environments.
- - Avoid having to deploy multiple Gateway functions to support multiple non-IP use cases.
- - Faster and more cost-effective adoption of Non-IP devices in IP network
-   environments.
+ 1. Eliminates repeated bespoke integration effort across deployments.
+ 2. Avoids deploying multiple overlapping gateway functions for different networks, protocols or use cases.
+ 3. Reduces time and operational cost to integrate new networks and devices.
 
 ## Non-IP Gateway
 
-A non-IP gateway is an application layer gateway that allows Applications on IP networks to communicate with Non-IP devices leveraging NIPC APIs.
-NIPC APIs consist of reading or writing properties of devices, performing actions on devices, as well as enabling or disabling events on devices.
+A Non-Internet-Connected Physical Components (NIPC) gateway is an application layer gateway (ALG) that implements APIs for applications to communicate with devices on different networks, leveraging different protocols. These NIPC APIs consist of reading or writing properties of devices, invoking actions on devices, as well as enabling or disabling events on devices.
 
 In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
-- The device must be onboarded on the gateway. Onboarding declares a device instance to the gateway. This allows the NIPC Gateway to retrieve the device object, identified by an id referenced in the path of the NIPC API. The definition of the onboarding function is out of scope of this document, but can be provided by a provisioning interface such as {{!RFC7644}} leveraging {{!I-D.ietf-scim-device-model}}.
+- The device is onboarded (its identity and any credentials/trust material are provisioned). Onboarding is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
 - An interaction model for the class of devices must be registered with the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 
-A non-IP gateway provides following functions:
+Once these prerequisites are met, the gateway can resolve a referenced SDF affordance into the protocol-specific operations required for that device.
 
- - Authentication and authorization of application clients that
-   will leverage the gateway API to communicate with Non-IP devices.
- - Access to a database of onboarded devices. 
- - The ability to consume an interaction model for a class of devices.  
- - An API that allows for reading or writing properties of devices, performing actions on devices, as well as enabling or disabling events on devices.
+A NIPC gateway provides following functions:
+
+ - Authentication and authorization of application clients that will leverage the NIPC APIs. 
+ - Maintain a repository of onboarded device objects.
+ - Accept and validate SDF interaction model registrations.
+ - Expose APIs for property, action, and event operations.
+ - Perform implicit connection management where required; optionally support explicit connection management.
  - The ability to manage connections to Non-IP devices, either implicitly
    when performing a NIPC operation, or explicitly by means of a connection
    management API.
- - The ability to stream events from Non-IP devices to applications on the IP network
-   by means of a publish/subscribe interface. 
- - One or more channels to process requests, responses, and asymmetric
-   communications with the non-IP radio resources (Access Points)
-   at its disposal.
+ - Stream events (publish/subscribe) to authorized data applications.
+ - Proxy payloads between networks without interpreting or modifying application data.
+ - Operate one or more channels to supported wired or wireless networks.
+ - Optionally provide a bridge between devices on one or more device networks connected to the NIPC-Gateway. This may include translating between different protocols, if   multiple protocols are supported on the device network(s).
 
-The Application gateway is a network function, so its goal is to proxy payloads 
-between Non-IP and IP networks. It is not intended to be a middleware function
-that interprets, decodes or modifies these payloads.
+The gateway’s role is to proxy traffic between IP and non-IP networks; it is not intended to be middleware that inspects, decodes, or transforms device payloads.
 
 ~~~~~ aasvg
 
@@ -163,19 +142,7 @@ that interprets, decodes or modifies these payloads.
 
 ~~~~~
 {: #arch title="Basic Architecture"}
-
-{{arch}} shows us applications, the NIPC application layer gateway (ALG),
-an access point (AP), and a device (D). The applications, application layer
-gateway and access point are deployed on an IP-Network. The AP supports a
-Non-IP interface, which it uses to communicate with the device.
-The Application is deployed in a different administrative domain than the
-network elements (ALG & AP).
-The role of the application layer gateway is to provide a gateway function
-to applications wishing to communicate with non-IP devices in the network
-domain served by the gateway.
-Applications implementing Non-IP Control can leverage RESTful interfaces
-to communicate with Non-IP devices in the network domain and subscribe to
-events leveraging a CBOR-based pub/sub interface.
+Figure {{arch}} illustrates the basic components: applications, the NIPC application‑layer gateway (ALG), an access point (AP), and a device (D). The applications, ALG, and AP reside on an IP network; the AP provides a wireless or wired interface to the device. Applications often operate in a different administrative domain than the ALG and AP, so the ALG will ahve to support authorization. The ALG bridges the IP application domain and the device network, be it an IP-based or non-IP device network. This enables applications to perform operations on devices attached to those device networks. Applications use RESTful NIPC APIs for property, action, and event operations, and a CBOR‑based publish/subscribe interface for event streaming.
 
 ## Terminology
 
