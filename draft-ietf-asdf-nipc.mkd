@@ -2285,22 +2285,35 @@ to use this information as they see fit".
 
 ## TieDie IoT
 
-Organization: Cisco Systems
+Organization: Cisco Systems, North Carolina State University
 
 Description: Open-source implementation of the NIPC APIs and gateway functionality for BLE. Client libraries for Python and Java are also provided.
 
-Level of maturity:
+Level of maturity: Open-source prototype
 
-Coverage:
+Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility:
+Version compatibility: All versions up to draft-14
 
 Licensing: Apache License, Version 2.0
 
-Contact:
+URL: [](https://github.com/iot-onboarding/tiedie)
 
-URL: https://github.com/iot-onboarding/tiedie
+## Cisco Sensor Connect for IoT Services
 
+Organization: Cisco Systems
+
+Description: Commercial solution that delivers advanced BLE capabilities over Cisco Wireless infrastructure.
+
+Level of maturity: Beta
+
+Coverage: All NIPC APIs for BLE protocol mapping
+
+Version compatibility: draft-12, draft-13, draft-14
+
+Licensing: Proprietary
+
+URL: [](https://developer.cisco.com/docs/spaces-connect-for-iot-services/)
 
 # Security Considerations {#security-considerations}
 
