@@ -1,20 +1,16 @@
 openapi: 3.0.3
 info:
-  title: Non IP Device Control (NIPC) Protocol Mapping
+  title: SDF Protocol Mapping
   description: |-
-    Non IP Device Control (NIPC) Protocol Mapping. When adding a
-    new protocol mapping pls add a reference to the protocol map
+    SDF Protocol Mapping. When adding a
+    new protocol mapping please add a reference to the protocol map
     for all the schemas in this file.
-  termsOfService: http://swagger.io/terms/
-  contact:
-    email: bbrinckm@cisco.com
-  license:
-    name: TBD
-    url: TBD
   version: 0.10.0
 externalDocs:
-  description: NIPC IETF draft
-  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
+  description: SDF Protocol Mapping IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-sdf-protocol-mapping/
+
+paths: {}
 
 components:
   schemas:
