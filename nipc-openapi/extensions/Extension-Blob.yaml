@@ -50,7 +50,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: propertyName
         in: query
         description: |-

@@ -68,7 +68,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: propertyName
         in: query
         description: |-
@@ -133,7 +133,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: propertyName
         in: query
         description: Properties to be read
@@ -184,12 +184,12 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id or group id
+        description: The ID of the device.
         required: true
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: eventName
         in: query
         description: event that needs to be enabled
@@ -230,12 +230,12 @@ paths:
       parameters:
       - name: id
         in: path
-        description: device id or group id
+        description: The ID of the device.
         required: true
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: instanceId
         in: query
         description: instance id of the event that needs to be disabled
@@ -243,7 +243,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 02ee282c-8915-4b2e-bbd2-88966773134a
       responses:
         '204':
           description: Success, no content
@@ -269,7 +269,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: instanceId
         in: query
         description: |-
@@ -280,7 +280,7 @@ paths:
           items:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 02ee282c-8915-4b2e-bbd2-88966773134a
       responses:
         '200':
           description: Success
@@ -317,7 +317,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 0dc729d7-f6c3-491d-9b9d-e7176d2be243
       - name: eventName
         in: query
         description: event that needs to be enabled
@@ -362,7 +362,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 0dc729d7-f6c3-491d-9b9d-e7176d2be243
       - name: instanceId
         in: query
         description: instance id of the event that needs to be disabled
@@ -370,7 +370,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: f1b9f26b-21ce-4deb-9d57-289ba7e17cce
       responses:
         '200':
           description: Success, event disabled
@@ -399,7 +399,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 0dc729d7-f6c3-491d-9b9d-e7176d2be243
       - name: instanceId
         in: query
         description: |-
@@ -408,7 +408,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: f1b9f26b-21ce-4deb-9d57-289ba7e17cce
       responses:
         '200':
           description: Success, events retrieved
@@ -445,7 +445,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: actionName
         in: query
         description: action that needs to be performed
@@ -494,7 +494,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       - name: instanceId
         in: query
         description: |-
@@ -503,7 +503,7 @@ paths:
         schema:
           type: string
           format: uuid
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 02ee282c-8915-4b2e-bbd2-88966773134a
       responses:
         '200':
           description: Success, action is active
@@ -538,7 +538,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       requestBody:
         content:
           application/nipc+json:
@@ -580,7 +580,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       requestBody:
         content:
           application/nipc+json:
@@ -618,7 +618,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       responses:
         '200':
           description: Success
@@ -651,7 +651,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       responses:
         '200':
           description: Success
@@ -822,7 +822,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 0927ce7c-b258-4bfa-a345-bcc9f74385b4
       requestBody:
         content:
           application/nipc+json:
@@ -860,7 +860,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 0927ce7c-b258-4bfa-a345-bcc9f74385b4
       requestBody:
         content:
           application/nipc+json:
@@ -899,7 +899,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 0927ce7c-b258-4bfa-a345-bcc9f74385b4
       responses:
         '200':
           description: Success
@@ -932,7 +932,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: 12345678-1234-5678-1234-56789abcdef4
+            example: 0927ce7c-b258-4bfa-a345-bcc9f74385b4
       responses:
         '200':
           description: Success
@@ -963,7 +963,7 @@ components:
           format: uuid
           description: |-
             A SCIM-generated UUID, can be a device or group
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
 
 ## A property
     Property:
@@ -1029,7 +1029,7 @@ components:
           format: uuid
           description: |-
             A SCIM-generated UUID for the event instance
-          example: 12345678-1234-5678-1234-56789abcdef4
+          example: 02ee282c-8915-4b2e-bbd2-88966773134a
             
 ## A Connection
     Connection:
@@ -1179,21 +1179,21 @@ components:
                     heartrate:
                       sdfProtocolMap:
                         ble:
-                          serviceID: 12345678-1234-5678-1234-56789abcdef4
-                          characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                          serviceID: 00001809-0000-1000-8000-00805f9b34fb
+                          characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
                   sdfEvent:
                     fallDetected:
                       sdfOutputData:
                         sdfProtocolMap:
                           ble:
-                            serviceID: 12345678-1234-5678-1234-56789abcdef4
-                            characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                            serviceID: 00001809-0000-1000-8000-00805f9b34fb
+                            characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
                   sdfAction:
                     start:
                       sdfProtocolMap:
                         ble:
-                          serviceID: 12345678-1234-5678-1234-56789abcdef4
-                          characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                          serviceID: 00001809-0000-1000-8000-00805f9b34fb
+                          characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
 
     SdfObject:
       type: object
@@ -1211,21 +1211,20 @@ components:
                 heartrate:
                   sdfProtocolMap:
                     ble:
-                      serviceID: 12345678-1234-5678-1234-56789abcdef4
-                      characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                      serviceID: 00001809-0000-1000-8000-00805f9b34fb
+                      characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
               sdfEvent:
                 fallDetected:
                   sdfOutputData:
                     sdfProtocolMap:
                       ble:
-                        serviceID: 12345678-1234-5678-1234-56789abcdef4
-                        characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                        type: advertisements
               sdfAction:
                 start:
                   sdfProtocolMap:
                     ble:
-                      serviceID: 12345678-1234-5678-1234-56789abcdef4
-                      characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                      serviceID: 00001809-0000-1000-8000-00805f9b34fb
+                      characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
 
     SdfProperty:
       type: object
@@ -1239,8 +1238,8 @@ components:
             heartrate:
               sdfProtocolMap:
                 ble:
-                  serviceID: 12345678-1234-5678-1234-56789abcdef4
-                  characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                  serviceID: 00001809-0000-1000-8000-00805f9b34fb
+                  characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
           
     SdfEvent:
       type: object
@@ -1258,8 +1257,8 @@ components:
               sdfOutputData:
                 sdfProtocolMap:
                   ble:
-                    serviceID: 12345678-1234-5678-1234-56789abcdef4
-                    characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                    serviceID: 00001809-0000-1000-8000-00805f9b34fb
+                    characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
     
     SdfAction:
       type: object
@@ -1273,8 +1272,8 @@ components:
             start:
               sdfProtocolMap:
                 ble:
-                  serviceID: 12345678-1234-5678-1234-56789abcdef4
-                  characteristicID: 12345678-1234-5678-1234-56789abcdef4
+                  serviceID: 00001809-0000-1000-8000-00805f9b34fb
+                  characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
 
 # responses
 
@@ -1332,7 +1331,7 @@ components:
         detail:
           type: string
           example: |-
-            Device ID 12345678-1234-5678-1234-56789abcdef4 does not
+            Device ID 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 does not
             exist or is not a device
           description: Human-readable error message  
 
@@ -1382,7 +1381,7 @@ components:
               deviceId:
                 type: string
                 format: uuid
-                example: 12345678-1234-5678-1234-56789abcdef4
+                example: 0dc729d7-f6c3-491d-9b9d-e7176d2be243
         - $ref: '#/components/schemas/FailureResponse'
 
     GroupEventStatusResponseArray:

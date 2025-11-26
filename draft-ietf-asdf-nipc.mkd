@@ -491,7 +491,7 @@ Devices or groups of devices are identified by a unique UUID, adhering to the {{
 
 | Attribute     | Type |          Example                     |
 |---------------+------+--------------------------------------|
-| id            | uuid | 12345678-1234-5678-1234-56789abcdef4 |
+| id            | uuid | 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 |
 {: #devicedef title="Definition of a device or group of devices"}
 
 ID is the unique UUID of the device. This ID is generated when onboarding
@@ -552,7 +552,7 @@ Example of a failure response:
 \id-id",
   "status": 400,
   "title": "Invalid Device ID",
-  "detail": "Device ID 12345678-1234-5678-1234-56789abcdef4 does not\
+  "detail": "Device ID 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 does not\
 \ exist or is not a device"
 }
 ~~~~~
@@ -1060,7 +1060,7 @@ If the data application registered for this event is an MQTT broker or
 client, the event is used to construct the MQTT topic for the event.
 The topic is constructed using the data application ID, the default 
 namespace for the event, and the event itself. For example, if the data 
-application ID is `"12345678-1234-5678-1234-56789abcdef4"` 
+application ID is `"0927ce7c-b258-4bfa-a345-bcc9f74385b4"` 
 and the event is 
 `"https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"`,
 the topic will be:
@@ -1070,7 +1070,7 @@ the topic will be:
 
 data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>
 
-data-app/12345678-1234-5678-1234-56789abcdef4/thermometer/sdfThing/\
+data-app/0927ce7c-b258-4bfa-a345-bcc9f74385b4/thermometer/sdfThing/\
 thermometer/sdfEvent/isPresent
 ~~~~~
 
@@ -1108,8 +1108,8 @@ Example of a successful response:
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 HTTP/1.1 201 Created
-Location: /devices/12345678-1234-5678-1234-56789abcdef4/events?insta\
-nceId=87654321-4321-8765-4321-fedcba9876543
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?insta\
+nceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
 
 The Location header contains the URI for the created event instance, which can be used to check status or disable the event.
@@ -1165,7 +1165,7 @@ Example of a response:
 
 [
   {
-    "instanceId": "87654321-4321-8765-4321-fedcba9876543",
+    "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
     "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
 sdfEvent/fallDetected"
   }
@@ -1208,8 +1208,8 @@ Example of a successful response:
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 HTTP/1.1 201 Created
-Location: /groups/12345678-1234-5678-1234-56789abcdef4/events?instan\
-ceId=87654321-4321-8765-4321-fedcba9876543
+Location: /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?instan\
+ceId=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
 ~~~~~
 
 The Location header contains the URI for the created event instance, which can be used to check status or disable the event.
@@ -1245,26 +1245,26 @@ on a device, the response will contain a problem type error response for that de
   {
     "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
 sdfEvent/fallDetected",
-    "deviceId": "12345678-1234-5678-1234-56789abcdef4"
+    "deviceId": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
   },
   {
     "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
 sdfEvent/fallDetected",
-    "deviceId": "12345678-1234-5678-1234-56789abcdef5"
+    "deviceId": "d62c7fb2-a216-4811-a388-053b17fdbedc"
   },
   {
     "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
 sdfEvent/fallDetected",
-    "deviceId": "12345678-1234-5678-1234-56789abcdef6"
+    "deviceId": "01b52a23-b98c-454c-ba9e-086a43bdfd79"
   },
   {
     "type": "https://www.iana.org/assignments/nipc-problem-types#eve\
 nt-not-enabled",
     "status": 400,
     "title": "Event Not Enabled",
-    "deviceId": "12345678-1234-5678-1234-56789abcdef7",
-    "detail": "Failed to disable the event for device 12345678-1234-\
-5678-1234-56789abcdef7"
+    "deviceId": "9171ec16-e3c1-4ccf-ad23-b92a1a3f069d",
+    "detail": "Failed to disable the event for device 9171ec16-e3c1-\
+    4ccf-ad23-b92a1a3f069d"
   }
 ]
 ~~~~~
@@ -1302,26 +1302,26 @@ Example of a response:
   {
     "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
 sdfEvent/fallDetected",
-    "deviceId": "12345678-1234-5678-1234-56789abcdef4"
+    "deviceId": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
   },
   {
     "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
 sdfEvent/fallDetected",
-    "deviceId": "12345678-1234-5678-1234-56789abcdef5"
+    "deviceId": "d62c7fb2-a216-4811-a388-053b17fdbedc"
   },
   {
     "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
 sdfEvent/fallDetected",
-    "deviceId": "12345678-1234-5678-1234-56789abcdef6"
+    "deviceId": "01b52a23-b98c-454c-ba9e-086a43bdfd79"
   },
   {
     "type": "https://www.iana.org/assignments/nipc-problem-types#eve\
 nt-not-enabled",
     "status": 400,
     "title": "Event Not Enabled",
-    "deviceId": "12345678-1234-5678-1234-56789abcdef7",
-    "detail": "Failed to disable the event for device 12345678-1234-\
-5678-1234-56789abcdef7"
+    "deviceId": "9171ec16-e3c1-4ccf-ad23-b92a1a3f069d",
+    "detail": "Failed to disable the event for device 9171ec16-e3c1-\
+4ccf-ad23-b92a1a3f069d"
   }
 ]
 ~~~~~
@@ -1372,8 +1372,8 @@ Example of a successful response:
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 HTTP/1.1 202 Accepted
-Location: /devices/12345678-1234-5678-1234-56789abcdef4/actions?inst\
-anceId=87654321-4321-8765-4321-fedcba9876543
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/actions?inst\
+anceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
 
 The Location header contains the URI for the action instance, which can be used to check the action status.
@@ -1466,7 +1466,7 @@ Example body of a BLE connection with specific discovery of properties:
     "ble": {
       "services": [
         {
-          "serviceID": "12345678-1234-5678-1234-56789abcdef4"
+          "serviceID": "00001809-0000-1000-8000-00805f9b34fb"
         }
       ],
       "cached": false,
@@ -1518,15 +1518,15 @@ Example of a response:
 
 ~~~~~
 {
-  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "sdfProtocolMap": {
     "ble": [
       {
-        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
         "characteristics": [
           {
             "characteristicID": 
-              "12345678-1234-5678-1234-56789abcdef4",
+              "00002a1c-0000-1000-8000-00805f9b34fb",
             "flags": [
               "read",
               "write"
@@ -1534,7 +1534,7 @@ Example of a response:
             "descriptors": [
               {
                 "descriptorID": 
-                  "12345678-1234-5678-1234-56789abcdef4"
+                  "00002902-0000-1000-8000-00805f9b34fb"
               }
             ]
           }
@@ -1583,7 +1583,7 @@ Example body of an update connection:
     "ble": {
       "services": [
         {
-          "serviceID": "12345678-1234-5678-1234-56789abcdef4"
+          "serviceID": "00001809-0000-1000-8000-00805f9b34fb"
         }
       ],
       "cached": false,
@@ -1619,15 +1619,15 @@ Example of a response:
 
 ~~~~~
 {
-  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "sdfProtocolMap": {
     "ble": [
       {
-        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
         "characteristics": [
           {
             "characteristicID": 
-              "12345678-1234-5678-1234-56789abcdef4",
+              "00002a1c-0000-1000-8000-00805f9b34fb",
             "flags": [
               "read",
               "write"
@@ -1635,7 +1635,7 @@ Example of a response:
             "descriptors": [
               {
                 "descriptorID": 
-                  "12345678-1234-5678-1234-56789abcdef4"
+                  "00002902-0000-1000-8000-00805f9b34fb"
               }
             ]
           }
@@ -1674,7 +1674,7 @@ Example of a response:
 
 ~~~~~
 {
-  "id": "12345678-1234-5678-1234-56789abcdef4"
+  "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
 }
 ~~~~~
 {:json #exdisconnresp title="Example disconnect response"}
@@ -1702,15 +1702,15 @@ Example of a response:
 
 ~~~~~
 {
-  "id": "12345678-1234-5678-1234-56789abcdef4",
+  "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "sdfProtocolMap": {
     "ble": [
       {
-        "serviceID": "12345678-1234-5678-1234-56789abcdef4",
+        "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
         "characteristics": [
           {
             "characteristicID": 
-              "12345678-1234-5678-1234-56789abcdef4",
+              "00002a1c-0000-1000-8000-00805f9b34fb",
             "flags": [
               "read",
               "write"
@@ -1718,7 +1718,7 @@ Example of a response:
             "descriptors": [
               {
                 "descriptorID": 
-                  "12345678-1234-5678-1234-56789abcdef4"
+                  "00002902-0000-1000-8000-00805f9b34fb"
               }
             ]
           }
@@ -1878,7 +1878,7 @@ depicted in CBOR diagnostic notation.
 [
   {
     "data": h'02011A020A0C16FF4C001007721F41B0392078',
-    "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
+    "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
     "timestamp": 1727484393,
     "bleAdvertisement": {
         "macAddress": "C1:5C:00:00:00:01",
@@ -1907,7 +1907,7 @@ depicted in CBOR diagnostic notation.
 [
   {
     "data": h'434630374346303739453036',
-    "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
+    "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
     "timestamp": 1727484393,
     "bleSubscription": {
         "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
@@ -1921,7 +1921,7 @@ depicted in CBOR diagnostic notation.
 ~~~
 [
   {
-    "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
+    "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
     "timestamp": 1727484393,
     "bleConnectionStatus": {
         "macAddress": "C1:5C:00:00:00:01",
@@ -1936,7 +1936,7 @@ depicted in CBOR diagnostic notation.
 [
   {
     "data": h'434630374346303739453036',
-    "deviceID": "75fde96d-886f-4ac0-a1d5-df79f76e7c9c",
+    "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
     "timestamp": 1727484393,
     "zigbeeSubscription": {
         "endpointID": 1,
@@ -1993,7 +1993,7 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    GET /devices/12345678-1234-5678-1234-56789abcdef4/properties?prop\
+    GET /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?prop\
     ertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2F\
     thermometer%2FsdfProperty%2Fdevice_name
     Accept: application/nipc+json
@@ -2016,7 +2016,7 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    PUT /devices/12345678-1234-5678-1234-56789abcdef4/properties
+    PUT /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties
     Content-Type: application/nipc+json
     Host: localhost
 
@@ -2079,8 +2079,8 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-5\
-    6789abcdef4
+    POST /registrations/data-apps?dataAppId=0927ce7c-b258-4bfa-a345-\
+    bcc9f74385b4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
     Host: localhost
@@ -2110,15 +2110,15 @@ The sequence of operations for this are:
     ~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /devices/12345678-1234-5678-1234-56789abcdef4/events?eventNa\
+    POST /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?eventNa\
     me=https%23%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
     meter%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
 
     HTTP/1.1 201 Created
-    Location: /devices/12345678-1234-5678-1234-56789abcdef4/events?in\
-    stanceId=87654321-4321-8765-4321-fedcba9876543
+    Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?in\
+    stanceId=02ee282c-8915-4b2e-bbd2-88966773134a
     ~~~~
 
   - Check the status of the event
@@ -2126,8 +2126,8 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    GET /devices/12345678-1234-5678-1234-56789abcdef4/events?instance\
-    Id=87654321-4321-8765-4321-fedcba9876543
+    GET /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?instance\
+    Id=02ee282c-8915-4b2e-bbd2-88966773134a
     Host: localhost
 
     HTTP/1.1 200 OK
@@ -2178,8 +2178,8 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /registrations/data-apps?dataAppId=23456789-1234-5678-1234-5\
-    6789abcdef4
+    POST /registrations/data-apps?dataAppId=0927ce7c-b258-4bfa-a345-\
+    bcc9f74385b4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
     Host: localhost
@@ -2209,15 +2209,15 @@ The sequence of operations for this are:
     ~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    POST /groups/87654321-4321-8765-4321-fedcba9876543/events?eventNa\
+    POST /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?eventNa\
     me=https%23%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
     meter%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
 
     HTTP/1.1 201 Created
-    Location: /groups/87654321-4321-8765-4321-fedcba9876543/events?in\
-    stanceId=11223344-5566-7788-99aa-bbccddeeff00
+    Location: /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?in\
+    stanceId=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
     ~~~~
 
   - Check the status of the event
@@ -2225,8 +2225,8 @@ The sequence of operations for this are:
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
-    GET /groups/87654321-4321-8765-4321-fedcba9876543/events?instance\
-    Id=11223344-5566-7788-99aa-bbccddeeff00
+    GET /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?instance\
+    Id=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
     Host: localhost
 
     HTTP/1.1 200 OK
@@ -2236,26 +2236,26 @@ The sequence of operations for this are:
       {
         "event": "https://example.com/heartrate#/sdfObject/healthsen\
     sor/sdfEvent/fallDetected",
-        "deviceId": "12345678-1234-5678-1234-56789abcdef4"
+        "deviceId": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
       },
       {
         "event": "https://example.com/heartrate#/sdfObject/healthsen\
     sor/sdfEvent/fallDetected",
-        "deviceId": "12345678-1234-5678-1234-56789abcdef5"
+        "deviceId": "d62c7fb2-a216-4811-a388-053b17fdbedc"
       },
       {
         "event": "https://example.com/heartrate#/sdfObject/healthsen\
     sor/sdfEvent/fallDetected",
-        "deviceId": "12345678-1234-5678-1234-56789abcdef6"
+        "deviceId": "01b52a23-b98c-454c-ba9e-086a43bdfd79"
       },
       {
         "type": "https://www.iana.org/assignments/nipc-problem-types\
     #event-not-enabled",
         "status": 400,
         "title": "Event Not Enabled",
-        "deviceId": "12345678-1234-5678-1234-56789abcdef7",
-        "detail": "Failed to disable the event for device 12345678-1\
-    234-5678-1234-56789abcdef7"
+        "deviceId": "9171ec16-e3c1-4ccf-ad23-b92a1a3f069d",
+        "detail": "Failed to disable the event for device 9171ec16-e\
+3c1-4ccf-ad23-b92a1a3f069d"
       }
     ]
     ~~~~~
