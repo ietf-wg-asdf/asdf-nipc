@@ -2385,8 +2385,7 @@ The following non-normative model is provide for convenience of
 the implementor.
 
 ~~~~~~
-<CODE BEGINS>
-file "openapi.yml"
+<CODE BEGINS> file "openapi.yml"
 {::include nipc-openapi/NIPC.yaml.folded}
 <CODE ENDS>
 ~~~~~~
@@ -2401,38 +2400,7 @@ describes the underlying technology used to communicate with the device
 along with any additional information needed to communicate with the 
 device.
 
-The JSON format of the protocol mapping is provided as a non-normative
-OpenAPI model for the convenience of the implementor. 
-
-## Protocol mapping OpenAPI model
-
-~~~~~~
-<CODE BEGINS>
-file "ProtocolMap.yaml"
-{::include nipc-openapi/protocolmaps/ProtocolMap.yaml.folded}
-<CODE ENDS>
-~~~~~~
-{: #protocolmapmodel}
-
-## Protocol map for BLE
-
-~~~~~
-<CODE BEGINS>
-file "ProtocolMap-BLE.yaml"
-{::include nipc-openapi/protocolmaps/ProtocolMap-BLE.yaml.folded}
-<CODE ENDS>
-~~~~~~
-{: #protocolmapble}
-
-## Protocol map for Zigbee
-
-~~~~~
-<CODE BEGINS>
-file "ProtocolMap-Zigbee.yaml"
-{::include nipc-openapi/protocolmaps/ProtocolMap-Zigbee.yaml.folded}
-<CODE ENDS>
-~~~~~~
-{: #protocolmapzigbee}
+The OpenAPI model for the SDF protocol mapping is provided in {{Appendix B of I-D.ietf-asdf-sdf-protocol-mapping}}.
 
 # NIPC API extensions {#NIPCextensions}
 
@@ -2442,8 +2410,7 @@ NIPC API.
 ## NIPC API write binary blob extension
 
 ~~~~~
-<CODE BEGINS>
-file "Extension-Blob.yaml"
+<CODE BEGINS> file "Extension-Blob.yaml"
 {::include nipc-openapi/extensions/Extension-Blob.yaml.folded}
 <CODE ENDS>
 ~~~~~
@@ -2451,8 +2418,7 @@ file "Extension-Blob.yaml"
 ## NIPC API bulk operations extension
 
 ~~~~~
-<CODE BEGINS>
-file "Extension-Bulk.yaml"
+<CODE BEGINS> file "Extension-Bulk.yaml"
 {::include nipc-openapi/extensions/Extension-Bulk.yaml.folded}
 <CODE ENDS>
 ~~~~~
@@ -2460,8 +2426,7 @@ file "Extension-Bulk.yaml"
 ## NIPC API write file extension
 
 ~~~~~
-<CODE BEGINS>
-file "Extension-File.yaml"
+<CODE BEGINS> file "Extension-File.yaml"
 {::include nipc-openapi/extensions/Extension-File.yaml.folded}
 <CODE ENDS>
 ~~~~~
@@ -2469,8 +2434,7 @@ file "Extension-File.yaml"
 ## NIPC API conditional read extension
 
 ~~~~~
-<CODE BEGINS>
-file "Extension-ReadConditional.yaml"
+<CODE BEGINS> file "Extension-ReadConditional.yaml"
 {::include nipc-openapi/extensions/Extension-ReadConditional.yaml.folded}
 <CODE ENDS>
 ~~~~~
@@ -2478,8 +2442,7 @@ file "Extension-ReadConditional.yaml"
 ## NIPC API conditional event extension
 
 ~~~~~
-<CODE BEGINS>
-file "Extension-EventConditional.yaml"
+<CODE BEGINS> file "Extension-EventConditional.yaml"
 {::include nipc-openapi/extensions/Extension-EventConditional.yaml.folded}
 <CODE ENDS>
 ~~~~~
@@ -2487,8 +2450,7 @@ file "Extension-EventConditional.yaml"
 ## NIPC API property extensions
 
 ~~~~~
-<CODE BEGINS>
-file "Extension-Property.yaml"
+<CODE BEGINS> file "Extension-Property.yaml"
 {::include nipc-openapi/extensions/Extension-Property.yaml.folded}
 <CODE ENDS>
 ~~~~~
@@ -2497,8 +2459,7 @@ file "Extension-Property.yaml"
 {: #thermometer-sdf}
 
 ~~~~~
-<CODE BEGINS>
-file "thermometer.sdf.json"
+<CODE BEGINS> file "thermometer.sdf.json"
 {::include nipc-sdf-example/thermometer.sdf.json}
 <CODE ENDS>
 ~~~~~

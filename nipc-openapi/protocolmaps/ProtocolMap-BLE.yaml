@@ -1,18 +1,14 @@
 openapi: 3.0.3
 info:
-  title: Non IP Device Control (NIPC) BLE Protocol Mapping
+  title: SDF Protocol Mapping for BLE
   description: |-
-    Non IP Device Control (NIPC) BLE Protocol Mapping. 
-  termsOfService: http://swagger.io/terms/
-  contact:
-    email: bbrinckm@cisco.com
-  license:
-    name: TBD
-    url: TBD
+    SDF Protocol Mapping for BLE devices.
   version: 0.10.0
 externalDocs:
-  description: NIPC IETF draft
-  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
+  description: SDF Protocol Mapping IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-sdf-protocol-mapping/
+
+paths: {}
 
 components:
   schemas:
