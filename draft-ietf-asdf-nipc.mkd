@@ -442,6 +442,10 @@ For example:
 | Action    | https://example.com/heartrate#/<br/>sdfObject/thermostat/sdfAction/resetThermostat |
 {: #nipcopsdef title="Example SDF names for NIPC operations"}
 
+### Parameters
+
+To minimize deployment risk arising from inconsistent URI path normalization and handling of percent‑encoded reserved characters (notably “/” encoded as “%2F”) across common HTTP servers and intermediaries (e.g., Jetty, Tomcat, Apache httpd, NGINX), NIPC uses query parameters (except the primary {id} path segment) rather than additional path segments for values that can legitimately contain reserved characters (such as SDF global names). Although RFC 3986 and RFC 9110 require that reserved characters not be normalized or decoded in ways that alter semantics, misinterpretation of these rules has led to security vulnerabilities (path confusion, cache poisoning, authorization bypass) and to conservative default configurations that reject encoded slashes. In multi‑tenant proxy deployments, relaxing these defaults often triggers security review friction. Representing such values in the query component avoids reliance on tolerant path normalization behavior, reduces ambiguity for intermediaries, and aligns with prevailing “safe” operational profiles; a malformed or unsupported parameter can be rejected with a 4xx status without exposing downstream services to traversal or normalization discrepancies.
+
 ### Responses 
 
 A NIPC Gateway will respond to a NIPC operation request synchronously, and
