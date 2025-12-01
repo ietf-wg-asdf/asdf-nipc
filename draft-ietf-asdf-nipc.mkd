@@ -78,7 +78,7 @@ Low‑power sensors, actuators, and other connected devices deployed for buildin
     +-------------+   network    +---------+    network   +--------+                 
 
 ~~~~~
-{: #gw title="Gateway for non-IP Devices"}
+{: #gw title="Gateway for non-Internet-Connected Devices"}
 
 There have been efforts to define Gateway functions for devices that support
 a particular protocol, such as a BLE GATT REST API for BLE Gateways
@@ -117,7 +117,7 @@ A NIPC gateway provides following functions:
  - Operate one or more channels to supported wired or wireless networks.
  - Optionally provide a bridge between devices on one or more device networks connected to the NIPC-Gateway. This may include translating between different protocols, if   multiple protocols are supported on the device network(s).
 
-The gateway’s role is to proxy traffic between IP and non-IP networks; it is not intended to be middleware that inspects, decodes, or transforms device payloads.
+The gateway’s role is to proxy traffic between application and device networks; it is not intended to be middleware that inspects, decodes, or transforms device payloads.
 
 ~~~~~ aasvg
 
@@ -185,7 +185,7 @@ capitals, as shown here.
  - CBOR: Concise Binary Object Representation; compact binary data format.
  - CDDL: Concise Data Definition Language; schema language for CBOR data.
  - JSON: JavaScript Object Notation; text encoding used for API payloads.
- - Access Point (AP): Network element with non-IP radio interface communicating with devices.
+ - Access Point (AP): Network element with a radio interface communicating with devices.
 
 # Architecture
 
@@ -528,7 +528,7 @@ Method: `GET /registrations/models`
 Description: Gets all SDF models registered with the gateway.
 
 Response:
-The SDF document in JSON format containing one or more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
+ - The SDF document in JSON format containing one or more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
 
 ### Get an SDF model
 
@@ -537,10 +537,10 @@ Method: `GET /registrations/models{?sdfName}`
 Description: Gets an SDF model registered with the gateway.
 
 Query Parameters: 
-sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
+ - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
 
 Response:
-The SDF model is returned in JSON format, similar to the example in {{thermometer-sdf}}.
+ - The SDF model is returned in JSON format, similar to the example in {{thermometer-sdf}}.
 
 ### Delete an SDF model
 
@@ -549,10 +549,10 @@ Method: `DELETE /registrations/models{?sdfName}`
 Description: Deletes an SDF model registered with the gateway.
 
 Query Parameters: 
-sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
+ - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
 
 Response:
-A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+ - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
 ~~~~ CDDL
 {::include cddl/sdfReference.cddl}
@@ -577,13 +577,13 @@ Method: `PUT /registrations/models{?sdfName}`
 Description: Updates an SDF model registered with the gateway.
 
 Query Parameters: 
-sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
+ - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
 
 Request Body:
-an SDF model in JSON format, similar to the example in {{thermometer-sdf}}.
+ - An SDF model in JSON format, similar to the example in {{thermometer-sdf}}.
 
 Response:
-A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+ - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
 ~~~~ CDDL
 {::include cddl/sdfReference.cddl}
@@ -618,7 +618,7 @@ Method: `POST /registrations/data-apps{?dataAppId}`
 Description: Registers a data application with the gateway.
 
 Query Parameters: 
-dataAppId: the ID of the data application
+ - dataAppId: the ID of the data application
 
 Request Body:
  - events: a list of events that the data application is authorized for.
@@ -684,7 +684,7 @@ r/sdfEvent/fallDetected"
 {:json #exregmqttbrokerrsp title="Example with mqttBroker"}
 
 Response:
-If successful, the response will be identical to the request body. 
+ - If successful, the response will be identical to the request body. 
 
 ### Update a data application
 
@@ -693,12 +693,13 @@ Method: `PUT /registrations/data-apps{?dataAppId}`
 Description: Updates a data application registration. 
 
 Query Parameters: 
-dataAppId: the ID of the data application
+ - dataAppId: the ID of the data application
 
-Request Body: The request body is identical to the request body for the register data application API {{register-data-app}}.
+Request Body: 
+ - The request body is identical to the request body for the register data application API {{register-data-app}}.
 
 Response: 
-If successful, the response will be identical to the request body.
+ - If successful, the response will be identical to the request body.
 
 ### Get a data application
 
@@ -707,10 +708,10 @@ Method: `GET /registrations/data-apps{?dataAppId}`
 Description: Gets a data application object registered with the gateway.
 
 Query Parameters: 
-dataAppId: the ID of the data application
+ - dataAppId: the ID of the data application
 
 Response:
-The response will be identical to the request body for the register data application API {{register-data-app}}.
+  The response will be identical to the request body for the register data application API {{register-data-app}}.
 
 ### Delete a data application
 
@@ -719,10 +720,10 @@ Method: `DELETE /registrations/data-apps{?dataAppId}`
 Description: Deletes a data application registered with the gateway.
 
 Query Parameters: 
-dataAppId: the ID of the data application
+ - dataAppId: the ID of the data application
 
 Response:
-If successful, the response will be identical to the request body for the register data application API {{register-data-app}}.
+ - If successful, the response will be identical to the request body for the register data application API {{register-data-app}}.
 
 # NIPC Operation APIs
 
@@ -751,7 +752,7 @@ Method: `PUT /devices/{id}/properties{?propertyName}`
 Description: Write values to one or more properties on a device
 
 Parameters: 
-id: the ID of the device
+ - id: the ID of the device
 
 Query Parameters:
  - propertyName: Identifies a single property to update. If present, the request body MAY use any media type appropriate to the property payload. 
@@ -893,13 +894,13 @@ Method: `POST /devices/{id}/events{?eventName}`
 Description: Enables an event on a device
 
 Parameters: 
-id: the ID of the device
+ - id: the ID of the device
 
 Query Parameters:
-eventName: the event to enable. The eventName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
+ - eventName: the event to enable. The eventName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
 
 Response:
-Returns HTTP status code 201 Created with a Location header pointing to the created event instance.
+ - Returns HTTP status code 201 Created with a Location header pointing to the created event instance.
 
 Example of a successful response:
 
@@ -920,13 +921,13 @@ Method: `DELETE /devices/{id}/events{?instanceId}`
 Description: Disables an event on a device
 
 Parameters:
-id: the ID of the device or group of devices
+ - id: the ID of the device or group of devices
 
 Query Parameters:
-instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
+ - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
 
 Response:
-Returns HTTP status code 204 No Content on successful disable.
+ - Returns HTTP status code 204 No Content on successful disable.
 
 ~~~~~
 HTTP/1.1 204 No Content
@@ -939,10 +940,10 @@ Method: `GET /devices/{id}/events{?instanceId*}`
 Description: Get the status of one or more events on a specific device
 
 Parameters:
-id: the ID of the device or group of devices
+ - id: the ID of the device or group of devices
 
 Query Parameters:
-instanceId: a comma separated list of event instance IDs to filter by (optional)
+ - instanceId: a comma separated list of event instance IDs to filter by (optional)
 
 Response: 
 The response must be an array of events, each containing a instanceID and a event.
@@ -976,14 +977,14 @@ Method: `POST /groups/{id}/events`
 Description: Enables an event on a group of devices
 
 Parameters: 
-id: the ID of the group of devices
+ - id: the ID of the group of devices
 
 Query Parameters:
-eventName: the event to enable. The eventName is a URL encoded string that is the absolute URI that is the global
+ - eventName: the event to enable. The eventName is a URL encoded string that is the absolute URI that is the global
 name of an `sdfEvent`. 
 
 Response:
-The respinse must return HTTP status code 201 Created with a Location header pointing to the created event instance. The Location header must contain the URI for the created event instance, which can be used to check status or disable the event.
+ - The respinse must return HTTP status code 201 Created with a Location header pointing to the created event instance. The Location header must contain the URI for the created event instance, which can be used to check status or disable the event.
 
 Example of a successful response:
 
@@ -1002,10 +1003,10 @@ Method: `DELETE /groups/{id}/events{?instanceId}`
 Description: Disables an event on a group of devices
 
 Parameters:
-id: the ID of the group of devices
+ - id: the ID of the group of devices
 
 Query Parameters:
-instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
+ - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
 
 Response:
 MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully disabled, the entry MUST include deviceId and event (SDF global name). For each device where disabling failed, the entry MUST be a Problem Details error object for that device.
@@ -1055,10 +1056,10 @@ Method: `GET /groups/{id}/events{?instanceId}`
 Description: Get the status of one or more events for a group of devices
 
 Parameters:
-id: the ID of the group of devices
+ - id: the ID of the group of devices
 
 Query Parameters:
-instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled).
+ - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled).
 
 Response: 
 MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully enabled, the entry MUST include deviceId and event (SDF global name). For each device where enabling failed, the entry MUST be a Problem Details error object for that device.
@@ -1113,21 +1114,16 @@ Method: `POST /devices/{id}/actions{?actionName}`
 Description: Perform an action on a specific device
 
 Parameters:
-
   - id: the ID of the device
 
 Query Parameters:
-
   - actionName: the action to perform
 
 Request Body:
-
 The request body is optional and may contain a value. The media type of the value can be defined by the underlying protocol, for example it could be octet-stream for binary data.
 
 Response:
-
-Actions are performed asynchronously. A successful request returns HTTP status code 202 Accepted 
-with a Location header pointing to the action instance for status checking.
+Actions are performed asynchronously. A successful request returns HTTP status code 202 Accepted with a Location header pointing to the action instance for status checking. The Location header contains the URI for the action instance, which can be used to check the action status.
 
 Example of a successful response:
 
@@ -1139,8 +1135,6 @@ Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/actions?inst\
 anceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
 
-The Location header contains the URI for the action instance, which can be used to check the action status.
-
 ### Check action status
 
 Method: `GET /devices/{id}/actions{?instanceId}`
@@ -1148,14 +1142,18 @@ Method: `GET /devices/{id}/actions{?instanceId}`
 Description: Check the status of an action on a specific device
 
 Parameters:
-
   - id: the ID of the device
 
 Query Parameters:
-
   - instanceId: the instance ID of the action (obtained from the Location header)
 
 Response:
+MUST return 200 OK with an action status, which may be "in progress" or "completed".
+
+cddl
+{::include cddl/actionResponse.cddl}
+~~~~
+{:cddl}
 
 Example of a response:
 
@@ -1165,11 +1163,6 @@ Example of a response:
 }
 ~~~~~
 {:json #exactionstatusresp title="Example action status response"}
-
-where "status" indicates the current state of the action (e.g., "IN_PROGRESS" or "COMPLETED").
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
 
 ## NIPC explicit connections management APIs {#nipc-connection-management-apis}
 
@@ -1506,7 +1499,7 @@ definition of failed response.
 NIPC is extensible in two ways:
  
  - Protocol mapping: New protocol mapping can extend NIPC with support
-   for new non-IP protocols
+   for new protocols
  - API extensions: API extensions leverage compound statements of basic NIPC
    action APIs to simplify common operations for applications.
  
@@ -1515,7 +1508,7 @@ NIPC is extensible in two ways:
 NIPC supports mapping protocol specific properties to NIPC properties
 as described in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
 BLE and Zigbee are used as examples, but protocol
-mapping is extensible to other protocols, so now non-IP protocols can be 
+mapping is extensible to other protocols, so now new protocols can be 
 supported by NIPC without a schema change.
 
 The protocol objects need to be extended with the new
