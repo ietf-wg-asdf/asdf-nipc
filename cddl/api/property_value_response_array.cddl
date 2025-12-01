@@ -6,11 +6,3 @@ PropertyValueResponseArrayItem = ( SuccessResponse // FailureResponse )
 SuccessResponse = {
   ? status: uint
 }
-
-; FailureResponse aligns with Problem Details subset
-FailureResponse = {
-  ? type: text,    ; URI of problem type
-  ? status: uint,
-  ? title: text,
-  ? detail: text
-}

@@ -7,11 +7,3 @@ EventInstanceSuccess = {
   event: text,        ; SDF global name of the event (absolute URI with fragment)
   instanceId: text    ; UUID (as text)
 }
-
-; FailureResponse (Problem Details subset; align with your failure_response.cddl if present)
-FailureResponse = {
-  ? type: text,       ; URI of problem type
-  ? status: uint,
-  ? title: text,
-  ? detail: text
-}

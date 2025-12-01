@@ -1,0 +1,165 @@
+; This file is auto-generated from individual NIPC API CDDL files
+
+; ============================================
+; From: cddl/api/action_response.cddl
+; ============================================
+ActionResponse = {
+  status: ActionStatus
+}
+
+ActionStatus = (
+  "IN_PROGRESS" /
+  "COMPLETED"
+)
+; ============================================
+; From: cddl/api/data_app.cddl
+; ============================================
+DataApp = {
+  events: [* EventRef],
+  ( DataAppMqttClient //
+    DataAppMqttBroker //
+    DataAppWebhook //
+    DataAppWebsocket )
+}
+
+EventRef = {
+  event: text    ; SDF global name (absolute URI with fragment)
+}
+
+DataAppMqttClient = {
+  mqttClient: bool
+}
+
+DataAppMqttBroker = {
+  mqttBroker: {
+    URI: text,
+    username: text,
+    password: text,
+    ? brokerCACert: text,   ; PEM-encoded CA certificate
+    ? customTopic: text     ; optional custom MQTT topic
+  }
+}
+
+DataAppWebhook = {
+  webhook: {
+    URI: text,
+    ? headers: { * text => text },  ; key/value headers
+    ? serverCACert: text
+  }
+}
+
+DataAppWebsocket = {
+  websocket: {
+    URI: text,
+    ? headers: { * text => text },  ; key/value headers
+    ? serverCACert: text
+  }
+}
+; ============================================
+; From: cddl/api/event_status_array.cddl
+; ============================================
+EventStatusResponseArray = [* EventStatusResponseArrayItem]
+
+EventStatusResponseArrayItem = ( EventInstanceSuccess // FailureResponse )
+
+; Success item = { event, instanceId }
+EventInstanceSuccess = {
+  event: text,        ; SDF global name of the event (absolute URI with fragment)
+  instanceId: text    ; UUID (as text)
+}
+
+; ============================================
+; From: cddl/api/failure_response.cddl
+; ============================================
+FailureResponse = {
+  ? type: FailureTypeURI,
+  ? status: uint,
+  ? title: text,
+  ? detail: text
+}
+
+; Enumerated problem type URIs registered for NIPC
+FailureTypeURI = (
+  "https://www.iana.org/assignments/nipc-problem-types#invalid-id" /
+  "https://www.iana.org/assignments/nipc-problem-types#invalid-sdf-url" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed" /
+  "https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered" /
+  "https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use" /
+  "https://www.iana.org/assignments/nipc-problem-types#property-not-readable" /
+  "https://www.iana.org/assignments/nipc-problem-types#property-read-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#property-not-writable" /
+  "https://www.iana.org/assignments/nipc-problem-types#property-write-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#event-already-enabled" /
+  "https://www.iana.org/assignments/nipc-problem-types#event-not-enabled" /
+  "https://www.iana.org/assignments/nipc-problem-types#event-not-registered" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-already-connected" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-no-connection" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-timeout" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-bonding-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-service-discovery-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-invalid-service-or-characteristic" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-connection-timeout" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-invalid-endpoint-or-cluster" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-broadcast-invalid-data" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-firmware-rollback" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-firmware-update-failed" /
+  "about:blank"
+)
+; ============================================
+; From: cddl/api/group_event_status_response_array.cddl
+; ============================================
+GroupEventStatusResponseArray = [* GroupEventStatusResponse]
+
+GroupEventSuccessResponse = { event: text, deviceId: text }
+
+; Each item is either an event+deviceId success or a FailureResponse
+GroupEventStatusResponse = (GroupEventSuccessResponse // FailureResponse)
+
+; FailureResponse (Problem Details subset; align with your existing definition if present)
+GroupFailureResponse = {
+  FailureResponse,
+  ? deviceId: text
+}
+; ============================================
+; From: cddl/api/property_value_array.cddl
+; ============================================
+PropertyValueArray = [* PropertyValue]
+
+; Minimal PropertyValue shape (matches allOf of Property + Value)
+PropertyValue = {
+  property: text,        ; SDF global name of the property
+  value: b64text         ; base64-encoded bytes (RFC 4648 Section 5)
+}
+
+; Helper type for base64-with-padding encoded text
+b64text = text
+; ============================================
+; From: cddl/api/property_value_read_response_array.cddl
+; ============================================
+PropertyValueReadResponseArray = [* PropertyValueReadResponseArrayItem]
+
+PropertyValueReadResponseArrayItem = ( PropertyValue // FailureResponse )
+
+; ============================================
+; From: cddl/api/property_value_response_array.cddl
+; ============================================
+PropertyValueResponseArray = [* PropertyValueResponseArrayItem]
+
+PropertyValueResponseArrayItem = ( SuccessResponse // FailureResponse )
+
+; Minimal success shape (may be extended)
+SuccessResponse = {
+  ? status: uint
+}
+
+; ============================================
+; From: cddl/api/sdf_reference.cddl
+; ============================================
+SdfGlobalName = text    ; absolute URI with fragment referencing an sdfThing or sdfObject
+
+SdfReference = {
+  sdfName: SdfGlobalName
+}
+
+SdfReferenceArray = [* SdfReference]
