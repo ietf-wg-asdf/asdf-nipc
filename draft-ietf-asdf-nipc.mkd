@@ -865,28 +865,13 @@ Example of a response:
 
 ## NIPC Event APIs {#nipc-event-apis}
 
-These APIs allow applications to enable or disable event reporting on devices.
-These operations may require a connection to the device to be established. This
-connection can be established as part of the same API call implicitly. If a
-connection is already active for this device, the existing connection will be
-leveraged without modifying it.
+Event APIs enable or disable reporting of device events. For certain protocols, a connection may be required. If the underlying protocol requires a connection, the gateway establishes it implicitly for the operation. If an explicitly created connection is already active, it is reused without modification.
 
-The event is the global name of an `sdfEvent`. 
+Events are referenced by the SDF global name of an sdfEvent. The {id} path segment identifies a device or a group of devices. A group event MAY be enabled only if the underlying protocol supports group activation (e.g., BLE advertisement or connection status events).
 
-The ID in the path is the ID of the device or group of devices.
-An event can be enabled on a group of devices if it is supported by the
-underlying protocol. For example, if the underlying protocol is BLE, 
-the event can be enabled on a group of devices if the event is an 
-advertisement event or connection status event.
-
-If the data application registered for this event is an MQTT broker or 
-client, the event is used to construct the MQTT topic for the event.
-The topic is constructed using the data application ID, the default 
-namespace for the event, and the event itself. For example, if the data 
-application ID is `"0927ce7c-b258-4bfa-a345-bcc9f74385b4"` 
-and the event is 
-`"https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"`,
-the topic will be:
+If the data application registered for this event is an MQTT broker or client, the event SDF global name may be used to construct the MQTT topic for the event. The topic is constructed using the data application ID, the default namespace for the event, and the event itself. 
+For example, if the data application ID is "0927ce7c-b258-4bfa-a345-bcc9f74385b4"
+and the event is "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent", the topic will be:
 
 ~~~~~
 =============== NOTE: '\' line wrapping per RFC 8792 ================
@@ -897,32 +882,23 @@ data-app/0927ce7c-b258-4bfa-a345-bcc9f74385b4/thermometer/sdfThing/\
 thermometer/sdfEvent/isPresent
 ~~~~~
 
-A data application can subscribe to this topic using the topic or it 
-can use MQTT wildcards to subscribe to `data-app/+/temperature/#` to 
-receive all events for the `temperature` namespace.
+A data application may subscribe to this topic using the topic or it  may use MQTT wildcards to subscribe to `data-app/+/temperature/#` to receive all events for the `temperature` namespace.
 
-If a custom topic is provided for an MQTT broker, the custom topic is
-used as the MQTT topic instead.
+If a customTopic was supplied in the data‑app registration (mqttBroker case), that topic MUST be used instead of the constructed default.
 
 ### Enable event reporting
 
 Method: `POST /devices/{id}/events{?eventName}`
 
-Description: Enables an event on a specific device
+Description: Enables an event on a device
 
 Parameters: 
-
- - id: the ID of the device
+id: the ID of the device
 
 Query Parameters:
-
- - eventName: the event to enable
-
-The eventName is a URL encoded string that is the absolute URI that is the global
-name of an `sdfEvent`. 
+eventName: the event to enable. The eventName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
 
 Response:
-
 Returns HTTP status code 201 Created with a Location header pointing to the created event instance.
 
 Example of a successful response:
@@ -935,35 +911,26 @@ Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?insta\
 nceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
 
-The Location header contains the URI for the created event instance, which can be used to check status or disable the event.
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
+The Location header must contain the URI for the created event instance, which may be used to check status or disable the event.
 
 ### Disable event reporting
 
 Method: `DELETE /devices/{id}/events{?instanceId}`
 
-Description: Disables an event on a specific device
+Description: Disables an event on a device
 
 Parameters:
-
-  - id: the ID of the device or group of devices
+id: the ID of the device or group of devices
 
 Query Parameters:
-
-  - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
+instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
 
 Response:
-
 Returns HTTP status code 204 No Content on successful disable.
 
 ~~~~~
 HTTP/1.1 204 No Content
 ~~~~~
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
 
 ### Get status of one or more events
 
@@ -972,14 +939,20 @@ Method: `GET /devices/{id}/events{?instanceId*}`
 Description: Get the status of one or more events on a specific device
 
 Parameters:
-
- - id: the ID of the device or group of devices
+id: the ID of the device or group of devices
 
 Query Parameters:
-
-  - instanceId: a comma separated list of event instance IDs to filter by (optional)
+instanceId: a comma separated list of event instance IDs to filter by (optional)
 
 Response: 
+The response must be an array of events, each containing a instanceID and a event.
+ - instanceId: must be the unique instance ID for each enabled event.
+ - event: must be the event URI for each enabled event.
+
+~~~~ CDDL
+{::include cddl/eventStatusArray.cddl}
+~~~~
+{:cddl}
 
 Example of a response:
 
@@ -996,14 +969,6 @@ sdfEvent/fallDetected"
 ~~~~~
 {:json #exgetmresp title="Example get multiple events status response"}
 
-where-
-
- - "instanceId" is the unique instance ID for each enabled event
- - "event" is the event URI for each enabled event
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
 ### Enable event reporting on a group of devices
 
 Method: `POST /groups/{id}/events`
@@ -1011,19 +976,14 @@ Method: `POST /groups/{id}/events`
 Description: Enables an event on a group of devices
 
 Parameters: 
-
- - id: the ID of the group of devices
+id: the ID of the group of devices
 
 Query Parameters:
-
- - eventName: the event to enable
-
-The eventName is a URL encoded string that is the absolute URI that is the global
+eventName: the event to enable. The eventName is a URL encoded string that is the absolute URI that is the global
 name of an `sdfEvent`. 
 
 Response:
-
-Returns HTTP status code 201 Created with a Location header pointing to the created event instance.
+The respinse must return HTTP status code 201 Created with a Location header pointing to the created event instance. The Location header must contain the URI for the created event instance, which can be used to check status or disable the event.
 
 Example of a successful response:
 
@@ -1035,11 +995,6 @@ Location: /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?instan\
 ceId=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
 ~~~~~
 
-The Location header contains the URI for the created event instance, which can be used to check status or disable the event.
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
 ### Disable event reporting on a group of devices
 
 Method: `DELETE /groups/{id}/events{?instanceId}`
@@ -1047,19 +1002,20 @@ Method: `DELETE /groups/{id}/events{?instanceId}`
 Description: Disables an event on a group of devices
 
 Parameters:
-
-  - id: the ID of the group of devices
+id: the ID of the group of devices
 
 Query Parameters:
-
-  - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
+instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
 
 Response:
+MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully disabled, the entry MUST include deviceId and event (SDF global name). For each device where disabling failed, the entry MUST be a Problem Details error object for that device.
 
-Returns HTTP status code 200 with a list of the event status for the group of devices.
-If the event was successfully disabled on a device, the response will contain
-the device ID and SDF event name for that device. If the event could not be disabled
-on a device, the response will contain a problem type error response for that device.
+cddl
+{::include cddl/igroupEventStatusResponseArray.cddl}
+~~~~
+{:cddl}
+
+Example of a response:
 
 ~~~~~
 =============== NOTE: '\' line wrapping per RFC 8792 ================
@@ -1092,29 +1048,25 @@ nt-not-enabled",
 ]
 ~~~~~
 
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
 ### Get event status on a group of devices
 
 Method: `GET /groups/{id}/events{?instanceId}`
 
-Description: Get the status of one or more events on a group of devices
+Description: Get the status of one or more events for a group of devices
 
 Parameters:
-
- - id: the ID of the group of devices
+id: the ID of the group of devices
 
 Query Parameters:
-
-  - instanceId: The instance ID of the event to get the status for
+instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled).
 
 Response: 
+MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully enabled, the entry MUST include deviceId and event (SDF global name). For each device where enabling failed, the entry MUST be a Problem Details error object for that device.
 
-Returns HTTP status code 200 with a list of the event status for the group of devices.
-If the event was successfully enabled on a device, the response will contain
-the device ID and SDF event name for that device. If the event could not be enabled
-on a device, the response will contain a problem type error response for that device.
+cddl
+{::include cddl/groupEventStatusResponseArray.cddl}
+~~~~
+{:cddl} 
 
 Example of a response:
 
@@ -1150,21 +1102,9 @@ nt-not-enabled",
 ~~~~~
 {:json #exgetmgevntsresp title="Example get multiple group events status response"}
 
-where-
-
- - "instanceId" is the unique instance ID for each enabled event
- - "event" is the event URI for each enabled event
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
 ## NIPC Action APIs
 
-These APIs allow applications to perform actions on devices. These operations
-may require a connection to the device to be established. This connection can
-be established as part of the same API call implicitly. If a connection is
-already active for this device, the existing connection will be leveraged
-without modifying it.
+NIPC Action APIs invoke device actions. If the underlying protocol requires a connection, the gateway establishes it implicitly for the operation. If an explicitly established connection is already active, the operation MUST reuse it without modification.
 
 ### Perform an action
 

@@ -1,0 +1,14 @@
+GroupEventStatusResponseArray = [* GroupEventStatusResponse]
+
+; Each item is either an event+deviceId success or a FailureResponse
+GroupEventStatusResponse = (
+  { event: text, deviceId: text } // FailureResponse
+)
+
+; FailureResponse (Problem Details subset; align with your existing definition if present)
+FailureResponse = {
+  ? type: text,    ; URI of problem type
+  ? status: uint,
+  ? title: text,
+  ? detail: text
+}
