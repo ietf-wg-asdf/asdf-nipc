@@ -1,0 +1,41 @@
+DataApp = {
+  ? events: [* EventRef],
+  ( DataAppMqttClient //
+    DataAppMqttBroker //
+    DataAppWebhook //
+    DataAppWebsocket )
+}
+
+EventRef = {
+  event: text    ; SDF global name (absolute URI with fragment)
+}
+
+DataAppMqttClient = {
+  mqttClient: bool
+}
+
+DataAppMqttBroker = {
+  mqttBroker: {
+    URI: text,
+    username: text,
+    password: text,
+    ? brokerCACert: text,   ; PEM-encoded CA certificate
+    ? customTopic: text     ; optional custom MQTT topic
+  }
+}
+
+DataAppWebhook = {
+  webhook: {
+    URI: text,
+    ? headers: { * text => text },  ; key/value headers
+    ? serverCACert: text
+  }
+}
+
+DataAppWebsocket = {
+  websocket: {
+    URI: text,
+    ? headers: { * text => text },  ; key/value headers
+    ? serverCACert: text
+  }
+}

@@ -250,7 +250,7 @@ Applications that are authorized to perform NIPC operations on devices can defin
 
 ###  Overview {#nipc-ops-overview}
 
-NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload. 
+NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{section 4.7 of !draft-ietf-asdf-sdf}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload. 
 
 Failures use Problem Details {{!RFC9457}} with application/problem+json.
 
@@ -480,36 +480,30 @@ Example of a failure response:
 ~~~~~
 {: #failure title="Example failure response"}
 
-where-
-
-  - "type" is a URI identifying the specific error type
-  - "status" is the HTTP status code
-  - "title" is a brief, human-readable summary of the error type
-  - "detail" is a human-readable explanation specific to this occurrence
-
 # NIPC Registrations
-
-NIPC allows an application to register an SDF model for a class of devices,
-as well as a data application that will receive streaming data from the 
-gateway.
 
 ## SDF model registrations APIs
 
-These APIs allow applications to register an SDF model for a class of devices.
-These APIs use the `application/sdf+json` media type, as described in 
-{{Section 7.1 of I-D.ietf-asdf-sdf}}.
+SDF model registration APIs allow applications to register an SDF model for a class of devices.
+These APIs use the `application/sdf+json` media type, as described in {{Section 7.1 of I-D.ietf-asdf-sdf}}.
 
 ### Register an SDF model
 
 Method: `POST /registrations/models`
 
-Description: Registers one or more SDF models for a class of devices
+Description: Registers one or more SDF models for a class of devices.
 
 Request Body:
-
- - an SDF document in JSON format containing one or more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
+ - The SDF document in JSON format containing one or more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
+ - The SDF document MUST contain protocol mappings, as described in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
 
 Response:
+ - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+
+~~~~ CDDL
+{::include cddl/sdfReference.cddl}
+~~~~
+{:cddl}
 
 Example of a response:
 
@@ -522,21 +516,43 @@ Example of a response:
 ~~~~~
 {:json #exregresp title="Example of a response to an SDF model registration"}
 
-where-
-
- - "sdfName" is the name of the top-level sdfThing or sdfObject 
-    in the SDF model
-
-The `sdfName` in the response is wrapped in an object to allow for future
-extensions to the response. 
-
 ### Get all SDF models
 
 Method: `GET /registrations/models`
 
-Description: Gets all SDF models registered with the gateway
+Description: Gets all SDF models registered with the gateway.
 
 Response:
+ - The SDF document in JSON format containing one or more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
+
+### Get an SDF model
+
+Method: `GET /registrations/models{?sdfName}`
+
+Description: Gets an SDF model registered with the gateway.
+
+Query Parameters: 
+ - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
+
+Response:
+ - The SDF model is returned in JSON format, similar to the example in {{thermometer-sdf}}.
+
+### Delete an SDF model
+
+Method: `DELETE /registrations/models{?sdfName}`
+
+Description: Deletes an SDF model registered with the gateway.
+
+Query Parameters: 
+ - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
+
+Response:
+ - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+
+~~~~ CDDL
+{::include cddl/sdfReference.cddl}
+~~~~
+{:cddl}
 
 Example of a response:
 
@@ -544,153 +560,84 @@ Example of a response:
 [
  {
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
- },
- {
-  "sdfName": "https://example.com/thermometer#/sdfObject/thermometer"
  }
 ]
 ~~~~~
-{:json #exgetallresp title="Example get all SDF models response"}
-
-where-
-
- - "sdfName" is the name of the top-level sdfThing or sdfObject 
-    in the SDF model
-
-### Get an SDF model
-
-Method: `GET /registrations/models{?sdfName}`
-
-Description: Gets an SDF model registered with the gateway
-
-Query Parameters: 
-
- - sdfName: the name of the top-level sdfThing or sdfObject 
-    in the SDF model.
-
-Response:
-
-The SDF model is returned in JSON format, similar to the example in 
-{{thermometer-sdf}}.
-
-### Delete an SDF model
-
-Method: `DELETE /registrations/models{?sdfName}`
-
-Description: Deletes an SDF model registered with the gateway
-
-Query Parameters: 
-
- - sdfName: the name of the top-level sdfThing or sdfObject 
-    in the SDF model.
-
-Response:
-
-Example of a response:
-
-~~~~~
-{
-  "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
-}
-~~~~~
-{:json #exdelresp title="Example delete SDF model response"}
-
-where-
-
- - "sdfName" is the name of the top-level sdfThing or sdfObject 
-    in the SDF model
+{:json #exregresp title="Example of a response to an SDF model registration"}
 
 ### Update an SDF model
 
 Method: `PUT /registrations/models{?sdfName}`
 
-Description: Updates an SDF model registered with the gateway
+Description: Updates an SDF model registered with the gateway.
 
 Query Parameters: 
-
- - sdfName: the name of the top-level sdfThing or sdfObject 
-    in the SDF model.
+ - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
 
 Request Body:
-
  - an SDF model in JSON format, similar to the example in {{thermometer-sdf}}.
 
 Response:
+ - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+
+~~~~ CDDL
+{::include cddl/sdfReference.cddl}
+~~~~
+{:cddl}
 
 Example of a response:
 
 ~~~~~
-{
+[
+ {
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
-}
+ }
+]
 ~~~~~
-{:json #exupresp title="Example update SDF model response"}
-
-where-
-
- - "sdfName" is the name of the top-level sdfThing or sdfObject 
-    in the SDF model
+{:json #exregresp title="Example of a response to an SDF model registration"}
 
 ## Data application registrations APIs
 
-These APIs allow applications to register a data application that will receive
-streaming data from the gateway. These APIs operate on a data app ID.
-This ID corresponds to the endpoint app ID of the telemetry endpoint app 
-that is registered with the SCIM server. The endpoint app is defined in 
-{{Section 6 of I-D.ietf-scim-device-model}}.
+Data-app registration APIs allow applications to register a data application that will receive streaming data from the gateway. These APIs operate on a data app ID. This ID corresponds to the endpoint app ID of the telemetry endpoint app that is registered with the SCIM server as an authorized endpoint that can recieve that for a device. The endpoint app is defined in {{Section 6 of I-D.ietf-scim-device-model}}.
 
-Apart from the endpoint app ID, the API also registers the protocol the data-app supports. These can be one of the following:
-
-- mqttClient: The data-app is an MQTT client, which means that the gateway is an MQTT broker.
-- mqttBroker: The data-app is an MQTT broker. The registration API has to include the MQTT broker configuration data, such as the URI, credentials and MQTT topic to publish to.
+Apart from the endpoint app ID, the API also configures the protocol the data-app supports. These should be one of the following:
+- mqttClient: The data-app is an MQTT client, which means that the NIPC gateway must act as an MQTT broker.
+- mqttBroker: The data-app is an MQTT broker, which means that the NIPC gateway must act as an MQTT client. The MQTT broker configuration data, such as the URI, credentials and MQTT topic must also be provided in the registration API.
 - webhook: The data-app supports a webhook the gateway can publish to. The registration API has to include the webhook URI & credentials.
 - websocket: The data-app supports a websocket interface. The registration API has to include the websocket URI & credentials.
 
-### Register a data application
+### Register a data application {#register-data-app}
 
 Method: `POST /registrations/data-apps{?dataAppId}`
 
-Description: Registers a data application with the gateway
+Description: Registers a data application with the gateway.
 
 Query Parameters: 
-
  - dataAppId: the ID of the data application
 
 Request Body:
-
- - events: a list of events that the data application wants to receive
-   streaming data for.
-
-The request body also contains one of the following: 
-
- - mqttClient: a boolean that denotes that the data application
-   is an MQTT client that will receive streaming data over MQTT
- - mqttBroker: an object that contains the MQTT broker information
-   where the broker will publish the streaming data. 
+ - events: a list of events that the data application is authorized for.
+ - mqttClient: a boolean that denotes that the data application is an MQTT client.
+ - mqttBroker: The data app is an MQTT broker. This object contains the MQTT broker information:
     - URI: the URI of the MQTT broker.
-    - username: the username to authenticate with the MQTT broker
-    - password: the password to authenticate with the MQTT broker
-    - brokerCACert: the base64-encoded CA certificate of the MQTT broker (optional)
-    - customTopic: By default, the topic will be composed of `data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>`, as described in {{nipc-event-apis}}.
-      You can configure a custom topic to publish the streaming data to (optional)
- - webhook: an object that contains a webhook URL along with any 
-    credentials that are required to authenticate the webhook. 
-    The webhook URL is the endpoint where the streaming data will be sent.
-    - URI: the webhook URL. The URL MUST include the scheme used by the webhook server (e.g., "https://"). It is up to the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type
-      "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
-    - headers: An object that contains the headers to be sent with the webhook
-      request. The headers can contain any authentication information
-      required by the webhook server. Each header is represented as a key-value pair in the object.
+    - username: the username to authenticate with the MQTT broker.
+    - password: the password to authenticate with the MQTT broker.
+    - brokerCACert: the base64-encoded CA certificate of the MQTT broker (optional).
+    - customTopic: By default, the topic will be composed of `data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>`, as described in {{nipc-event-apis}}. In this attirbute, a custom topic can be configured (optional).
+ - webhook: The data app supports a webhook. This object contains a webhook URL along with any credentials that are required to authenticate the webhook. 
+    - URI: the webhook URI. The URI MUST include the scheme used by the webhook server (e.g., "https://"). It is up to the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
+    - headers: An object that contains the headers to be sent with the webhook request. The headers can contain any authentication information required by the webhook server. Each header is represented as a key-value pair in the object.
     - serverCACert: the CA certificate of the webhook server, encoded as per {{!RFC7468}} and newlines encoded as '\n' (optional)
- - websocket: an object that contains a websocket URL along with any 
-   credentials that are required to authenticate the websocket. 
+ - websocket: The data app supports a webhook. This object contains a websocket URL along with any credentials that are required to authenticate the websocket. 
    The websocket URL is the endpoint where the streaming data will be sent.
-    - URI: the websocket URL. The URL MUST include the scheme used by the websocket server (e.g., "wss://"). It is up to the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type
-      "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
-    - headers: An object that contains the headers to be sent with the websocket
-      request. The headers can contain any authentication information
-      required by the websocket server. Each header is represented as a key-value pair in the object.
+    - URI: the websocket URI. The URI MUST include the scheme used by the websocket server (e.g., "wss://"). It is up to the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
+    - headers: An object that contains the headers to be sent with the websocket request. The headers can contain any authentication information required by the websocket server. Each header is represented as a key-value pair in the object.
     - serverCACert: the CA certificate of the websocket server, encoded as per {{!RFC7468}} and newlines encoded as '\n' (optional)
+
+~~~~ CDDL
+{::include cddl/dataApp.cddl}
+~~~~
+{:cddl}
 
 Example of a request body:
 
@@ -732,60 +679,51 @@ r/sdfEvent/fallDetected"
 {:json #exregmqttbrokerrsp title="Example with mqttBroker"}
 
 Response:
-
-If successful, the response will be identical to the request body. 
+ - If successful, the response will be identical to the request body. 
 
 ### Update a data application
 
 Method: `PUT /registrations/data-apps{?dataAppId}`
 
-Description: Updates a data application with the gateway
+Description: Updates a data application registration. 
 
 Query Parameters: 
-
  - dataAppId: the ID of the data application
 
-Request Body: Same as the request body for the register data application API.
+Request Body: The request body is identical to the request body for the register data application API {{register-data-app}}.
 
 Response: 
-
-If successful, the response will be identical to the request body.
+- If successful, the response will be identical to the request body.
 
 ### Get a data application
 
 Method: `GET /registrations/data-apps{?dataAppId}`
 
-Description: Gets a data application registered with the gateway
+Description: Gets a data application object registered with the gateway.
 
 Query Parameters: 
-
  - dataAppId: the ID of the data application
 
 Response:
-
-The response will be identical to the request body for the register data
-application API.
+ - The response will be identical to the request body for the register data application API {{register-data-app}}.
 
 ### Delete a data application
 
 Method: `DELETE /registrations/data-apps{?dataAppId}`
 
-Description: Deletes a data application registered with the gateway
+Description: Deletes a data application registered with the gateway.
 
 Query Parameters: 
-
  - dataAppId: the ID of the data application
 
 Response:
-
-The response will be identical to the request body for the register data
-application API.
+  - If successful, the response will be identical to the request body for the register data application API {{register-data-app}}.
 
 # NIPC APIs
 
 The primary goal of the NIPC APIs is to  perform operations on SDF Affordances, such as properties, events & actions.This allows a user of the NIPC API to get or update properties of devices, perform actions on devices, and consume events from devices.
 
-The NIPC APIs consist of three main collections which reflect SDF Affordances as defined in {{Section 1.2 of I-D.ietf-asdf-sdf}}: 
+The NIPC APIs consist of three main collections which reflect SDF Affordances as defined in {{Section 1.2 of !I-D.ietf-asdf-sdf}}: 
 
  - NIPC Property APIs: These APIs allow applications to get and update device 
    properties.
