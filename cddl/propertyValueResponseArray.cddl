@@ -1,0 +1,16 @@
+PropertyValueResponseArray = [* PropertyValueResponseArrayItem]
+
+PropertyValueResponseArrayItem = ( SuccessResponse // FailureResponse )
+
+; Minimal success shape (may be extended)
+SuccessResponse = {
+  ? status: uint
+}
+
+; FailureResponse aligns with Problem Details subset
+FailureResponse = {
+  ? type: text,    ; URI of problem type
+  ? status: uint,
+  ? title: text,
+  ? detail: text
+}

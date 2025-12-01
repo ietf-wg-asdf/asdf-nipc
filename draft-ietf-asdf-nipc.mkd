@@ -446,10 +446,9 @@ For example:
 
 To minimize deployment risk arising from inconsistent URI path normalization and handling of percent‑encoded reserved characters in path elements (notably “/” encoded as “%2F”) across common HTTP servers and intermediaries (e.g., Jetty, Tomcat, Apache httpd, NGINX), NIPC uses query parameters (except the primary {id} path segment) rather than additional path segments for values that can legitimately contain reserved characters (such as SDF global names). Although {{?RFC3986}} and {{?RFC9110}} require that reserved characters not be normalized or decoded in ways that alter semantics, misinterpretation of these rules has led to security vulnerabilities (path confusion, cache poisoning, authorization bypass) and to conservative default configurations that reject encoded slashes. In proxy deployments, relaxing these defaults often triggers security review friction. Representing such values in the query component avoids reliance on tolerant path normalization behavior, reduces ambiguity for intermediaries, and aligns with prevailing “safe” operational profiles; a malformed or unsupported parameter can be rejected with a 4xx status without exposing downstream services to traversal or normalization discrepancies.
 
-### Responses 
+### Responses  {#responses}
 
-A NIPC Gateway will respond to a NIPC operation request synchronously, and
-provide the result of the completed operation in the HTTP response. 
+A NIPC Gateway must respond to a NIPC operation request synchronously, and provide the result of the completed operation in the HTTP response. 
 
 Exceptions to this are following:
 1. Extensions: Extension APIs (see {{apiextensions}}) execute compound operationsand thus require the gateway to execute multiple
@@ -458,11 +457,17 @@ NIPC operations. On acceptance, the gateway returns 202 Accepted. Clients poll t
 
 A failure response must contain an HTTP status code of 4xx or 5xx, and use {{!RFC9457}} Problem Details with `application/problem+json` media type. 
 
+All NIPC failure response must§ include the following attributes:
 - type: a URI identifying the error (see {{errorhandling}})
 - status: the 4xx or 5xx HTTP status code
 - title: a brief, human‑readable summary
 - detail: a human‑readable explanation specific to this occurrence
-- Additional members MAY be included as permitted by {{!RFC9457}}.
+Additional attributes MAY be included as permitted by {{!RFC9457}}.
+
+~~~~ CDDL
+{::include cddl/failureResponse.cddl}
+~~~~
+{:cddl}
 
 Example of a failure response:
 
@@ -498,7 +503,7 @@ Request Body:
  - The SDF document MUST contain protocol mappings, as described in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
 
 Response:
- - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
 ~~~~ CDDL
 {::include cddl/sdfReference.cddl}
@@ -523,7 +528,7 @@ Method: `GET /registrations/models`
 Description: Gets all SDF models registered with the gateway.
 
 Response:
- - The SDF document in JSON format containing one or more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
+The SDF document in JSON format containing one or more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
 
 ### Get an SDF model
 
@@ -532,10 +537,10 @@ Method: `GET /registrations/models{?sdfName}`
 Description: Gets an SDF model registered with the gateway.
 
 Query Parameters: 
- - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
+sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
 
 Response:
- - The SDF model is returned in JSON format, similar to the example in {{thermometer-sdf}}.
+The SDF model is returned in JSON format, similar to the example in {{thermometer-sdf}}.
 
 ### Delete an SDF model
 
@@ -544,10 +549,10 @@ Method: `DELETE /registrations/models{?sdfName}`
 Description: Deletes an SDF model registered with the gateway.
 
 Query Parameters: 
- - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
+sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
 
 Response:
- - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
 ~~~~ CDDL
 {::include cddl/sdfReference.cddl}
@@ -572,13 +577,13 @@ Method: `PUT /registrations/models{?sdfName}`
 Description: Updates an SDF model registered with the gateway.
 
 Query Parameters: 
- - sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
+sdfName: the name of the top-level sdfThing or sdfObject in the SDF model.
 
 Request Body:
- - an SDF model in JSON format, similar to the example in {{thermometer-sdf}}.
+an SDF model in JSON format, similar to the example in {{thermometer-sdf}}.
 
 Response:
- - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
 ~~~~ CDDL
 {::include cddl/sdfReference.cddl}
@@ -613,7 +618,7 @@ Method: `POST /registrations/data-apps{?dataAppId}`
 Description: Registers a data application with the gateway.
 
 Query Parameters: 
- - dataAppId: the ID of the data application
+dataAppId: the ID of the data application
 
 Request Body:
  - events: a list of events that the data application is authorized for.
@@ -679,7 +684,7 @@ r/sdfEvent/fallDetected"
 {:json #exregmqttbrokerrsp title="Example with mqttBroker"}
 
 Response:
- - If successful, the response will be identical to the request body. 
+If successful, the response will be identical to the request body. 
 
 ### Update a data application
 
@@ -688,12 +693,12 @@ Method: `PUT /registrations/data-apps{?dataAppId}`
 Description: Updates a data application registration. 
 
 Query Parameters: 
- - dataAppId: the ID of the data application
+dataAppId: the ID of the data application
 
 Request Body: The request body is identical to the request body for the register data application API {{register-data-app}}.
 
 Response: 
-- If successful, the response will be identical to the request body.
+If successful, the response will be identical to the request body.
 
 ### Get a data application
 
@@ -702,10 +707,10 @@ Method: `GET /registrations/data-apps{?dataAppId}`
 Description: Gets a data application object registered with the gateway.
 
 Query Parameters: 
- - dataAppId: the ID of the data application
+dataAppId: the ID of the data application
 
 Response:
- - The response will be identical to the request body for the register data application API {{register-data-app}}.
+The response will be identical to the request body for the register data application API {{register-data-app}}.
 
 ### Delete a data application
 
@@ -714,85 +719,56 @@ Method: `DELETE /registrations/data-apps{?dataAppId}`
 Description: Deletes a data application registered with the gateway.
 
 Query Parameters: 
- - dataAppId: the ID of the data application
+dataAppId: the ID of the data application
 
 Response:
-  - If successful, the response will be identical to the request body for the register data application API {{register-data-app}}.
+If successful, the response will be identical to the request body for the register data application API {{register-data-app}}.
 
-# NIPC APIs
+# NIPC Operation APIs
 
-The primary goal of the NIPC APIs is to  perform operations on SDF Affordances, such as properties, events & actions.This allows a user of the NIPC API to get or update properties of devices, perform actions on devices, and consume events from devices.
+The NIPC operation APIs perform protocol‑neutral interactions on SDF affordances, properties, events, and actions. This allows applications to read & update device properties, invoke actions, and consume events.
 
-The NIPC APIs consist of three main collections which reflect SDF Affordances as defined in {{Section 1.2 of !I-D.ietf-asdf-sdf}}: 
+NIPC defines three API collections aligned with the SDF Affordances defined in {{Section 1.2 of !I-D.ietf-asdf-sdf}}:
+ - Properties: read and write device properties.
+ - Events:enable and disable device event reporting.
+ - Actions: invoke device actions.
 
- - NIPC Property APIs: These APIs allow applications to get and update device 
-   properties.
- - NIPC Event APIs: These APIs allow applications to enable or disable event
-   reporting on devices.
- - NIPC Action APIs: These APIs allow applications to perform actions on
-   devices.
+To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{!I-D.ietf-scim-device-model}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of !I-D.ietf-asdf-sdf}}.
 
-One or more SDF models must be registered in order to use these NIPC
-Property, Event and Action APIs. The SDF models can be a top-level sdfThing with
-multiple sdfObjects or a top-level sdfObject. These APIs depend on the SDF 
-affordances (i.e. sdfProperty, sdfEvent and sdfAction) defined in
-the SDF model and a device ID that is defined in {{I-D.ietf-scim-device-model}}.
-An SDF affordance can be referenced using the global name of the SDF affordance
-as described in {{Section 4 of I-D.ietf-asdf-sdf}}.
-
-The SDF global name will be used against the registered SDF model to 
-determine the protocol-specific protocolmap that the NIPC API will operate on. 
-The SDF global name is also percent-encoded as per {{Section 2.1 of !RFC3986}}.
+The NIPC Gateway must match the SDF global name against the registered SDF model to resolve the protocol mapping (protocolmap) the gateway will execute. When carried in a URI, the SDF global name MUST be percent‑encoded per {{Section 2.1 of !RFC3986}}.
 
 ## NIPC Property APIs
 
-These APIs allow applications to get and update device properties. 
-These operations may require a connection to the device to be established. 
-This connection can be established as part of the same API call implicitly.
-If a connection is already active for this device, the existing connection will
-be leveraged without modifying it.
+These APIs allow applications to read and update device properties. If the underlying protocol requires a connection, the gateway establishes it implicitly for the operation; when an explicit connection is already active, operations reuse it without modification.
 
-These APIs support multiple media types based on Content-Type and Accept
-headers to accommodate different data formats. 
+Requests and responses support content negotiation via Content-Type and Accept. 
+When using "application/nipc+json", payloads must follow the examples above. Binary property values must be base64‑encoded with padding per {{section 5 of !RFC4648}} in the “value” field. For other media types, payload semantics imost follow the selected media type.
 
-When using `application/nipc+json`, the request and response bodies follow 
-the format shown in the examples above, with binary data encoded as 
-base64 in the "value" field. 
-For other content types, the data is transmitted according to the 
-specific format requirements of that media type.
-
-### Write multiple values
+### Update one or multiple values
 
 Method: `PUT /devices/{id}/properties{?propertyName}`
 
 Description: Write values to one or more properties on a device
 
 Parameters: 
-
- - id: the ID of the device
+id: the ID of the device
 
 Query Parameters:
-
-  - propertyName: a single property to update. If this parameter is
-    provided, the request body can contain any content type payload 
-    with the value to write to the property. If this parameter is not
-    provided, the request body MUST contain an application/nipc+json payload
-    with an array of properties to update, each containing a property and a
-    value.
+ - propertyName: Identifies a single property to update. If present, the request body MAY use any media type appropriate to the property payload. 
+-or-
+ - If absent, the request body MUST be application/nipc+json and contain an array of update items, each with a property and a value.
 
 Request Body:
+  - If the query parameter propertyName is provided, the request body MAY use any media type appropriate to the property payload. The value is encoded as per the content type of the payload.
+ -or- 
+  - If the query parameter propertyName is provided, the request body must be an array of properties to update, each containing a property and a value. The value attribute contains the raw binary data, which must be encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
 
-  - If the query parameter propertyName is provided, the request body
-    can contain any content type payload with the value to write to the property.
-    The value is encoded as per the content type of the payload.
-    
-  or 
+~~~~ CDDL
+{::include cddl/propertyValueArray.cddl}
+~~~~
+{:cddl}
 
-  - an array of properties to update, each containing a property and a value.
-    The value is the raw binary data, encoded in base64 with padding as per 
-    {{Section 5 of !RFC4648}}.
-
-Example body updating multiple properties:
+Example body for updating multiple properties:
 
 ~~~~~ json
 =============== NOTE: '\' line wrapping per RFC 8792 ================
@@ -813,12 +789,14 @@ Example body updating multiple properties:
 {:json #exupmprop title="Example updating multiple properties"}
 
 Response: 
+ - If the accept header is set to `application/nipc+json`, the response must be array with a status field set to 200 for each property that was updated, or a problem type object for each property that failed to update. The "properties" array must be an array of properties that were updated, each containing a property and a value.
+-or- 
+ - If the Accept header is set to any other media type and the propertyName query parameter is provided, the response must be 204 No Content with no body.
 
-If the Accept header is set to `application/nipc+json`, the response will be
-an array with a status field set to 200 for each property that was updated, 
-or a problem type object for each property that failed to update.
-
-If the Accept header is set to any other media type and the propertyName query parameter is provided, the response will be 204 No Content with no body.
+~~~~ CDDL
+{::include cddl/propertyValueResponseArray.cddl}
+~~~~
+{:cddl}
 
 Example of a response:
 
@@ -841,36 +819,29 @@ rmostat/sdfProperty/temperature does not exist or is not writable"
 ~~~~~
 {:json #exupmresp title="Example update multiple properties response"}
 
-where-
-
- - "properties" is an array of properties that were updated, each containing
-   a property and a value
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
-
-### Read multiple values
+### Read one or multiple values
 
 Method: `GET /devices/{id}/properties{?propertyName*}`
 
 Description: Read values from one or more properties on a device
 
 Parameters: 
-
  - id: the ID of the device
 
 Query Parameters:
-
- - propertyName: The property to read. This can be a single property or multiple
-   properties. If multiple properties are provided, the request body MUST
-   contain an application/nipc+json payload with an array of properties to read.
+ - propertyName: The property to read. This can be a single property or multiple properties. If multiple properties are provided, the request body MUST contain an application/nipc+json payload with an array of properties to read.
 
 Response:
+ - If the Accept header is set to `application/nipc+json`, the response must be an array of properties, each containing a property and a value. The value must be the raw binary data read from the property, encoded in base64 with padding as per {{Section 5 of !RFC4648}}. The array must contain objects with 2 attributes:
+       - property: The property that was read.
+       - value: The bytes that were read in base64 encoding
+-or-
+ - If the Accept header is set to any other media type and a single propertyName query parameter is provided, the request body MAY use any media type appropriate to the property payload. The value is encoded as per the content type of the payload.
 
-If the Accept header is set to `application/nipc+json`, the response will be
-an array of properties, each containing a property and a value. The value is
-the raw binary data read from the property, encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
-
+~~~~ CDDL
+{::include cddl/propertyValueReadResponseArray.cddl}
+~~~~
+{:cddl} 
 
 Example of a response:
 
@@ -891,14 +862,6 @@ Example of a response:
 ]
 ~~~~~
 {:json #exreadmresp title="Example read multiple properties response"}
-
-where-
-
- - "property" is the property that was read from
- - "value" is the bytes that were read in base64 encoding
-
-A failure will generate a standard failed response. Please refer to {{failure}}
-definition of failed response.
 
 ## NIPC Event APIs {#nipc-event-apis}
 

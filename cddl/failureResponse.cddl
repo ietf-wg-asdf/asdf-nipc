@@ -1,0 +1,35 @@
+FailureResponse = {
+  ? type: FailureTypeURI,
+  ? status: uint,
+  ? title: text,
+  ? detail: text
+}
+
+; Enumerated problem type URIs registered for NIPC
+FailureTypeURI = (
+  "https://www.iana.org/assignments/nipc-problem-types#invalid-id" /
+  "https://www.iana.org/assignments/nipc-problem-types#invalid-sdf-url" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed" /
+  "https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered" /
+  "https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use" /
+  "https://www.iana.org/assignments/nipc-problem-types#property-not-readable" /
+  "https://www.iana.org/assignments/nipc-problem-types#property-read-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#property-not-writable" /
+  "https://www.iana.org/assignments/nipc-problem-types#property-write-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#event-already-enabled" /
+  "https://www.iana.org/assignments/nipc-problem-types#event-not-enabled" /
+  "https://www.iana.org/assignments/nipc-problem-types#event-not-registered" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-already-connected" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-no-connection" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-timeout" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-bonding-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-service-discovery-failed" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-invalid-service-or-characteristic" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-connection-timeout" /
+  "https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-invalid-endpoint-or-cluster" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-broadcast-invalid-data" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-firmware-rollback" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-firmware-update-failed" /
+  "about:blank"
+)
