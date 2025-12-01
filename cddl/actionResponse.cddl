@@ -1,0 +1,8 @@
+ActionResponse = {
+  status: ActionStatus
+}
+
+ActionStatus = (
+  "IN_PROGRESS" /
+  "COMPLETED"
+)
