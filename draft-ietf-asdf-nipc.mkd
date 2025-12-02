@@ -1569,72 +1569,42 @@ definition of failed response.
 
 # NIPC Extensibility
 
-NIPC is extensible in two ways:
- 
- - Protocol mapping: New protocol mapping can extend NIPC with support
-   for new protocols
- - API extensions: API extensions leverage compound statements of basic NIPC
-   action APIs to simplify common operations for applications.
- 
-## Protocol extensions
+NIPC is designed to be extensible in two complementary ways:
 
-NIPC supports mapping protocol specific properties to NIPC properties
-as described in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
-BLE and Zigbee are used as examples, but protocol
-mapping is extensible to other protocols, so new protocols can be 
-supported by NIPC without a schema change.
+ - Protocol mappings: NIPC relies on SDF protocol mappings to relate protocol‑neutral affordances to protocol‑specific operations. Adding a new mapping enables support for additional device protocols (or versions) without the need to change the NIPC API itself. This allows deployments to evolve as device ecosystems change, while preserving application portability and gateway interoperability. Protocol mapping is an extension to SDF and described in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
 
-The protocol objects need to be extended with the new
-protocol as well. Protocol objects will be extended as follows:
+ - API extensions: Extensions compose multiple NIPC operations into a single request or introduce specialized flows optimized for common scenarios (e.g., bulk property updates, conditional reads, firmware operations). Extensions MUST use the “/extensions” path element and SHOULD focus on efficiency, latency reduction, and operational simplicity (fewer round trips, reduced state management). To ensure interoperability and consistent security review, extensions MUST be registered with IANA as defined in {{iana-api-ext}}.
 
-| Attribute  |   Type |          Example                         |
-+------------+--------+------------------------------------------|
-| ble        | object | an object with BLE-specific properties   |
-| zigbee     | object | an object with Zigbee-specific properties|
-| newProtocol| object | an object with newProtocol-specific props|
-{: #newprotext title="Adding Protocol mappings"}
+## Protocol mappings
 
-In the new protocol object, protocol specific properties can be added.
+NIPC relies on SDF protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} to relate protocol‑neutral affordances to protocol‑specific operations. in {{!I-D.ietf-asdf-sdf-protocol-mapping}} BLE and Zigbee are used as examples, ihowever the mapping mechanism is extensible; so support for additional protocols (or versions) can be added without changing the NIPC schema or API. D
  
 ## API extensions {#apiextensions}
 
-/extensions
+The extension APIs allow for extensibility of the APIs.
+Extension APIs may leverage the basic NIPC defined APIs and combine them in compound statements in order to streamline application operation against devices, make operations more expedient and convenient in one API call. An example of this is the bulk API extension.
+They may also introduce new functionality that is specific to a use case or protocol, such as the BLE transmit API.
 
-The extension APIs allow for extensibility of the APIs. Extensions must be IANA registered.
-Extension APIs can leverage the basic NIPC defined APIs and combine them in 
-compound statements in order to streamline application operation against
-devices, make operations more expedient and convenient in one API call. An example of this is the bulk API extension.
-They can also introduce new functionality that is specific to a use case or protocol, such as the BLE transmit API.
-the OpenAPI model {{NIPCextensions}} below, we have defined a few example extensions.
+Extensions must be defined under the /extensions path element. The extension name is defined as a path parameter after the /extensions path element. Extensions may define their own request and response payloads, as well as their own query parameters. 
+Extensions must be IANA registered as defined in {{iana-api-ext}}.
 
-The extensions can contain long running operations, such as firmware updates,
-or other bulk operations that can be performed on a device. For long 
-running operations, the extension API will return a 202 Accepted status 
-code and a location header with the URL to check the status of the operation.
-The status of the operation can be checked by calling the status extension API
-with the same device ID. The status extension API will return a 200 OK status code
-when the operation is in progress. When the operation is complete, 
-the status extension API will return a 303 See Other status code with a 
-location header with the URL to check the status of the operation.
-The GET operation on the extension API will return a 200 OK status code
-with the actual response once the operation is complete.
+Extensions MAY implement long‑running operations (e.g., firmware updates, bulk actions). For such operations, the server SHOULD respond with 202 Accepted and a Location header referencing a status URI. Clients MAY poll the status URI (GET) to obtain progress. While the operation is in progress, the status endpoint SHOULD return 200 OK with status information; upon completion, the server MAY redirect with 303 See Other to the final result resource, or return 200 OK with the completed result from the status endpoint. This pattern minimizes client state, supports retry, and provides a uniform mechanism for tracking asynchronous execution.
+
+In the appendix {{NIPCextensions}}, we have defined a few example extensions.
 
 # NIPC Error Handling
 {: #errorhandling}
 
-The error types in the NIPC APIs use URI-based error type identifiers 
-as defined in {{iana-problem-details}}. The error types 
-can be generic or specific to the API category. The error types are 
-organized into the following categories:
+Error types in NIPC APIs must use URI-based error type identifiers as defined in {{iana-problem-details}}. The error types 
+can be generic or specific to the API category. The error types are organized into the following categories:
 
-  - Generic: Broadly applicable errors, including authorization, 
-    invalid identifiers, and generic failures.
+  - Generic: Broadly applicable errors, including authorization, invalid identifiers, and generic failures.
   - Property APIs: Errors related to property APIs (read/write).
   - Event APIs: Errors related to event APIs (enable/disable).
   - Protocol specific: Errors related to protocol-specific operations.
   - Extension APIs: Errors related to extension APIs.
 
-The specific error types are defined in the table below:
+NIPC error types are defined in the table below:
 
 | Error Type                                 | Description                                  | Category         |
 |--------------------------------------------|----------------------------------------------|------------------|
@@ -1667,31 +1637,12 @@ The appropriate HTTP status code is returned in the response.
 
 # Publish/Subscribe Interface
 
-The publish/subscribe interface, or data streaming interface, is an MQTT
-publishing interface. Pub/sub topics can be created and managed by means
-of the /registrations/data-apps API.
-
-In this memo, we propose the data format to be CBOR {{!RFC8949}}.
+Events are delivered via a publish/subscribe interface. Event types include: (1) streaming data (enabled/disabled via the NIPC Events API), (2) broadcasts (e.g., advertisements), and (3) connection status (device link up/down). Event payloads are encoded in CBOR {{!RFC8949}} and MAY be transported over MQTT, webhook, or websocket. CBOR is used because non‑IP device payloads are typically binary; it encodes such data efficiently and is more compact than JSON, reducing bandwidth. 
 
 ## CDDL Definition
 
-We have a CDDL {{!RFC8610}} definition where we define the
-DataSubscription struct that will be used by all the messages published 
-to the MQTT broker. 
-
-The DataSubscription struct is a CBOR map that will contain the raw data
-in bytes and a timestamp of the data. Optionally, the message will also
-have a deviceID that corresponds to the SCIM ID of the device if the 
-payload is associated to a known device.
-
-Other fields in the CDDL such as apMacAddress and rssi can be optionally
-included but these fields can expose the underlying network topology.
-
-Each message also has a subscription choice group that will define the
-type of data that is being published.
-
-Each MQTT message can be a collection of DataSubscription structs. This
-collection is represented as DataBatch in the CDDL. 
+The event streaming format is defined here in CDDL {{!RFC8610}}. 
+A DataSubscription is a CBOR map containing the raw payload (bytes) and a timestamp (epoch seconds). It MAY include deviceID (the SCIM device identifier) when the payload is associated with a known onboarded device. Optional members (e.g., apMacAddress, rssi) MAY be present but can reveal deployment topology and SHOULD be omitted unless required. A choice group within DataSubscription indicates the event type (e.g., advertisement, subscription notification, connection status). An event publication MAY carry one or more DataSubscription entries in an array. Such an the array is represented as DataBatch.
 
 ~~~~ CDDL
 {::include cddl/data_subscription.cddl.folded}
@@ -1700,8 +1651,7 @@ collection is represented as DataBatch in the CDDL.
 
 ## CBOR Examples
 
-This section contains a few examples of the DataSubscription struct 
-depicted in CBOR diagnostic notation.
+This section contains a few examples of the DataSubscription struct in CBOR diagnostic notation.
 
 ~~~
 [
@@ -1780,13 +1730,11 @@ depicted in CBOR diagnostic notation.
 
 # Examples
 
-This section contains a few examples on how applications can leverage 
-NIPC operations to communicate with BLE and Zigbee devices.
+This section contains a few examples on how applications can leverage NIPC operations to communicate with BLE and Zigbee devices.
 
 ## Property Read/Write
 
-In this example, we will connect to a device and read and write from a
-property.
+In this example, we will connect to a device and read and write from a property.
 
 The sequence of operations for this are:  
 
@@ -2116,7 +2064,7 @@ to use this information as they see fit".
 
 Organization: Cisco Systems, North Carolina State University
 
-Description: Open-source implementation of the NIPC APIs and gateway functionality for BLE. Client libraries for Python and Java are also provided.
+Description: Open-source implementation of the NIPC APIs and gateway functionality for BLE. Client libraries and sample application functions for Python and Java are also provided.
 
 Level of maturity: Open-source prototype
 
@@ -2128,7 +2076,23 @@ Licensing: Apache License, Version 2.0
 
 URL: [](https://github.com/iot-onboarding/tiedie)
 
-## Cisco Sensor Connect for IoT Services
+## Cisco Sensor Connect for IoT Services (Catalyst)
+
+Organization: Cisco Systems
+
+Description: Commercial solution that delivers advanced BLE capabilities over Cisco Wireless infrastructure.
+
+Level of maturity: Production
+
+Coverage: All NIPC APIs for BLE protocol mapping
+
+Version compatibility: draft-00
+
+Licensing: Proprietary
+
+URL: [](https://developer.cisco.com/docs/spaces-connect-for-iot-services/)
+
+## Cisco Sensor Connect for IoT Services (Meraki)
 
 Organization: Cisco Systems
 
@@ -2138,11 +2102,9 @@ Level of maturity: Beta
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: draft-12, draft-13, draft-14
+Version compatibility: draft-14
 
 Licensing: Proprietary
-
-URL: [](https://developer.cisco.com/docs/spaces-connect-for-iot-services/)
 
 ## NIPC Prototype
 
@@ -2162,31 +2124,59 @@ Contact: Lorenzo Corneo <lorenzo.corneo@ericsson.com>
 
 # Security Considerations {#security-considerations}
 
-## API authorization 
+## Payload encryptions considerations
 
-In order to enable a network wishing to offer NIPC ALG functions, the network
-administrator authorizes application(s) to perform operations on the Gateway.
-This happens out of band and may be accomplished by means of exchanging tokens
-or public keys.
-Authorization can be role-based. The 3 primary roles are:  
+Responses to NIPC operations requests may contain sensitive or confidential information.  Therefore, application and device implementations should consider payload encryption.
+NIPC does not provide any payload encryption mechanism. If payload encryption is required, it MUST be provided by the underlying device protocol (e.g., BLE security modes) or by the transport-layer security mechanism (e.g., TLS).
 
-1. Onboarding: Authorize an onboarding application against a SCIM server
-   co-located with the gateway.  
-2. Control: Authorize applications that may control devices.
-3. Data: Authorize applications that may receive telemetry.  
-It is possible to further refine roles down to an API basis.
+## TLS Support Considerations
+
+NIPC MUST run on top of a transport-layer security mechanism such as TLS. When leveraging TLS, the NIPC gateway MUST support TLS 1.2 {{!RFC5246}} and TLS 1.3 {{!RFC8446}} and MAY support additional transport-layer mechanisms.  When using TLS, the client MUST perform a TLS/SSL server identity check, per {{!RFC6125}}.  Implementation security considerations for TLS can be found in {{!RFC7525}}.
+
+## HTTP Considerations
+
+NIPC runs on top of HTTP and is thus subject to the security considerations of HTTP {{Section 9 of !RFC7230}}.
+
+## Authorization Considerations
+
+### API authorization Considerations
+
+To enable NIPC gateway functions, the network administrator MUST authorizes applications (e.g., via exchange of tokens or public keys). Authorization MAY be role‑based. The following baseline roles are RECOMMENDED:
+
+ - Onboarding: permitted to create and manage device and endpoint‑app identities via SCIM (typically co‑located with the gateway).
+ - Control: permitted to invoke NIPC property, action, and event APIs.
+ - Data: permitted to receive streamed event data.
+Deployments MAY further refine authorization at per‑API or per‑affordance granularity.
+
+### Authorization Token/Bearer Token/Cookie Considerations
+
+When using authorization tokens such as those issued by OAuth 2.0 {{!RFC6749}}, implementers MUST take into account threats and countermeasures as documented in {{Section 8 of !RFC7521}}.
+
+Since the possession of a bearer token, Authorization token, or cookie MAY authorize the holder to perform NIPC Operations on devices,tokens and cookies MUST contain sufficient entropy to prevent random guessing attack; for example, see {{Section 5.2 of !RFC6750}} and {{Section 5.1.4.2.2 of !RFC6819}}.
+
+As with all NIPC communications, bearer tokens and HTTP cookies MUST be exchanged using transport-layer security mechanism such as TLS.
+
+Bearer tokens MUST have a limited lifetime that can be determined directly or indirectly (e.g., by checking with a validation service) by the application.  By expiring tokens, applications are forced to obtain a new token (which usually involves re-authentication) for continued authorized access.  For example, in OAuth 2.0, an application MAY use OAuth token refresh to obtain a new bearer token after authenticating to an authorization server.  See {{Section 6 of !RFC6749}}. As with bearer tokens, an HTTP cookie SHOULD last no longer than the lifetime of a browser session.  An expiry time should be set that limits session cookie lifetime as per {{Section 5.2.1 of !RFC6265}}.
+
+Implementations supporting OAuth bearer tokens need to factor in security considerations of this authorization method {{!RFC7521}}.
+Implementers also need to consider authentication choices coupled with OAuth bearer tokens.  For example, when using OAuth bearer tokens with client authentication via client credentials {{Section 4.4 of !RFC6749}}, implementers need to consider the security considerations of client authentication via client credentials as described in Section 3.2 of {{!RFC6819}}.
+
+## Other Security Considerations
+
+ - Preventing automated attacks: It is recommended to limit the number of requests that any particular application MAY make in a period of time.
+ - Logging and monitoring: It is recommended to log and monitor API usage to detect potential abuse or attacks.
+ - Input validation: It is recommended to validate all inputs to prevent injection attacks.
+ - Error handling: It is recommended to handle errors gracefully without exposing sensitive information.
+ - Least privilege: It is recommended to follow the principle of least privilege when granting access to resources.
+ - Storage and handling of sensitive data: Credentials MUST not be stored in clear-text, but MUST be stored using an encrypted protection mechanism (e.g., hashing).
 
 # IANA Considerations
 
-This section provides guidance to the Internet Assigned Numbers Authority
-(IANA) regarding registration of values related to NIPC, in accordance
-with {{!RFC8126}}.
+This section provides guidance to the Internet Assigned Numbers Authority (IANA) regarding registration of values related to NIPC, in accordance with {{!RFC8126}}.
 
 ## Media Type Registration {#iana-media-types}
 
-This document registers the "application/nipc+json" media type 
-for messages of the NIPC APIs defined in this document carrying
-parameters encoded in JSON. 
+This document registers the "application/nipc+json" media type  for messages of the NIPC APIs defined in this document carrying parameters encoded in JSON. 
 
 Type name: application
 
@@ -2308,8 +2298,7 @@ Each Problem Type URI is intended for use as the "type" member in Problem Detail
 
 # OpenAPI definition
 
-The following non-normative model is provided for convenience of
-the implementor.
+The following non-normative model is provided for convenience of the implementor.
 
 ~~~~~~
 <CODE BEGINS> file "openapi.yml"
@@ -2320,19 +2309,11 @@ the implementor.
 
 # Protocol mapping
 
-NIPC requires that a protocol mapping be provided as part of the SDF
-model for a device or have one provided using the NIPC action APIs with 
-embedded protocol mapping. The protocol mapping is a JSON object that 
-describes the underlying technology used to communicate with the device 
-along with any additional information needed to communicate with the 
-device.
-
-The OpenAPI model for the SDF protocol mapping is provided in {{Appendix B of I-D.ietf-asdf-sdf-protocol-mapping}}.
+The OpenAPI model for SDF protocol mapping is provided in {{Appendix B of I-D.ietf-asdf-sdf-protocol-mapping}}.
 
 # NIPC API extensions {#NIPCextensions}
 
-The following OpenAPI models define a few example extensions to the 
-NIPC API.
+The following OpenAPI models define a few example extensions to the NIPC API.
 
 ## NIPC API write binary blob extension
 
@@ -2394,6 +2375,7 @@ The following is a combined reference of all NIPC API CDDL definitions used in t
 {: title="NIPC API CDDL Definitions"}
 
 # Example SDF model with protocol mappings for BLE 
+
 {: #thermometer-sdf}
 
 ~~~~~
