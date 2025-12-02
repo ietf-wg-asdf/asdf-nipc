@@ -1,5 +1,5 @@
 DataApp = {
-  ? events: [* EventRef],
+  events: [* EventRef],
   ( DataAppMqttClient //
     DataAppMqttBroker //
     DataAppWebhook //

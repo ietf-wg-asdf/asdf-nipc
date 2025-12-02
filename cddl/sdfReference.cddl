@@ -1,5 +1,0 @@
-sdfGlobalName = text    ; absolute URI with fragment referencing an sdfThing or sdfObject
-
-sdfReference = {
-  sdfName: sdfGlobalName
-}

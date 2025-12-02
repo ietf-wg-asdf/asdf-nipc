@@ -1,0 +1,7 @@
+SdfGlobalName = text    ; absolute URI with fragment referencing an sdfThing or sdfObject
+
+SdfReference = {
+  sdfName: SdfGlobalName
+}
+
+SdfReferenceArray = [* SdfReference]
