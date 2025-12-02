@@ -812,7 +812,7 @@ Request Body:
 
   - If the query parameter propertyName is provided, the request body MAY use any media type appropriate to the property payload. The value is encoded as per the content type of the payload.
  -or- 
-  - If the query parameter propertyName NOT is provided, the request body must be an array of properties to update, each containing a property and a value. The value attribute contains the raw binary data, which must be encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
+  - If the query parameter propertyName is NOT provided, the request body must be an array of properties to update, each containing a property and a value. The value attribute contains the raw binary data, which must be encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
 
 ~~~~ CDDL
 {::include cddl/api/property_value_array.cddl.folded}
@@ -1577,8 +1577,8 @@ NIPC is designed to be extensible in two complementary ways:
 
 ## Protocol mappings
 
-NIPC relies on SDF protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} to relate protocol‑neutral affordances to protocol‑specific operations. in {{!I-D.ietf-asdf-sdf-protocol-mapping}} BLE and Zigbee are used as examples, ihowever the mapping mechanism is extensible; so support for additional protocols (or versions) can be added without changing the NIPC schema or API. D
- 
+NIPC relies on SDF protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} to relate protocol‑neutral affordances to protocol‑specific operations. In {{!I-D.ietf-asdf-sdf-protocol-mapping}} BLE and Zigbee are used as examples, however the mapping mechanism is extensible; so support for additional protocols (or versions) can be added without changing the NIPC schema or API.
+
 ## API extensions {#apiextensions}
 
 The extension APIs allow for extensibility of the APIs.
@@ -1642,7 +1642,7 @@ Events are delivered via a publish/subscribe interface. Event types include: (1)
 ## CDDL Definition
 
 The event streaming format is defined here in CDDL {{!RFC8610}}. 
-A DataSubscription is a CBOR map containing the raw payload (bytes) and a timestamp (epoch seconds). It MAY include deviceID (the SCIM device identifier) when the payload is associated with a known onboarded device. Optional members (e.g., apMacAddress, rssi) MAY be present but can reveal deployment topology and SHOULD be omitted unless required. A choice group within DataSubscription indicates the event type (e.g., advertisement, subscription notification, connection status). An event publication MAY carry one or more DataSubscription entries in an array. Such an the array is represented as DataBatch.
+A DataSubscription is a CBOR map containing the raw payload (bytes) and a timestamp (epoch seconds). It MAY include deviceID (the SCIM device identifier) when the payload is associated with a known onboarded device. Optional members (e.g., apMacAddress, rssi) MAY be present but can reveal deployment topology and SHOULD be omitted unless required. A choice group within DataSubscription indicates the event type (e.g., advertisement, subscription notification, connection status). An event publication MAY carry one or more DataSubscription entries in an array. Such an array is represented as DataBatch.
 
 ~~~~ CDDL
 {::include cddl/data_subscription.cddl.folded}
@@ -2070,7 +2070,7 @@ Level of maturity: Open-source prototype
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: All versions up to draft-14
+Version compatibility: All versions up to draft-15
 
 Licensing: Apache License, Version 2.0
 
@@ -2102,7 +2102,7 @@ Level of maturity: Beta
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: draft-14
+Version compatibility: draft-15
 
 Licensing: Proprietary
 
@@ -2124,7 +2124,7 @@ Contact: Lorenzo Corneo <lorenzo.corneo@ericsson.com>
 
 # Security Considerations {#security-considerations}
 
-## Payload encryptions considerations
+## Payload Encryption Considerations
 
 Responses to NIPC operations requests may contain sensitive or confidential information.  Therefore, application and device implementations should consider payload encryption.
 NIPC does not provide any payload encryption mechanism. If payload encryption is required, it MUST be provided by the underlying device protocol (e.g., BLE security modes) or by the transport-layer security mechanism (e.g., TLS).
@@ -2141,7 +2141,7 @@ NIPC runs on top of HTTP and is thus subject to the security considerations of H
 
 ### API authorization Considerations
 
-To enable NIPC gateway functions, the network administrator MUST authorizes applications (e.g., via exchange of tokens or public keys). Authorization MAY be role‑based. The following baseline roles are RECOMMENDED:
+To enable NIPC gateway functions, the network administrator MUST authorize applications (e.g., via exchange of tokens or public keys). Authorization MAY be role‑based. The following baseline roles are RECOMMENDED:
 
  - Onboarding: permitted to create and manage device and endpoint‑app identities via SCIM (typically co‑located with the gateway).
  - Control: permitted to invoke NIPC property, action, and event APIs.
@@ -2152,7 +2152,7 @@ Deployments MAY further refine authorization at per‑API or per‑affordance gr
 
 When using authorization tokens such as those issued by OAuth 2.0 {{!RFC6749}}, implementers MUST take into account threats and countermeasures as documented in {{Section 8 of !RFC7521}}.
 
-Since the possession of a bearer token, Authorization token, or cookie MAY authorize the holder to perform NIPC Operations on devices,tokens and cookies MUST contain sufficient entropy to prevent random guessing attack; for example, see {{Section 5.2 of !RFC6750}} and {{Section 5.1.4.2.2 of !RFC6819}}.
+Since the possession of a bearer token, Authorization token, or cookie MAY authorize the holder to perform NIPC Operations on devices, tokens and cookies MUST contain sufficient entropy to prevent random guessing attack; for example, see {{Section 5.2 of !RFC6750}} and {{Section 5.1.4.2.2 of !RFC6819}}.
 
 As with all NIPC communications, bearer tokens and HTTP cookies MUST be exchanged using transport-layer security mechanism such as TLS.
 
@@ -2168,7 +2168,7 @@ Implementers also need to consider authentication choices coupled with OAuth bea
  - Input validation: It is recommended to validate all inputs to prevent injection attacks.
  - Error handling: It is recommended to handle errors gracefully without exposing sensitive information.
  - Least privilege: It is recommended to follow the principle of least privilege when granting access to resources.
- - Storage and handling of sensitive data: Credentials MUST not be stored in clear-text, but MUST be stored using an encrypted protection mechanism (e.g., hashing).
+ - Storage and handling of sensitive data: Credentials MUST NOT be stored in clear-text, but MUST be stored using an encrypted protection mechanism (e.g., hashing).
 
 # IANA Considerations
 
