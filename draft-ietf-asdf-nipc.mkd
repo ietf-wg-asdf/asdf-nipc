@@ -368,14 +368,14 @@ as supported extensions on a server.
   ]
 }
 ~~~~~
-{: #ex-wellknown title="Example response for /.well-known/nipc"}
+{: #ex-wellknown title="Example response for /.well-known/nipc" sourcecode-markers="true"}
 
 A formal CBOR definition of the well-known response is as follows:
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/nipc_well_known.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="nipc_well_known.cddl"}
 
 ### NIPC Registrations
 
@@ -473,14 +473,14 @@ All NIPC failure responses must include the following attributes:
 - detail: a human‑readable explanation specific to this occurrence
 Additional attributes MAY be included as permitted by {{!RFC9457}}.
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/failure_response.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="failure_response.cddl"}
 
 Example of a failure response:
 
-~~~~~
+~~~~~ json
 =============== NOTE: '\\' line wrapping per RFC 8792 ===============
 
 {
@@ -492,7 +492,7 @@ Example of a failure response:
 \ exist or is not a device"
 }
 ~~~~~
-{: #failure title="Example failure response"}
+{: #failure title="Example failure response" sourcecode-markers="true"}
 
 # NIPC Registrations
 
@@ -516,21 +516,21 @@ Response:
 
 A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model.
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/sdf_reference.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="sdf_reference.cddl"}
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 [
  {
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
  }
 ]
 ~~~~~
-{:json #exregresp title="Example of a response to an SDF model registration"}
+{:json #exregresp title="Example of a response to an SDF model registration" sourcecode-markers="true"}
 
 ### Get all SDF models
 
@@ -542,14 +542,14 @@ Response:
 
 A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model.
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/sdf_reference.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="sdf_reference.cddl"}
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 [
  {
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
@@ -559,7 +559,7 @@ Example of a response:
  }
 ]
 ~~~~~
-{:json #exgetallresp title="Example of a response to get all SDF models"}
+{:json #exgetallresp title="Example of a response to get all SDF models" sourcecode-markers="true"}
 
 
 ### Get an SDF model
@@ -590,10 +590,10 @@ Response:
 
  - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/sdf_reference.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="sdf_reference.cddl"}
 
 Example of a response:
 
@@ -602,7 +602,7 @@ Example of a response:
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
-{:json #exregdelresp title="Example of a response to an SDF model registration"}
+{:json #exregdelresp title="Example of a response to an SDF model registration" sourcecode-markers="true"}
 
 ### Update an SDF model
 
@@ -625,7 +625,7 @@ Response:
 ~~~~ cddl
 {::include cddl/api/sdf_reference.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="sdf_reference.cddl"}
 
 Example of a response:
 
@@ -634,7 +634,7 @@ Example of a response:
   "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor"
 }
 ~~~~~
-{:json #exregupresp title="Example of a response to an SDF model registration"}
+{:json #exregupresp title="Example of a response to an SDF model registration" sourcecode-markers="true"}
 
 ## Data application registrations APIs
 
@@ -677,14 +677,14 @@ Request Body:
     - headers: An object that contains the headers to be sent with the websocket request. The headers can contain any authentication information required by the websocket server. Each header is represented as a key-value pair in the object.
     - serverCACert: the CA certificate of the websocket server, encoded as per {{!RFC7468}} and newlines encoded as '\n' (optional)
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/data_app.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="data_app.cddl"}
 
 Example of a request body:
 
-~~~~~
+~~~~~ json
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 {
@@ -697,11 +697,11 @@ r/sdfEvent/fallDetected"
   "mqttClient": true
 }
 ~~~~~
-{:json #exregmqttclientrsp title="Example with mqttClient"}
+{:json #exregmqttclientrsp title="Example with mqttClient" sourcecode-markers="true"}
 
 Example of a request body for a data application that is an MQTT broker:
 
-~~~~~
+~~~~~ json
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 {
@@ -719,7 +719,7 @@ r/sdfEvent/fallDetected"
   }
 }
 ~~~~~
-{:json #exregmqttbrokerrsp title="Example with mqttBroker"}
+{:json #exregmqttbrokerrsp title="Example with mqttBroker" sourcecode-markers="true"}
 
 Response:
 
@@ -814,10 +814,10 @@ Request Body:
  -or- 
   - If the query parameter propertyName is NOT provided, the request body must be an array of properties to update, each containing a property and a value. The value attribute contains the raw binary data, which must be encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/property_value_array.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="property_value_array.cddl"}
 
 Example body for updating multiple properties:
 
@@ -837,7 +837,7 @@ Example body for updating multiple properties:
   }
 ]
 ~~~~~
-{:json #exupmprop title="Example updating multiple properties"}
+{:json #exupmprop title="Example updating multiple properties" sourcecode-markers="true"}
 
 Response:
 
@@ -845,14 +845,14 @@ Response:
 -or- 
  - If the Accept header is set to any other media type and the propertyName query parameter is provided, the response must be 204 No Content with no body.
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/property_value_response_array.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="property_value_response_array.cddl"}
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 [
@@ -869,7 +869,7 @@ rmostat/sdfProperty/temperature does not exist or is not writable"
   }
 ]
 ~~~~~
-{:json #exupmresp title="Example update multiple properties response"}
+{:json #exupmresp title="Example update multiple properties response" sourcecode-markers="true"}
 
 ### Read one or multiple values
 
@@ -893,14 +893,14 @@ Response:
 -or-
  - If the Accept header is set to any other media type and a single propertyName query parameter is provided, the request body MAY use any media type appropriate to the property payload. The value is encoded as per the content type of the payload.
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/property_value_read_response_array.cddl.folded}
 ~~~~
-{:cddl} 
+{:cddl sourcecode-markers="true" sourcecode-name="property_value_read_response_array.cddl"} 
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 [
@@ -916,7 +916,7 @@ Example of a response:
   }
 ]
 ~~~~~
-{:json #exreadmresp title="Example read multiple properties response"}
+{:json #exreadmresp title="Example read multiple properties response" sourcecode-markers="true"}
 
 ## NIPC Event APIs {#nipc-event-apis}
 
@@ -1012,14 +1012,14 @@ The response must be an array of events, each containing an instanceID and an ev
  - instanceId: must be the unique instance ID for each enabled event.
  - event: must be the event URI for each enabled event.
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/api/event_status_array.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="event_status_array.cddl"}
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 [
@@ -1030,7 +1030,7 @@ sdfEvent/fallDetected"
   }
 ]
 ~~~~~
-{:json #exgetmresp title="Example get multiple events status response"}
+{:json #exgetmresp title="Example get multiple events status response" sourcecode-markers="true"}
 
 ### Enable event reporting on a group of devices
 
@@ -1081,11 +1081,11 @@ MUST return 200 OK with an array of per‑device event status entries. For each 
 ~~~~ cddl
 {::include cddl/api/group_event_status_response_array.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="group_event_status_response_array.cddl"}
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 [
@@ -1136,11 +1136,11 @@ MUST return 200 OK with an array of per‑device event status entries. For each 
 ~~~~ cddl
 {::include cddl/api/group_event_status_response_array.cddl.folded}
 ~~~~
-{:cddl} 
+{:cddl sourcecode-markers="true" sourcecode-name="group_event_status_response_array.cddl"} 
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 [
@@ -1170,7 +1170,7 @@ nt-not-enabled",
   }
 ]
 ~~~~~
-{:json #exgetmgevntsresp title="Example get multiple group events status response"}
+{:json #exgetmgevntsresp title="Example get multiple group events status response" sourcecode-markers="true"}
 
 ## NIPC Action APIs
 
@@ -1226,16 +1226,16 @@ MUST return 200 OK with an action status, which may be "in progress" or "complet
 ~~~~ cddl
 {::include cddl/api/action_response.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="action_response.cddl"}
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 {
   "status": "COMPLETED"
 }
 ~~~~~
-{:json #exactionstatusresp title="Example action status response"}
+{:json #exactionstatusresp title="Example action status response" sourcecode-markers="true"}
 
 ## NIPC explicit connections management APIs {#nipc-connection-management-apis}
 
@@ -1265,13 +1265,13 @@ Request Body:
 
 Example body of a connection without specific discovery of properties:
 
-~~~~~
+~~~~~ json
 {
   "retries": 3,
   "retryMultipleAPs": true
 }
 ~~~~~
-{:json #exconn title="Example connection"}
+{:json #exconn title="Example connection" sourcecode-markers="true"}
 
 where-
 
@@ -1287,7 +1287,7 @@ discovered.
 
 Example body of a BLE connection with specific discovery of properties:
 
-~~~~~
+~~~~~ json
 {
   "retries": 3,
   "retryMultipleAPs": true,
@@ -1306,7 +1306,7 @@ Example body of a BLE connection with specific discovery of properties:
   }
 }
 ~~~~~
-{:json #exconnprp title="Example connection with explicit discovery of connections"}
+{:json #exconnprp title="Example connection with explicit discovery of connections" sourcecode-markers="true"}
 
 where in the BLE protocol object: 
 
@@ -1345,7 +1345,7 @@ descriptors, as shown in {{BLEservices}}.
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "sdfProtocolMap": {
@@ -1373,7 +1373,7 @@ Example of a response:
   }
 }
 ~~~~~
-{:json #exconnresp title="Example connection response"}
+{:json #exconnresp title="Example connection response" sourcecode-markers="true"}
 
 where-
 
@@ -1406,7 +1406,7 @@ Request Body:
 
 Example body of an update connection:
 
-~~~~~
+~~~~~ json
 {
   "sdfProtocolMap": {
     "ble": {
@@ -1422,7 +1422,7 @@ Example body of an update connection:
   }
 }
 ~~~~~
-{:json #exupconn title="Example service discovery response"}
+{:json #exupconn title="Example service discovery response" sourcecode-markers="true"}
 
 where in the BLE protocol object: 
 
@@ -1446,7 +1446,7 @@ descriptors, as shown in {{BLEservices}}.
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "sdfProtocolMap": {
@@ -1474,7 +1474,7 @@ Example of a response:
   }
 }
 ~~~~~
-{:json #exupconnresp title="Example connection response"}
+{:json #exupconnresp title="Example connection response" sourcecode-markers="true"}
 
 where-
 
@@ -1501,12 +1501,12 @@ Returns HTTP status code 200 OK with device ID on successful disconnect.
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
 }
 ~~~~~
-{:json #exdisconnresp title="Example disconnect response"}
+{:json #exdisconnresp title="Example disconnect response" sourcecode-markers="true"}
 
 where "id" is the ID of the device.
 
@@ -1529,7 +1529,7 @@ Response:
 
 Example of a response:
 
-~~~~~
+~~~~~ json
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "sdfProtocolMap": {
@@ -1557,7 +1557,7 @@ Example of a response:
   }
 }
 ~~~~~
-{:json #exconnstatresp title="Example connection status response"}
+{:json #exconnstatresp title="Example connection status response" sourcecode-markers="true"}
 
 where-
 
@@ -1644,10 +1644,10 @@ Events are delivered via a publish/subscribe interface. Event types include: (1)
 The event streaming format is defined here in CDDL {{!RFC8610}}. 
 A DataSubscription is a CBOR map containing the raw payload (bytes) and a timestamp (epoch seconds). It MAY include deviceID (the SCIM device identifier) when the payload is associated with a known onboarded device. Optional members (e.g., apMacAddress, rssi) MAY be present but can reveal deployment topology and SHOULD be omitted unless required. A choice group within DataSubscription indicates the event type (e.g., advertisement, subscription notification, connection status). An event publication MAY carry one or more DataSubscription entries in an array. Such an array is represented as DataBatch.
 
-~~~~ CDDL
+~~~~ cddl
 {::include cddl/data_subscription.cddl.folded}
 ~~~~
-{:cddl}
+{:cddl sourcecode-markers="true" sourcecode-name="data_subscription.cddl"}
 
 ## CBOR Examples
 
@@ -1666,7 +1666,7 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
   }
 ]
 ~~~
-{: title="Onboarded BLE Device Advertisement" }
+{: title="Onboarded BLE Device Advertisement"}
 
 ~~~
 [
@@ -1680,7 +1680,7 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
   }
 ]
 ~~~
-{: title="Non-onboarded BLE Device Advertisement" }
+{: title="Non-onboarded BLE Device Advertisement"}
 
 ~~~
 [
@@ -1695,7 +1695,7 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
   }
 ]
 ~~~
-{: title="BLE GATT Notification" }
+{: title="BLE GATT Notification"}
 
 ~~~
 [
@@ -1709,7 +1709,7 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
   }
 ]
 ~~~
-{: title="BLE Connection status event" }
+{: title="BLE Connection status event"}
 
 ~~~
 [
@@ -1726,7 +1726,7 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
   }
 ]
 ~~~
-{: title="Zigbee Attribute Notification" }
+{: title="Zigbee Attribute Notification"}
 
 # Examples
 
@@ -2305,7 +2305,7 @@ The following non-normative model is provided for convenience of the implementor
 {::include nipc-openapi/NIPC.yaml.folded}
 <CODE ENDS>
 ~~~~~~
-{: #openAPI}
+{: #openAPI sourcecode-markers="true" sourcecode-name="NIPC.yaml"}
 
 # Protocol mapping
 
@@ -2317,70 +2317,58 @@ The following OpenAPI models define a few example extensions to the NIPC API.
 
 ## NIPC API write binary blob extension
 
-~~~~~
-<CODE BEGINS> file "Extension-Blob.yaml"
+~~~ yaml
 {::include nipc-openapi/extensions/Extension-Blob.yaml.folded}
-<CODE ENDS>
-~~~~~
+~~~
+{: sourcecode-markers="true" sourcecode-name="Extension-Blob.yaml"}
 
 ## NIPC API bulk operations extension
 
-~~~~~
-<CODE BEGINS> file "Extension-Bulk.yaml"
+~~~ yaml
 {::include nipc-openapi/extensions/Extension-Bulk.yaml.folded}
-<CODE ENDS>
-~~~~~
+~~~
+{: sourcecode-markers="true" sourcecode-name="Extension-Bulk.yaml"}
 
 ## NIPC API write file extension
 
-~~~~~
-<CODE BEGINS> file "Extension-File.yaml"
+~~~ yaml
 {::include nipc-openapi/extensions/Extension-File.yaml.folded}
-<CODE ENDS>
-~~~~~
+~~~
+{: sourcecode-markers="true" sourcecode-name="Extension-File.yaml"}
 
 ## NIPC API conditional read extension
 
-~~~~~
-<CODE BEGINS> file "Extension-ReadConditional.yaml"
+~~~ yaml
 {::include nipc-openapi/extensions/Extension-ReadConditional.yaml.folded}
-<CODE ENDS>
-~~~~~
+~~~
+{: sourcecode-markers="true" sourcecode-name="Extension-ReadConditional.yaml"}
 
 ## NIPC API conditional event extension
 
-~~~~~
-<CODE BEGINS> file "Extension-EventConditional.yaml"
+~~~ yaml
 {::include nipc-openapi/extensions/Extension-EventConditional.yaml.folded}
-<CODE ENDS>
-~~~~~
+~~~
+{: sourcecode-markers="true" sourcecode-name="Extension-EventConditional.yaml"}
 
 ## NIPC API property extensions
 
-~~~~~
-<CODE BEGINS> file "Extension-Property.yaml"
+~~~ yaml
 {::include nipc-openapi/extensions/Extension-Property.yaml.folded}
-<CODE ENDS>
-~~~~~
+~~~
+{: sourcecode-markers="true" sourcecode-name="Extension-Property.yaml"}
 
 # NIPC API CDDL Definition
 
 The following is a combined reference of all NIPC API CDDL definitions used in this document.
 
-~~~~~
-<CODE BEGINS> file "combined.cddl"
+~~~ cddl
 {::include cddl/api/combined.cddl.folded}
-<CODE ENDS>
-~~~~~
-{: title="NIPC API CDDL Definitions"}
+~~~
+{: sourcecode-markers="true" sourcecode-name="combined.cddl"}
 
-# Example SDF model with protocol mappings for BLE 
+# Example SDF model with protocol mappings for BLE {#thermometer-sdf}
 
-{: #thermometer-sdf}
-
-~~~~~
-<CODE BEGINS> file "thermometer.sdf.json"
+~~~ json
 {::include nipc-sdf-example/thermometer.sdf.json}
-<CODE ENDS>
-~~~~~
-{: title="Example SDF model with protocol mappings for BLE"}
+~~~
+{: title="Example SDF model with protocol mappings for BLE" sourcecode-markers="true" sourcecode-name="thermometer.sdf.json" }
