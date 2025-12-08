@@ -1287,7 +1287,7 @@ where-
    a different access point may be used for retries.
 
 In case the application would like to discover specific properties of a device,
-a protocol mapping can be added that defines what properties should be
+additional protocol information can be provided that defines what properties should be
 discovered.
 
 Example body of a BLE connection with specific discovery of properties:
@@ -1296,7 +1296,7 @@ Example body of a BLE connection with specific discovery of properties:
 {
   "retries": 3,
   "retryMultipleAPs": true,
-  "sdfProtocolMap": {
+  "protocolInformation": {
     "ble": {
       "services": [
         {
@@ -1304,7 +1304,7 @@ Example body of a BLE connection with specific discovery of properties:
         }
       ],
       "cached": false,
-      "cacheIdlePurge": 3600,
+      "cacheExpiryDuration": 3600,
       "autoUpdate": true,
       "bonding": "default"
     }
@@ -1316,10 +1316,11 @@ Example body of a BLE connection with specific discovery of properties:
 where in the BLE protocol object: 
 
  - "services" is an array of services defined by their serviceIDs.
- - "cached" refers to whether the services need to be cached for 
-   subsequent connects, in order not to perform service discovery on
-   each request.
- - "cacheIdlePurge" defines how long (in seconds) the cache should be maintained 
+ - "cached" refers to whether the services need to be discovered for this connection.
+   If cached is true, the services will be discovered for this connection only if it is not present in the cache.
+   If cached is false, the services will be discovered for this connection.
+   The services will be cached once it is discovered.
+ - "cacheExpiryDuration" defines how long (in seconds) the cache should be maintained 
    before purging.
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
@@ -1329,7 +1330,7 @@ where in the BLE protocol object:
 
 Response:
 
-Success responses include a protocol mapping with an array of 
+Success responses include additional protocol information with an array of 
 discovered properties, as defined in the specific protocol.
 For example, for BLE, this is an array of supported services, which in turn
 contains an array of characteristics, which in turn contains an array of
@@ -1353,7 +1354,7 @@ Example of a response:
 ~~~~~ json
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
-  "sdfProtocolMap": {
+  "protocolInformation": {
     "ble": [
       {
         "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
@@ -1383,7 +1384,7 @@ Example of a response:
 where-
 
   - "id" is the ID of the device
-  - "sdfProtocolMap" contains an Array of BLE services as shown in
+  - "protocolInformation" contains an Array of BLE services as shown in
    {{BLEservices}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
@@ -1413,7 +1414,7 @@ Example body of an update connection:
 
 ~~~~~ json
 {
-  "sdfProtocolMap": {
+  "protocolInformation": {
     "ble": {
       "services": [
         {
@@ -1421,7 +1422,7 @@ Example body of an update connection:
         }
       ],
       "cached": false,
-      "cacheIdlePurge": 3600,
+      "cacheExpiryDuration": 3600,
       "autoUpdate": true
     }
   }
@@ -1435,7 +1436,7 @@ where in the BLE protocol object:
  - "cached" refers to whether the services need to be cached for 
    subsequent connects, in order not to perform service discovery on
    each request
- - "cacheIdlePurge" defines how long the cache should be maintained 
+ - "cacheExpiryDuration" defines how long the cache should be maintained 
    before purging
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
@@ -1454,7 +1455,7 @@ Example of a response:
 ~~~~~ json
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
-  "sdfProtocolMap": {
+  "protocolInformation": {
     "ble": [
       {
         "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
@@ -1484,7 +1485,7 @@ Example of a response:
 where-
 
   - "id" is the ID of the device
-  - "sdfProtocolMap" contains an Array of BLE services as shown in
+  - "protocolInformation" contains an Array of BLE services as shown in
    {{BLEservices}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
@@ -1537,7 +1538,7 @@ Example of a response:
 ~~~~~ json
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
-  "sdfProtocolMap": {
+  "protocolInformation": {
     "ble": [
       {
         "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
@@ -1567,7 +1568,7 @@ Example of a response:
 where-
 
   - "id" is the ID of the device
-  - "sdfProtocolMap" contains an Array of BLE services as shown in {{BLEservices}}
+  - "protocolInformation" contains an Array of BLE services as shown in {{BLEservices}}
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
