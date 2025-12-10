@@ -1305,6 +1305,18 @@ components:
           description: |-
             A SCIM-generated UUID for the event instance
           example: 02ee282c-8915-4b2e-bbd2-88966773134a
+
+## A Trigger
+    Trigger:
+      allOf:
+        - $ref: '#/components/schemas/Id'
+        - type: object
+      properties:
+        affordance:
+          type: string
+          description: |-
+            percent-encoded JSON pointer to the SDF affordance object
+          example: https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected
             
 ## A Connection
     Connection:
