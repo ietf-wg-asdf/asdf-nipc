@@ -648,11 +648,11 @@ paths:
       requestBody:
         description: |-
           The NIPC API call to be called when the trigger is 
-          executed, as well as the device or group it is to be executed against.
+          executed.
         content:
           application/nipc+json:
             schema:
-              $ref: '#/components/schemas/Trigger'
+              $ref: '#/components/schemas/Action'
         required: true
       responses:
         '201':
@@ -675,7 +675,7 @@ paths:
         - NIPC trigger APIs
       summary: Get information about a trigger or all triggers
       description: |-
-        Get information about a trigger or all triggers 
+        Get information about a trigger for a device or all triggers 
         if none specified
       operationId: GetTrigger
       parameters:
@@ -702,7 +702,7 @@ paths:
           content:
             application/nipc+json:
               schema:
-                $ref: '#/components/schemas/TriggerResponseArray'
+                $ref: '#/components/schemas/TriggerStatusResponseArray'
         default:
           description: Error response
           content:
@@ -745,7 +745,7 @@ paths:
         content:
           application/nipc+json:
             schema:
-              $ref: '#/components/schemas/Trigger'
+              $ref: '#/components/schemas/Action'
         required: true
       responses:
         '201':
@@ -795,7 +795,7 @@ paths:
           content:
             application/nipc+json:
               schema:
-                $ref: '#/components/schemas/TriggerResponseArray'
+                $ref: '#/components/schemas/TriggerResponse'
         default:
           description: Error response
           content:
@@ -1306,17 +1306,15 @@ components:
             A SCIM-generated UUID for the event instance
           example: 02ee282c-8915-4b2e-bbd2-88966773134a
 
-## A Trigger
-    Trigger:
-      allOf:
-        - $ref: '#/components/schemas/Id'
-        - type: object
+## An Action
+    Action:
+      type: object
       properties:
-        affordance:
+        action:
           type: string
           description: |-
-            percent-encoded JSON pointer to the SDF affordance object
-          example: https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected
+            NIPC action operation to execute
+          example: /devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring
             
 ## A Connection
     Connection:
@@ -1326,9 +1324,6 @@ components:
           type: integer
           format: int32
           example: 3
-        retryMultipleAPs:
-          type: boolean
-          example: true
           
  ## DataApp
     DataApp:
@@ -1705,8 +1700,20 @@ components:
       items:
           $ref: '#/components/schemas/GroupActiontStatusResponse'
     
-    TriggerResponseArray:
+    TriggerResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Id'
+        - type: object
+          properties:
+            affordance:
+              type: string
+              description: |-
+                percent-encoded JSON pointer to the SDF event object
+              example: https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected
+        - $ref: '#/components/schemas/Action'
+
+    TriggerStatusResponseArray:
       type: array
       items:
-          $ref: '#/components/schemas/Trigger'
-    
+          $ref: '#/components/schemas/TriggerResponse'  
