@@ -14,12 +14,12 @@ info:
   license:
     name: TBD
     url: TBD
-  version: 0.15.0
+  version: 0.16.0
 externalDocs:
   description: NIPC IETF draft
   url: https://datatracker.ietf.org/doc/draft-ietf-asdf-nipc/
 servers:
-  - url: "{gw_host}/nipc/draft-15"
+  - url: "{gw_host}/nipc/draft-16"
     variables:
       gw_host:
         default: localhost
@@ -37,7 +37,11 @@ tags:
       management, it will be performed as part of the API call.
   - name: NIPC action APIs
     description: |-
-      APIs that perform actions on devices.
+      APIs that perform actions on devices or groups.
+  - name: NIPC trigger APIs
+    description: |-
+      APIs that install triggers on actions and events for devices 
+      or groups. A trigger always triggers an action. 
   - name: NIPC management APIs
     description: |-
       APIs that manage device connections.
@@ -517,7 +521,289 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
-               
+
+  /groups/{id}/actions:
+    post:
+      tags:
+        - NIPC action APIs
+      summary: Perform an action on a group
+      description: |-
+        Perform an action on a group of decvices
+        If the underlying protocol requires a connection to be set
+        up, this API call will perform the necessary connection
+        management. If a connection is already active for this
+        device, the existing connection will be leveraged without
+        modifying it.
+      operationId: ActionGroupProperty
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group. 
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
+      - name: actionName
+        in: query
+        description: action that needs to be performed
+        required: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfAction/start"
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+        required: false
+      responses:
+        '202':
+          description: Accepted, action is being performed
+          headers:
+            Location:
+              description: Location of the action
+              schema:
+                type: string
+                format: uri
+                example: "/groups/{id}/actions?instanceId={instanceId}"
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+    get:
+      tags:
+        - NIPC action APIs
+      summary: Get status of an action on a group
+      description: |-
+        Get status of an action on a specific group of
+        devices. Success is action is active, failure if action not
+        active.
+      operationId: GetGroupAction
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the device. Group ID is not allowed.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
+      - name: instanceId
+        in: query
+        description: |-
+          instance id of the action that needs to be checked
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 02ee282c-8915-4b2e-bbd2-88966773134a
+      responses:
+        '200':
+          description: Success, action is active
+          content:
+            application/nipc+json:
+              schema:
+                $ref: '#/components/schemas/GroupActionStatusResponseArray'
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+
+### NIPC Trigger APIs
+  /devices/{id}/triggers:
+    post:
+      tags:
+        - NIPC trigger APIs
+      summary: create a trigger on an affordance of a device
+      description: |-
+        Creates a trigger on an affordance of a device. A trigger 
+        will trigger an action on another device or a group of devices
+      operationId: CreateTrigger
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the device.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
+      - name: sdfAffordance
+        in: query
+        description: |-
+          sdf affordance that will trigger this action, this can be 
+          either an event or an action
+        required: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+      requestBody:
+        description: |-
+          The NIPC API call to be called when the trigger is 
+          executed.
+        content:
+          application/nipc+json:
+            schema:
+              $ref: '#/components/schemas/Action'
+        required: true
+      responses:
+        '201':
+          description: Success
+          headers:
+            Location:
+              description: Location of the created trigger
+              schema:
+                type: string
+                format: uri
+                example: "/devices/{id}/triggers?instanceId={instanceId}"
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+    get:
+      tags:
+        - NIPC trigger APIs
+      summary: Get information about a trigger or all triggers
+      description: |-
+        Get information about a trigger for a device or all triggers 
+        if none specified
+      operationId: GetTrigger
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the device. 
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
+      - name: instanceId
+        in: query
+        description: |-
+          instance id of the action that needs to be checked
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 02ee282c-8915-4b2e-bbd2-88966773134a
+      responses:
+        '200':
+          description: Success, action is active
+          content:
+            application/nipc+json:
+              schema:
+                $ref: '#/components/schemas/TriggerStatusResponseArray'
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+
+  /groups/{id}/triggers:
+    post:
+      tags:
+        - NIPC trigger APIs
+      summary: create a trigger on an affordance of a group
+      description: |-
+        Creates a trigger on an affordance of a group of devices. A trigger 
+        will trigger an action on a device or a group of devices
+      operationId: CreateTrigger
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
+      - name: sdfAffordance
+        in: query
+        description: |-
+          sdf affordance that will trigger this action, this can be 
+          either an event or an action
+        required: true
+        allowReserved: true
+        schema:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
+      requestBody:
+        description: |-
+          The NIPC API call to be called when the trigger is 
+          executed, as well as the device or group it is to be executed against.
+        content:
+          application/nipc+json:
+            schema:
+              $ref: '#/components/schemas/Action'
+        required: true
+      responses:
+        '201':
+          description: Success
+          headers:
+            Location:
+              description: Location of the created trigger
+              schema:
+                type: string
+                format: uri
+                example: "/devices/{id}/triggers?instanceId={instanceId}"
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+    get:
+      tags:
+        - NIPC trigger APIs
+      summary: Get information about a trigger or all triggers
+      description: |-
+        Get information about a trigger or all triggers 
+        if none specified
+      operationId: GetTrigger
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
+      - name: instanceId
+        in: query
+        description: |-
+          instance id of the action that needs to be checked
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 02ee282c-8915-4b2e-bbd2-88966773134a
+      responses:
+        '200':
+          description: Success, action is active
+          content:
+            application/nipc+json:
+              schema:
+                $ref: '#/components/schemas/TriggerResponse'
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+
+### NIPC management APIs               
   /devices/{id}/connections:
     post:
       tags:
@@ -975,17 +1261,6 @@ components:
           type: string
           example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature"
 
-    ActionResponse:
-      required:
-        - action
-      type: object
-      properties:
-        status:
-          type: string
-          example: COMPLETED
-          description: |-
-            Status of the action, can be IN_PROGRESS or COMPLETED
-
 ## A value
     Value:
       required:
@@ -1030,6 +1305,16 @@ components:
           description: |-
             A SCIM-generated UUID for the event instance
           example: 02ee282c-8915-4b2e-bbd2-88966773134a
+
+## An Action
+    Action:
+      type: object
+      properties:
+        action:
+          type: string
+          description: |-
+            NIPC action operation to execute
+          example: /devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring
             
 ## A Connection
     Connection:
@@ -1039,9 +1324,6 @@ components:
           type: integer
           format: int32
           example: 3
-        retryMultipleAPs:
-          type: boolean
-          example: true
           
  ## DataApp
     DataApp:
@@ -1389,3 +1671,49 @@ components:
       items:
           $ref: '#/components/schemas/GroupEventStatusResponse'
     
+    ActionResponse:
+      required:
+        - action
+      type: object
+      properties:
+        status:
+          type: string
+          example: COMPLETED
+          description: |-
+            Status of the action, can be IN_PROGRESS or COMPLETED
+    
+    GroupActiontStatusResponse:
+      type: object
+      oneOf:
+        - allOf:
+          - $ref: '#/components/schemas/ActionResponse'
+          - type: object
+            properties:
+              deviceId:
+                type: string
+                format: uuid
+                example: 0dc729d7-f6c3-491d-9b9d-e7176d2be243
+        - $ref: '#/components/schemas/FailureResponse'
+
+    GroupActionStatusResponseArray:
+      type: array
+      items:
+          $ref: '#/components/schemas/GroupActiontStatusResponse'
+    
+    TriggerResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Id'
+        - type: object
+          properties:
+            affordance:
+              type: string
+              description: |-
+                percent-encoded JSON pointer to the SDF event object
+              example: https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected
+        - $ref: '#/components/schemas/Action'
+
+    TriggerStatusResponseArray:
+      type: array
+      items:
+          $ref: '#/components/schemas/TriggerResponse'  
