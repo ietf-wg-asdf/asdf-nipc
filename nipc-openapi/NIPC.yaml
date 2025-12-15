@@ -831,7 +831,15 @@ paths:
             schema:
               anyOf:
                 - $ref: '#/components/schemas/Connection'
-                - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceList'
+                - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+            example:
+              retries: 3
+              protocolInformation:
+                ble:
+                  services:
+                    - serviceID: "00001809-0000-1000-8000-00805f9b34fb"
+                  cached: true
+                  cacheExpiryDuration: 3600
         required: false
       responses:
         '200':
@@ -841,7 +849,18 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
-                  - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
+                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+              example:
+                id: "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
+                protocolInformation:
+                  ble:
+                    services:
+                      - serviceID: "00001809-0000-1000-8000-00805f9b34fb"
+                        characteristics:
+                          - characteristicID: "00002a19-0000-1000-8000-00805f9b34fb"
+                            properties: ["read", "notify"]
+                            descriptors:
+                              - descriptorID: "00002902-0000-1000-8000-00805f9b34fb"
         default:
           description: Error response
           content:
@@ -871,7 +890,15 @@ paths:
         content:
           application/nipc+json:
             schema:
-              $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceList'
+              $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+            example:
+              retries: 3
+              protocolInformation:
+                ble:
+                  services:
+                    - serviceID: "00001809-0000-1000-8000-00805f9b34fb"
+                  cached: true
+                  cacheExpiryDuration: 3600
         required: false
       responses:
         '200':
@@ -881,7 +908,18 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
-                  - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
+                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+              example:
+                id: "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
+                protocolInformation:
+                  ble:
+                    services:
+                      - serviceID: "00001809-0000-1000-8000-00805f9b34fb"
+                        characteristics:
+                          - characteristicID: "00002a19-0000-1000-8000-00805f9b34fb"
+                            properties: ["read", "notify"]
+                            descriptors:
+                              - descriptorID: "00002902-0000-1000-8000-00805f9b34fb"
         default:
           description: Error response
           content:
@@ -946,7 +984,18 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
-                  - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-ServiceMap'
+                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+              example:
+                id: "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
+                protocolInformation:
+                  ble:
+                    services:
+                      - serviceID: "00001809-0000-1000-8000-00805f9b34fb"
+                        characteristics:
+                          - characteristicID: "00002a19-0000-1000-8000-00805f9b34fb"
+                            properties: ["read", "notify"]
+                            descriptors:
+                              - descriptorID: "00002902-0000-1000-8000-00805f9b34fb"     
         default:
           description: Error response
           content:

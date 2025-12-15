@@ -1355,27 +1355,29 @@ Example of a response:
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "protocolInformation": {
-    "ble": [
-      {
-        "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
-        "characteristics": [
-          {
-            "characteristicID": 
-              "00002a1c-0000-1000-8000-00805f9b34fb",
-            "flags": [
-              "read",
-              "write"
-            ],
-            "descriptors": [
-              {
-                "descriptorID": 
-                  "00002902-0000-1000-8000-00805f9b34fb"
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    "ble": {
+      "services": [
+        {
+          "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
+          "characteristics": [
+            {
+              "characteristicID": 
+                  "00002a1c-0000-1000-8000-00805f9b34fb",
+              "flags": [
+                "read",
+                "write"
+              ],
+              "descriptors": [
+                {
+                  "descriptorID": 
+                      "00002902-0000-1000-8000-00805f9b34fb"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }
 ~~~~~
@@ -1456,27 +1458,29 @@ Example of a response:
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "protocolInformation": {
-    "ble": [
-      {
-        "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
-        "characteristics": [
-          {
-            "characteristicID": 
-              "00002a1c-0000-1000-8000-00805f9b34fb",
-            "flags": [
-              "read",
-              "write"
-            ],
-            "descriptors": [
-              {
-                "descriptorID": 
-                  "00002902-0000-1000-8000-00805f9b34fb"
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    "ble": {
+      "services": [
+        {
+          "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
+          "characteristics": [
+            {
+              "characteristicID": 
+                "00002a1c-0000-1000-8000-00805f9b34fb",
+              "flags": [
+                "read",
+                "write"
+              ],
+              "descriptors": [
+                {
+                  "descriptorID": 
+                    "00002902-0000-1000-8000-00805f9b34fb"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }
 ~~~~~
@@ -1539,27 +1543,29 @@ Example of a response:
 {
   "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
   "protocolInformation": {
-    "ble": [
-      {
-        "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
-        "characteristics": [
-          {
-            "characteristicID": 
-              "00002a1c-0000-1000-8000-00805f9b34fb",
-            "flags": [
-              "read",
-              "write"
-            ],
-            "descriptors": [
-              {
-                "descriptorID": 
-                  "00002902-0000-1000-8000-00805f9b34fb"
-              }
-            ]
-          }
-        ]
-      }
-    ]
+    "ble": {
+      "services": [
+        {
+          "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
+          "characteristics": [
+            {
+              "characteristicID": 
+                "00002a1c-0000-1000-8000-00805f9b34fb",
+              "flags": [
+                "read",
+                "write"
+              ],
+              "descriptors": [
+                {
+                  "descriptorID": 
+                    "00002902-0000-1000-8000-00805f9b34fb"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
   }
 }
 ~~~~~
@@ -2313,9 +2319,30 @@ The following non-normative model is provided for convenience of the implementor
 ~~~~~~
 {: #openAPI sourcecode-markers="true" sourcecode-name="NIPC.yaml"}
 
-# Protocol mapping
+# Protocol Mapping
 
 The OpenAPI model for SDF protocol mapping is provided in {{Appendix B of I-D.ietf-asdf-sdf-protocol-mapping}}.
+
+# Protocol Information
+
+~~~ yaml
+{::include nipc-openapi/protocolinfo/ProtocolInfo.yaml.folded}
+~~~
+{: sourcecode-markers="true" sourcecode-name="ProtocolInfo.yaml"}
+
+## Protocol Information for BLE
+
+~~~ yaml
+{::include nipc-openapi/protocolinfo/ProtocolInfo-BLE.yaml.folded}
+~~~
+{: sourcecode-markers="true" sourcecode-name="ProtocolInfo-BLE.yaml"}
+
+## Protocol Information for Zigbee
+
+~~~ yaml
+{::include nipc-openapi/protocolinfo/ProtocolInfo-Zigbee.yaml.folded}
+~~~
+{: sourcecode-markers="true" sourcecode-name="ProtocolInfo-Zigbee.yaml"}
 
 # NIPC API extensions {#NIPCextensions}
 

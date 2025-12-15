@@ -7,7 +7,10 @@ YAML_SOURCES= nipc-openapi/NIPC.yaml \
 	nipc-openapi/extensions/Extension-EventConditional.yaml \
 	nipc-openapi/protocolmaps/ProtocolMap-BLE.yaml \
 	nipc-openapi/protocolmaps/ProtocolMap-Zigbee.yaml \
-	nipc-openapi/protocolmaps/ProtocolMap.yaml
+	nipc-openapi/protocolmaps/ProtocolMap.yaml \
+	nipc-openapi/protocolinfo/ProtocolInfo-BLE.yaml \
+	nipc-openapi/protocolinfo/ProtocolInfo-Zigbee.yaml \
+	nipc-openapi/protocolinfo/ProtocolInfo.yaml
 
 YAML_FOLDED= $(YAML_SOURCES:.yaml=.yaml.folded)
 
@@ -21,7 +24,8 @@ CDDL_API_SOURCES= \
 	cddl/api/property_value_array.cddl \
 	cddl/api/property_value_read_response_array.cddl \
 	cddl/api/property_value_response_array.cddl \
-	cddl/api/sdf_reference.cddl
+	cddl/api/sdf_reference.cddl \
+	cddl/api/connection.cddl
 
 # Other CDDL files (not included in combined)
 CDDL_OTHER_SOURCES= \

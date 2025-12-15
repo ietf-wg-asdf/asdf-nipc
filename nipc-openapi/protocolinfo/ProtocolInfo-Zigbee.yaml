@@ -1,0 +1,82 @@
+openapi: 3.0.3
+info:
+  title: SDF Protocol Information for Zigbee
+  description: |-
+    SDF Protocol Information for Zigbee devices.
+  version: 0.10.0
+externalDocs:
+  description: SDF Protocol Mapping IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-sdf-protocol-mapping/
+
+paths: {}
+
+components:
+  schemas:
+# Zigbee Protocol Information
+##  Protocol Information for Zigbee Service Map
+    ProtocolInfo-Zigbee-ServiceMap:
+      required:
+        - zigbee
+      type: object
+      properties:
+        zigbee:
+          type: object
+          properties:
+            endpoints:
+              type: array
+              items:
+                $ref: '#/components/schemas/ProtocolInfo-Zigbee-Endpoint'
+
+    ProtocolInfo-Zigbee-Endpoint:
+      required:
+        - endpointID
+        - clusters
+      type: object
+      properties:
+        endpointID:
+          type: integer
+          format: int32
+          example: 10
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtocolInfo-Zigbee-Cluster'
+
+    ProtocolInfo-Zigbee-Cluster:
+      required:
+        - clusterID
+        - properties
+      type: object
+      properties:
+        clusterID:
+          type: integer
+          format: int32
+          example: 0
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProtocolInfo-Zigbee-Property'
+
+    ProtocolInfo-Zigbee-Property:
+      required:
+        - attributeID
+        - propertyType
+      type: object
+      properties:
+        attributeID:
+          type: integer
+          format: int32
+          example: 1
+        propertyType:
+          type: integer
+          format: int32
+          example: 32
+          
+## Protocol Information for Zigbee broadcast
+    ProtocolInfo-Zigbee-Broadcast:
+      required:
+        - zigbee
+      type: object
+      properties:
+        zigbee:
+          type: object

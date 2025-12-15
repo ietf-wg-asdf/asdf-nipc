@@ -1,0 +1,73 @@
+ConnectionRequest = {
+  ? retries: uint,
+  ? retryMultipleAPs: bool,
+  ? protocolInformation: ProtocolInformation
+}
+
+ConnectionResponse = {
+  id: text,  ; UUID of the connection
+  ? protocolInformation: ProtocolInformation
+}
+
+ProtocolInformation = {
+  ? ble: BLEProtocolInfo,
+  ? zigbee: ZigbeeProtocolInfo
+}
+
+; BLE Protocol Information
+BLEProtocolInfo = {
+  ? services: [* BLEService],
+  ? cached: bool,              ; default: false
+  ? cacheExpiryDuration: uint, ; in seconds, default: 3600
+  ? autoUpdate: bool,          ; default: true
+  ? bonding: BondingType
+}
+
+BLEService = {
+  serviceID: text,  ; UUID format
+  ? characteristics: [* BLECharacteristic]
+}
+
+BLECharacteristic = {
+  characteristicID: text,  ; UUID format
+  ? flags: [* BLEFlag],
+  ? descriptors: [* BLEDescriptor]
+}
+
+BLEDescriptor = {
+  descriptorID: text  ; UUID format
+}
+
+BLEFlag = (
+  "read" /
+  "write" /
+  "notify"
+)
+
+BondingType = (
+  "default" /
+  "none" /
+  "justworks" /
+  "passkey" /
+  "oob"
+)
+
+; Zigbee Protocol Information
+ZigbeeProtocolInfo = {
+  ? endpoints: [* ZigbeeEndpoint]
+}
+
+ZigbeeEndpoint = {
+  endpointID: uint,
+  ? clusters: [* ZigbeeCluster]
+}
+
+ZigbeeCluster = {
+  clusterID: uint,
+  ? properties: [* ZigbeeProperty]
+}
+
+ZigbeeProperty = {
+  attributeID: uint,
+  propertyType: uint,
+}

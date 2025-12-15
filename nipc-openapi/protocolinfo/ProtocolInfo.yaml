@@ -1,0 +1,42 @@
+openapi: 3.0.3
+info:
+  title: SDF Protocol Information
+  description: |-
+    SDF Protocol Information. When adding a
+    new protocol information schema please add a reference to the protocol info
+    for all the schemas in this file.
+  version: 0.10.0
+externalDocs:
+  description: SDF Protocol Mapping IETF draft
+  url: https://datatracker.ietf.org/doc/draft-ietf-asdf-sdf-protocol-mapping/
+
+paths: {}
+
+components:
+  schemas:
+# Protocol Information
+## Protocol Info for Service Discovery
+    ProtocolInfo-ServiceList:
+      type: object
+      properties:
+        protocolInformation:
+          oneOf:
+            - $ref: './ProtocolInfo-BLE.yaml#/components/schemas/ProtocolInfo-BLE-ServiceList'
+
+## Protocol Info for Service Discovery result
+    ProtocolInfo-ServiceMap:
+      type: object
+      properties:
+        protocolInformation:
+          oneOf:
+            - $ref: './ProtocolInfo-BLE.yaml#/components/schemas/ProtocolInfo-BLE-ServiceList'
+            - $ref: './ProtocolInfo-Zigbee.yaml#/components/schemas/ProtocolInfo-Zigbee-ServiceMap'
+
+## Protocol Info for Broadcasts
+    ProtocolInfo-Broadcast:
+      type: object
+      properties:
+        protocolInformation:
+          oneOf:  
+            - $ref: './ProtocolInfo-BLE.yaml#/components/schemas/ProtocolInfo-BLE-Broadcast'
+            - $ref: './ProtocolInfo-Zigbee.yaml#/components/schemas/ProtocolInfo-Zigbee-Broadcast'
