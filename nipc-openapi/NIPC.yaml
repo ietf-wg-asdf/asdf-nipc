@@ -858,7 +858,7 @@ paths:
                       - serviceID: "00001809-0000-1000-8000-00805f9b34fb"
                         characteristics:
                           - characteristicID: "00002a19-0000-1000-8000-00805f9b34fb"
-                            properties: ["read", "notify"]
+                            flags: ["read", "notify"]
                             descriptors:
                               - descriptorID: "00002902-0000-1000-8000-00805f9b34fb"
         default:
@@ -917,7 +917,7 @@ paths:
                       - serviceID: "00001809-0000-1000-8000-00805f9b34fb"
                         characteristics:
                           - characteristicID: "00002a19-0000-1000-8000-00805f9b34fb"
-                            properties: ["read", "notify"]
+                            flags: ["read", "notify"]
                             descriptors:
                               - descriptorID: "00002902-0000-1000-8000-00805f9b34fb"
         default:
@@ -993,7 +993,7 @@ paths:
                       - serviceID: "00001809-0000-1000-8000-00805f9b34fb"
                         characteristics:
                           - characteristicID: "00002a19-0000-1000-8000-00805f9b34fb"
-                            properties: ["read", "notify"]
+                            flags: ["read", "notify"]
                             descriptors:
                               - descriptorID: "00002902-0000-1000-8000-00805f9b34fb"     
         default:

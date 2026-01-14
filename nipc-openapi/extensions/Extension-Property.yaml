@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 openapi: 3.0.3
 info:
-  title: Non IP Device Control (NIPC) API read conditional extension
+  title: Non IP Device Control (NIPC) API properties extension
   description: |-
-    Non IP Device Control (NIPC) API read conditional extension
+    Non IP Device Control (NIPC) API properties extension
   termsOfService: http://swagger.io/terms/
   contact:
     email: bbrinckm@cisco.com
@@ -142,7 +142,7 @@ components:
   schemas:
     Transmit:
       allOf:
-        - $ref: '../protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Broadcast'
+        - $ref: '../protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-Broadcast'
       required:
         - cycle
       type: object
