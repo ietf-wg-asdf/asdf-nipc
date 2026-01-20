@@ -2331,7 +2331,7 @@ Level of maturity: Open-source prototype
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: All versions up to draft-15
+Version compatibility: All versions up to draft-16
 
 Licensing: Apache License, Version 2.0
 
@@ -2363,7 +2363,7 @@ Level of maturity: Beta
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: draft-15
+Version compatibility: draft-16
 
 Licensing: Proprietary
 
