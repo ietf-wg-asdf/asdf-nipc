@@ -27,7 +27,8 @@ CDDL_API_SOURCES= \
 	cddl/api/property_value_read_response_array.cddl \
 	cddl/api/property_value_response_array.cddl \
 	cddl/api/sdf_reference.cddl \
-	cddl/api/connection.cddl
+	cddl/api/connection.cddl \
+	cddl/api/protocolinfo.cddl
 
 # Other CDDL files (not included in combined)
 CDDL_OTHER_SOURCES= \
