@@ -1495,15 +1495,15 @@ sdfEvent/fallDetected"
 
 Some protocols do not require explicit connection setup; for those protocols, the APIs in this section do not apply. For protocols that do require a connection (e.g., BLE), an NIPC gateway performs implicit connection management for individual operations (establish on demand; release on completion), so clients ordinarily need not manage connections. Clients MAY choose to explicitly establish and retain a connection to perform a sequence of operations that depends on intermediate results. This section specifies APIs for explicit connection lifecycle control. Examples use BLE.
 
-### Protocol Information Object {#ble-protocol-information}
+### Protocol Information Object {#protocol-information}
 The protocol information object is used to define protocol specific parameters for connections. The protocol information object is protocol specific and defined in the protocol extensions. An example of where a protocol info object would be used is to return protocol specific connection parameters when making connections, for example a BLE service map . An example of a BLE protocol information object is shown below.
 
 This specification defines both the BLE and the Zigbee protocol information objects for connections and broadcast messages.
 
 ~~~~ cddl
-{::include cddl/api/ble_protocol_information.cddl.folded}
+{::include cddl/protocolinfo.cddl.folded}
 ~~~~
-{:cddl sourcecode-markers="true" sourcecode-name="ble_protocol_information.cddl"}   
+{:cddl sourcecode-markers="true" sourcecode-name="protocolinfo.cddl"}   
 
 ### Connect to a device
 
@@ -1570,8 +1570,8 @@ where in the BLE protocol object:
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
    notification (on by default)
- - "bonding" allows you to override the bonding method configured in the device object 
-
+ - "bonding" allows you to override the bonding method configured in the device object. Possible values are default, none, justworks, passkey, oob. Default behavior is to use the bonding method defined in the device object.
+    
 Response:
 
 Success responses includes an optional protocol information object with an array of discovered properties, as defined in the BLE protocol info object in section {{ble-protocol-information}}.
