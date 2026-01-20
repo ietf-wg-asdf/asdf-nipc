@@ -1,0 +1,9 @@
+; Trigger status response array and item shape
+
+TriggerStatusResponseArray = [* TriggerResponse]
+
+TriggerResponse = {
+  SdfReference,
+  ? action: text,      ; NIPC action operation to execute
+  instanceId: text     ; UUID (as text)
+}

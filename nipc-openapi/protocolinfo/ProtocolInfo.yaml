@@ -15,21 +15,13 @@ paths: {}
 components:
   schemas:
 # Protocol Information
-## Protocol Info for Service Discovery
-    ProtocolInfo-ServiceList:
-      type: object
-      properties:
-        protocolInformation:
-          oneOf:
-            - $ref: './ProtocolInfo-BLE.yaml#/components/schemas/ProtocolInfo-BLE-ServiceList'
-
 ## Protocol Info for Service Discovery result
     ProtocolInfo-ServiceMap:
       type: object
       properties:
         protocolInformation:
           oneOf:
-            - $ref: './ProtocolInfo-BLE.yaml#/components/schemas/ProtocolInfo-BLE-ServiceList'
+            - $ref: './ProtocolInfo-BLE.yaml#/components/schemas/ProtocolInfo-BLE-ServiceMap'
             - $ref: './ProtocolInfo-Zigbee.yaml#/components/schemas/ProtocolInfo-Zigbee-ServiceMap'
 
 ## Protocol Info for Broadcasts

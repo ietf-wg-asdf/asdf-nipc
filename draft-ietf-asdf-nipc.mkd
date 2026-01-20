@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-Internet-Connected Physical Components (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-15
+docname: draft-ietf-asdf-nipc-16
 submissionType: IETF
 category: std
 
@@ -106,15 +106,15 @@ A Non-Internet-Connected Physical Components (NIPC) gateway is an application la
 
 In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
 
-- The device is onboarded (its identity and any credentials/trust material are provisioned). Onboarding is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
-- An interaction model for the class of devices must be registered with the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
+- The gateway has access to a device object, that contains is its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device. Provisioning this device object is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
+- An interaction model for the class of devices must be available to the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 
 Once these prerequisites are met, the gateway can resolve a referenced SDF affordance into the protocol-specific operations required for that device.
 
 A NIPC gateway provides the following functions:
 
  - Authentication and authorization of application clients that will leverage the NIPC APIs. 
- - Maintain a repository of onboarded device objects.
+ - Maintain a repository of device objects.
  - Accept and validate SDF interaction model registrations.
  - Expose APIs for property, action, and event operations.
  - Perform implicit connection management to devices where required; optionally support explicit connection management.
@@ -180,7 +180,6 @@ capitals, as shown here.
  - Descriptor (BLE): Metadata element attached to a characteristic.
  - Bonding (BLE): Procedure to establish trusted, reusable security keys.
  - Service Discovery (BLE): Procedure to enumerate GATT services/characteristics/descriptors.
- - Device Onboarding: Registration of a device identity and metadata before NIPC operations.
  - Device ID / Group ID: UUID identifying a device or a group of devices.
  - UUID: Universally unique identifier (128-bit).
  - Data Application / Data App: Registered application receiving streamed event data.
@@ -204,8 +203,8 @@ A Non‑Internet‑Connected Physical Components (NIPC) gateway is an applicatio
 
 To execute NIPC operations on a device, both prerequisites MUST be met:
 
-1. Device onboarding: The device identity and required trust material are provisioned (e.g., via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}). This yields the device ID referenced in NIPC API paths.
-2. Interaction model: An SDF model {{!I-D.ietf-asdf-sdf}} is registered, providing protocol‑neutral affordances and mappings to protocol‑specific operations.
+1. The NIPC gateway has access to device instance information: The device object contains its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device (e.g., via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}). This device object is identified by the device ID referenced in NIPC API paths.
+2. The NIPC gateway has access to an interaction model (device class information): An SDF model {{!I-D.ietf-asdf-sdf}} is registered, providing protocol‑neutral affordances and mappings to protocol‑specific operations.
 
 ~~~~~ aasvg
 
@@ -226,19 +225,24 @@ To execute NIPC operations on a device, both prerequisites MUST be met:
 
 Once both prerequisites are met, authorized applications can perform NIPC operations on devices identified by their IDs. See {{security-considerations}} for authorization details. NIPC operations act on SDF affordances—properties, actions, and events—defined in the registered SDF model. Certain NIPC operations may also be performed on groups of devices identified by a group ID.
 
-## Onboarding
+### Device instance information
 
-Onboarding is the process of declaring a device’s identity to the NIPC gateway and provisioning the trust material required to communicate with the device. The device object MUST include sufficient information to bootstrap trust and establish connectivity, as NIPC operations assume connectivity can be established without separate API calls. While onboarding can be performed in various ways, it is RECOMMENDED to use SCIM {{!RFC7644}} with the device schema {{!I-D.ietf-scim-device-model}}, which defines the necessary attributes and extensions to support NIPC. As per {{Section 4.2 of !RFC7643}}, group objects may also be declared, and leveraged in NIPC operations.
+In order for the NIPC gateway to perform operations on a device, it must have access to the device's instance information. This includes the device’s identity and any credentials or trust material required to communicate with the device. The device object MUST include a unique identity (UUID) and sufficient information to bootstrap trust and establish connectivity, as NIPC operations assume connectivity can be established without separate API calls. While provisioning devices instance information can be performed in various ways, it is RECOMMENDED to use SCIM {{!RFC7644}} with the device schema {{!I-D.ietf-scim-device-model}}, which defines the necessary attributes and extensions to support NIPC. As per {{Section 4.2 of !RFC7643}}, group objects may also be declared, and leveraged in NIPC operations.
 
-## Registrations
+### Device class information 
 
-NIPC registration APIs allow applications to declare information about a device class or authorize a data application. These APIs do not operate on specific devices or groups of devices.
+Device class information is declared through SDF models. Thsec SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings that relate these affordances to protocol-specific operations. The SDF model fro a class of devices can be registered trough NIPC registration APIs, as described in {{nipc-registrations}}. 
+
+The SDF model reference and/or data‑app registration MAY also be included in a device's SCIM object. See {{!I-D.ietf-scim-device-model}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for details.
+
+## NIPC Registrations {#nipc-registrations}
+
+NIPC registration APIs allow applications to register objects that are not tied to specific device instances.
 
 NIPC supports two registration types:
 
 1. SDF model registration: Registers an SDF interaction model for a class of devices.
 2. Data application authorization: Authorizes an application to receive streaming event data.
-Optionally, the SDF model reference and/or data‑app registration MAY be included in the device's SCIM object. See {{!I-D.ietf-scim-device-model}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for details.
 
 ### SDF model registrations
 
@@ -266,11 +270,12 @@ Failures use Problem Details {{!RFC9457}} with application/problem+json.
 NIPC operations are protocol-neutral operations on SDF affordances, more specifically properties, actions & events. NIPC operations can happen against
 affordances registered in an SDF model. Operations reference affordances by their SDF global name. If the underlying protocol requires a connection, the gateway establishes and tears down the connection implicitly unless an explicit connection is already in place.
 
-NIPC exposes three operation groups:
+NIPC exposes four operation groups:
 
 - Properties APIs: These APIs allow applications to perform operations on properties, such as to read or write values to them.
 - Actions APIs: These APIs perform actions on devices, such as enabling or disabling a feature on a device.
 - Events APIs: These APIs allow apps to enable or disable event reporting on devices. Events are reported over the events publish/subscribe interface.
+- Trigger APIs: These APIs allow an action or an event on one device to trigger an action on another device.
 
 ### Properties
 
@@ -294,8 +299,15 @@ Request bodies are optional and MAY carry action input in a media type appropria
 Event operations enable and disable device event reporting.
 
 Enabling an event returns 201 Created with a Location header referencing the event instance.
-Disabling an event uses the instance identifier and returns 204 No Content on success (for a single device) or a per‑device status list (for a group).
+Disabling an event uses the instance identifier and returns 204 No Content on success (for a single device) or 200 Success with a per‑device status list (for a group).
 Event payloads are delivered via the publish/subscribe interface encoded in CBOR {{!RFC8949}}.
+
+### Triggers
+
+Triggers allow an action or an event on one device to trigger an action on another device. Triggers are not protocol-specific. As an example, an event on a BLE device can trigger an action on a Zigbee device.
+
+Creating a trigger returns 201 Created with a Location header referencing the trigger instance.
+Deleting a trigger uses the instance identifier and returns 204 No Content on success (for a single device) or 200 Success with a per‑device trigger list (for a group).
 
 ### Groups
 
@@ -406,6 +418,7 @@ perform on the device. This can be:
  - properties
  - events
  - actions
+ - triggers
  - extensions
 
 These are described in {{nipc-ops}}.
@@ -438,10 +451,9 @@ Devices or groups of devices are identified by a unique UUID, adhering to {{!RFC
 | id            | uuid | 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 |
 {: #devicedef title="Definition of a device or group of devices"}
 
-ID is a UUID assigned during onboarding (e.g., by a SCIM server). The identifier is returned when the device object is created and is used by both the application and the NIPC gateway. The application must store this UUID in order to use it to identify the device on which it wants to perform NIPC operations.
-If the NIPC gateway is not co‑located with the SCIM server, it retrieves the device object from SCIM using this ID.
+ID is a UUID assigned to uniquely identify a device to the NIPC Gateway (e.g., by a SCIM server) and hte application calling the APIs. The NIPC Gateway must have access to a device object identified by this device ID and the application must store this UUID in order to use it to identify the device on which it wants to perform NIPC operations.
 
-### SDF Name
+#### SDF Name
 
 Operations act on SDF affordances and reference them by SDF global name—an absolute URI with fragment that includes the namespace. The affordance referenced MAY be a property, action, or event; the reference is carried as a string.
 
@@ -1081,6 +1093,7 @@ Query Parameters:
  - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled)
 
 Response:
+
 MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully disabled, the entry MUST include deviceId and event (SDF global name). For each device where disabling failed, the entry MUST be a Problem Details error object for that device.
 
 ~~~~ cddl
@@ -1136,6 +1149,7 @@ Query Parameters:
  - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled).
 
 Response: 
+
 MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully enabled, the entry MUST include deviceId and event (SDF global name). For each device where enabling failed, the entry MUST be a Problem Details error object for that device.
 
 ~~~~ cddl
@@ -1196,9 +1210,11 @@ Query Parameters:
   - actionName: the action to perform
 
 Request Body:
+
 The request body is optional and may contain a value. The media type of the value can be defined by the underlying protocol, for example it could be octet-stream for binary data.
 
 Response:
+
 Actions are performed asynchronously. A successful request returns HTTP status code 202 Accepted with a Location header pointing to the action instance for status checking. The Location header contains the URI for the action instance, which can be used to check the action status.
 
 Example of a successful response:
@@ -1242,11 +1258,252 @@ Example of a response:
 ~~~~~
 {:json #exactionstatusresp title="Example action status response" sourcecode-markers="true"}
 
-## NIPC explicit connections management APIs {#nipc-connection-management-apis}
+## NIPC trigger APIs
 
-Many protocols do not require connection management, so for these protocols, these APIs will not apply.
-NIPC Gateways perform implicit connection management for protocols that require connection management (such as BLE), so in principle the user of the NIPC API does not have to perform connection management. In some cases however, a user might want to keep a connection open, perform an action, evaluate the result and perform a second action based on that result. In this case it is useful to perform explicit connection management so the connection remains established to execute subsequent actions.  These APIs allow applications to explicitly manage device connections.
-The examples in this section will be based on BLE, which requires connection management.
+Triggers APIs do not actually execute an operation on a device or group of devices, but install a trigger that registers an operation. When triggered the registered operation gets executed. 
+
+Triggers can be installed for devices or groups of devices, represented by their id as a path parameter.
+
+The trigger can be an action or an event. the global name of the trigger is passed as a path parameter. 
+
+The operation is always an action. Since an action can be executed against both a device and a group, the trigger API also supports actions on both devices and groups of devices. The action is defined by its full NIPC URI to be executed, for example: "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https://example.com/AlarmSystem#/sdfObject/bell/sdfAction/ring"
+
+If a NIPC Gateway supports multiple protocols, then a trigger can be defined on a devices that supports one protocol and triggers an action on a device that supports a different protocol. As an example, an event on a BLE device can trigger an action on a Zigbee device.
+
+### Create a trigger on a device
+
+Method: `POST /devices/{id}/triggers{?sdfName}`
+
+Description: Creates a trigger on an affordance of a device. A trigger will trigger an action on another device or a group of devices.
+
+Parameters:
+
+ - id: the ID of the device
+
+Query Parameters:
+
+ - sdfName: the sdfName of the affordance that is associated with the trigger. This can be either an event or an action. the event to enable. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent` or an `sdfAction`. 
+
+Request Body:
+  
+ - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter. 
+
+~~~~ cddl
+{::include cddl/api/action.cddl.folded}
+~~~~
+{:cddl sourcecode-markers="true" sourcecode-name="action.cddl"}
+
+Example body for trigger creation:
+
+~~~~~ json
+{
+  "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
+}
+~~~~~
+{:json #excreatetrigger title="Example trigger creation" sourcecode-markers="true"}
+
+Response:
+
+ - Returns HTTP status code 201 Created with a Location header pointing to the created trigger instance.
+
+Example of a successful response:
+
+~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
+HTTP/1.1 201 Created
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/trigger?insta\
+nceId=02ee282c-8915-4b2e-bbd2-88966773134a
+~~~~~
+
+The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the event.
+
+### Delete a trigger on a device
+
+Method: `DELETE /devices/{id}/triggers{?instanceId}`
+
+Description: Deletes an installed trigger
+
+Parameters:
+
+ - id: the ID of the device
+
+Query Parameters:
+
+ - instanceId: the instance ID of the trigger to disable (obtained from the Location header when the trigger was installed)
+
+Response:
+
+ - Returns HTTP status code 204 No Content on successful delete.
+
+~~~~~
+HTTP/1.1 204 No Content
+~~~~~
+
+### Get installed triggers for a device
+
+Method: `GET /devices/{id}/triggers{?instanceId}`
+
+Description: Get the installed triggers for a devices, or a specific trigger when specifying an instanceId.
+
+Parameters:
+
+ - id: the ID of the device
+
+Query Parameters:
+
+ - instanceId: an InstanceID, or comma separated list of event instance IDs to filter by (optional)
+ - If no query parameter is supplied, then all triggers for the device must be retrieved
+
+Response: 
+
+The response must be an array of triggers, each containing an instanceId, the sdfName of an affordance and an action.
+ - instanceId: must be the instance ID for each installed trigger, as returned by the NIPC GW when the trigger was created.
+ - sdfName: must be the sdfName of the affordance (event or action) that is associated with the trigger.
+ - action: must be the NIPC URI of the action to be executed when the trigger is activated.
+
+~~~~ cddl
+{::include cddl/api/trigger_status_array.cddl.folded}
+~~~~
+{:cddl sourcecode-markers="true" sourcecode-name="trigger_status_array.cddl"}
+
+Example of a response:
+
+~~~~~ json
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
+[
+  {
+    "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected"
+  }
+]
+~~~~~
+{:json #exgetmresp title="Example get multiple events status response" sourcecode-markers="true"}
+
+### Create a trigger on a group of devices
+
+Method: `POST /groups/{id}/triggers{?sdfName}`
+
+Description: Creates a trigger on an affordance of a group of devices. A trigger will trigger an action on another device or a group of devices.
+
+Parameters:
+
+ - id: the ID of the group of devices
+
+Query Parameters:
+
+ - sdfName: the sdfName of the affordance that is associated with the trigger. This can be either an event or an action. the event to enable. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent` or an `sdfAction`. 
+
+Request Body:
+  
+ - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter. 
+
+~~~~ cddl
+{::include cddl/api/action.cddl.folded}
+~~~~
+{:cddl sourcecode-markers="true" sourcecode-name="action.cddl"}
+
+Example body for trigger creation:
+
+~~~~~ json
+{
+  "action": "/groups/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
+}
+~~~~~
+{:json #excreatetrigger title="Example trigger creation" sourcecode-markers="true"}
+
+Response:
+
+ - Returns HTTP status code 201 Created with a Location header pointing to the created trigger instance.
+
+Example of a successful response:
+
+~~~~~
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
+HTTP/1.1 201 Created
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/trigger?insta\
+nceId=02ee282c-8915-4b2e-bbd2-88966773134a
+~~~~~
+
+The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the event.
+
+### Delete a trigger on a group of devices
+
+Method: `DELETE /groups/{id}/triggers{?instanceId}`
+
+Description: Deletes an installed trigger
+
+Parameters:
+
+ - id: the ID of the group of devices
+
+Query Parameters:
+
+ - instanceId: the instance ID of the trigger to disable (obtained from the Location header when the trigger was installed)
+
+Response:
+
+ - Returns HTTP status code 204 No Content on successful delete.
+
+~~~~~
+HTTP/1.1 204 No Content
+~~~~~
+
+### Get installed triggers for a group of devices
+Method: `GET /groups/{id}/triggers{?instanceId}`
+
+Description: Get the installed triggers for a group of devices, or a specific trigger when specifying an instanceId.
+
+Parameters:
+
+ - id: the ID of the group of devices
+Query Parameters:
+
+ - instanceId: an InstanceID, or comma separated list of event instance IDs to filter by (optional)
+ - If no query parameter is supplied, then all triggers for the group of devices must be retrieved
+Response: 
+
+The response must be an array of triggers, each containing an instanceId, the sdfName of an affordance and an action.
+ - instanceId: must be the instance ID for each installed trigger, as returned by the NIPC GW when the trigger was created.
+ - sdfName: must be the sdfName of the affordance (event or action) that is associated with the trigger.
+ - action: must be the NIPC URI of the action to be executed when the trigger is activated.
+
+~~~~ cddl
+{::include cddl/api/trigger_status_array.cddl.folded}
+~~~~
+{:cddl sourcecode-markers="true" sourcecode-name="trigger_status_array.cddl"}
+
+Example of a response:
+
+~~~~~ json
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
+[
+  {
+    "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
+sdfEvent/fallDetected"
+  }
+]
+~~~~~
+{:json #exgetmresp title="Example get multiple events status response" sourcecode-markers="true"}
+
+## NIPC explicit connection management APIs {#nipc-connection-management-apis}
+
+Some protocols do not require explicit connection setup; for those protocols, the APIs in this section do not apply. For protocols that do require a connection (e.g., BLE), an NIPC gateway performs implicit connection management for individual operations (establish on demand; release on completion), so clients ordinarily need not manage connections. Clients MAY choose to explicitly establish and retain a connection to perform a sequence of operations that depends on intermediate results. This section specifies APIs for explicit connection lifecycle control. Examples use BLE.
+
+### Protocol Information Object {#ble-protocol-information}
+The protocol information object is used to define protocol specific parameters for connections. The protocol information object is protocol specific and defined in the protocol extensions. An example of where a protocol info object would be used is to return protocol specific connection parameters when making connections, for example a BLE service map . An example of a BLE protocol information object is shown below.
+
+This specification defines both the BLE and the Zigbee protocol information objects for connections and broadcast messages.
+
+~~~~ cddl
+{::include cddl/api/ble_protocol_information.cddl.folded}
+~~~~
+{:cddl sourcecode-markers="true" sourcecode-name="ble_protocol_information.cddl"}   
 
 ### Connect to a device
 
@@ -1261,19 +1518,13 @@ Parameters:
 Request Body:
 
   - Connection retry parameters
-  - A protocol map object. In the case of BLE, if no protocol map is included,
-    service discovery is performed to discover all supported properties when
-    connecting to a device. Optionally, service discovery may be limited to
-    properties defined in the "ble" protocol extension. The services to be 
-    discovered can be added in an array. Property discovery can be buffered
-    across connections, so the API also supports caching parameters. 
+  - A protocol info object representing the BLE service map to be discovered. In the case of BLE, if no protocol info object is included, service discovery is performed to discover all supported properties when connecting to a device. Optionally, service discovery may be limited to properties defined in the "ble" protocol extension. The services to be discovered can be added in an array. Property discovery can be buffered across connections, so the API also supports caching parameters. 
 
 Example body of a connection without specific discovery of properties:
 
 ~~~~~ json
 {
   "retries": 3,
-  "retryMultipleAPs": true
 }
 ~~~~~
 {:json #exconn title="Example connection" sourcecode-markers="true"}
@@ -1282,20 +1533,14 @@ where-
 
  - "retries" defines the number of retries in case the operation does not 
    succeed
- - "retryMultipleAPs" can be used in case there is an infrastructure with 
-   multiple access points or radios that can reach the device. If set to "true"
-   a different access point may be used for retries.
 
-In case the application would like to discover specific properties of a device,
-additional protocol information can be provided that defines what properties should be
-discovered.
+In case the application would like to discover specific properties of a device, an additional protocol information object can be provided that defines what properties should be discovered.
 
 Example body of a BLE connection with specific discovery of properties:
 
 ~~~~~ json
 {
   "retries": 3,
-  "retryMultipleAPs": true,
   "protocolInformation": {
     "ble": {
       "services": [
@@ -1304,7 +1549,7 @@ Example body of a BLE connection with specific discovery of properties:
         }
       ],
       "cached": false,
-      "cacheExpiryDuration": 3600,
+      "cacheExpiry": 3600,
       "autoUpdate": true,
       "bonding": "default"
     }
@@ -1320,21 +1565,17 @@ where in the BLE protocol object:
    If cached is true, the services will be discovered for this connection only if it is not present in the cache.
    If cached is false, the services will be discovered for this connection.
    The services will be cached once it is discovered.
- - "cacheExpiryDuration" defines how long (in seconds) the cache should be maintained 
+ - "cacheExpiry" defines how long (in seconds) the cache should be maintained 
    before purging.
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
    notification (on by default)
- - "bonding" allows you to override the bonding method configured when 
-   onboarding the device
+ - "bonding" allows you to override the bonding method configured in the device object 
 
 Response:
 
-Success responses include additional protocol information with an array of 
-discovered properties, as defined in the specific protocol.
-For example, for BLE, this is an array of supported services, which in turn
-contains an array of characteristics, which in turn contains an array of
-descriptors, as shown in {{BLEservices}}.
+Success responses includes an optional protocol information object with an array of discovered properties, as defined in the BLE protocol info object in section {{ble-protocol-information}}.
+This is an array of supported services, which in turn contains an array of characteristics, which in turn contains an array of descriptors, as shown in {{BLEservices}}.
 
 ~~~~~
     services
@@ -1396,8 +1637,7 @@ definition of failed response.
 
 Method: `PUT /devices/{id}/connections`
 
-Description: Update cached ServiceMap for a device. Full service discovery will
-be performed, unless specific services are described in the API body.
+Description: Update a connection, for BLE this will update the cached ServiceMap for a device. Full service discovery will be performed, unless specific services are described in the API body.
 
 Parameters:
 
@@ -1405,12 +1645,7 @@ Parameters:
 
 Request Body:
 
-  - A protocol map object. In the case of BLE, if no protocol map is included,
-    service discovery is performed to discover all supported properties when
-    connecting to a device. Optionally, service discovery may be limited to
-    properties defined in the "ble" protocol extension. The services to be 
-    discovered can be added in an array. Property discovery can be buffered
-    across connections, so the API also supports caching parameters. 
+  - A protocol information object. In the case of BLE, if no protocol information is included, service discovery is performed to discover all supported properties when connecting to a device. Optionally, service discovery may be limited to properties defined in the "ble" protocol extension. The services to be discovered can be added in an array. Property discovery can be buffered across connections, so the API also supports caching parameters.
 
 Example body of an update connection:
 
@@ -1424,7 +1659,7 @@ Example body of an update connection:
         }
       ],
       "cached": false,
-      "cacheExpiryDuration": 3600,
+      "cacheExpiry": 3600,
       "autoUpdate": true
     }
   }
@@ -1490,7 +1725,7 @@ where-
 
   - "id" is the ID of the device
   - "protocolInformation" contains an Array of BLE services as shown in
-   {{BLEservices}}
+   {{BLEservices}} and described in {{ble-protocol-information}}.
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1654,7 +1889,7 @@ Events are delivered via a publish/subscribe interface. Event types include: (1)
 ## CDDL Definition
 
 The event streaming format is defined here in CDDL {{!RFC8610}}. 
-A DataSubscription is a CBOR map containing the raw payload (bytes) and a timestamp (epoch seconds). It MAY include deviceID (the SCIM device identifier) when the payload is associated with a known onboarded device. Optional members (e.g., apMacAddress, rssi) MAY be present but can reveal deployment topology and SHOULD be omitted unless required. A choice group within DataSubscription indicates the event type (e.g., advertisement, subscription notification, connection status). An event publication MAY carry one or more DataSubscription entries in an array. Such an array is represented as DataBatch.
+A DataSubscription is a CBOR map containing the raw payload (bytes) and a timestamp (epoch seconds). It MAY include deviceID (the SCIM device identifier) when the payload is associated with a known device. Optional members (e.g., apMacAddress, rssi) MAY be present but can reveal deployment topology and SHOULD be omitted unless required. A choice group within DataSubscription indicates the event type (e.g., advertisement, subscription notification, connection status). An event publication MAY carry one or more DataSubscription entries in an array. Such an array is represented as DataBatch.
 
 ~~~~ cddl
 {::include cddl/data_subscription.cddl.folded}
@@ -1692,7 +1927,7 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
   }
 ]
 ~~~
-{: title="Non-onboarded BLE Device Advertisement"}
+{: title="Non-Onboarded BLE Device Advertisement"}
 
 ~~~
 [
@@ -1750,7 +1985,7 @@ In this example, we will connect to a device and read and write from a property.
 
 The sequence of operations for this are:  
 
-  - Onboard a device using the SCIM Interface (out of scope of this
+  - Declare a device instance using the SCIM Interface (out of scope of this
     memo)
   - Register an SDF model for the device
 
@@ -1831,12 +2066,12 @@ The sequence of operations for this are:
 
 ## Enabling an Event on a Device
 
-In this example, we will onboard a device, and setup an advertisement
+In this example, we will declare a device instance, and setup an advertisement
 subscription event for that device.
 
 The sequence of operations for this are:  
 
-  - Onboard a device and endpoint app using the SCIM Interface (out of scope of this
+  - Declaring a device instance and endpoint app using the SCIM Interface (out of scope of this
    memo)
   - Register an SDF model for the device
 
@@ -1935,7 +2170,7 @@ for a group of devices.
 
 The sequence of operations for this are:  
 
-  - Onboard devices and endpoint app using the SCIM Interface (out of scope of this
+  - Provision a device and endpoint app using the SCIM Interface (out of scope of this
    memo)
   - Register an SDF model for the devices
 
@@ -2155,7 +2390,7 @@ NIPC runs on top of HTTP and is thus subject to the security considerations of H
 
 To enable NIPC gateway functions, the network administrator MUST authorize applications (e.g., via exchange of tokens or public keys). Authorization MAY be role‑based. The following baseline roles are RECOMMENDED:
 
- - Onboarding: permitted to create and manage device and endpoint‑app identities via SCIM (typically co‑located with the gateway).
+ - Provisioning: permitted to create and manage device and endpoint‑app identities via SCIM (typically co‑located with the gateway).
  - Control: permitted to invoke NIPC property, action, and event APIs.
  - Data: permitted to receive streamed event data.
 Deployments MAY further refine authorization at per‑API or per‑affordance granularity.
@@ -2329,6 +2564,11 @@ The OpenAPI model for SDF protocol mapping is provided in {{Appendix B of I-D.ie
 {::include nipc-openapi/protocolinfo/ProtocolInfo.yaml.folded}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="ProtocolInfo.yaml"}
+
+~~~ cddl
+{::include cddl/protocolinfo.cddl.folded}
+~~~
+{:cddl sourcecode-markers="true" sourcecode-name="protocolinfo.cddl"}
 
 ## Protocol Information for BLE
 
