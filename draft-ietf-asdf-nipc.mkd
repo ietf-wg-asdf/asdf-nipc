@@ -1570,8 +1570,8 @@ where in the BLE protocol object:
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
    notification (on by default)
- - "bonding" allows you to override the bonding method configured in the device object 
-
+ - "bonding" allows you to override the bonding method configured in the device object. iPossible values are default, none, justworks, passkey, oob. Default behavior is to use the bonding method defined in the device object.
+    
 Response:
 
 Success responses includes an optional protocol information object with an array of discovered properties, as defined in the BLE protocol info object in section {{ble-protocol-information}}.
