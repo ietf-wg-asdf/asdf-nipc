@@ -511,7 +511,7 @@ Example of a failure response:
 ~~~~~
 {: #failure title="Example failure response" sourcecode-markers="true"}
 
-# NIPC Registration
+# NIPC Registration APIs
 
 ## SDF model registrations APIs
 
