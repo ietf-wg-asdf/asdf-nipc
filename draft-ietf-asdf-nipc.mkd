@@ -1375,8 +1375,8 @@ Example of a response:
 [
   {
     "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected"
+    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor",
+    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
   }
 ]
 ~~~~~
@@ -1484,8 +1484,8 @@ Example of a response:
 [
   {
     "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected"
+    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor",
+    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
   }
 ]
 ~~~~~
