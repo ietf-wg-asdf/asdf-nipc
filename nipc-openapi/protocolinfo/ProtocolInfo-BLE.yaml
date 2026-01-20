@@ -12,9 +12,9 @@ paths: {}
 
 components:
   schemas:
-# BLE Protocol Mapping
+# BLE Protocol Info
 ## A Service is a device with optional service IDs
-    ProtocolInfo-BLE-ServiceList:
+    ProtocolInfo-BLE-ServiceMap:
       type: object
       properties:
         ble:
@@ -32,7 +32,7 @@ components:
                 to be rediscovered before every connected.
               type: boolean
               default: false
-            cacheExpiryDuration:
+            cacheExpiry:
               description: cache expiry period in seconds, when device allows
               type: integer
               example: 3600 # default 1 hour
@@ -54,7 +54,6 @@ components:
     ProtocolInfo-BLE-Service:
       required:
         - serviceID
-        - characteristics
       type: object
       properties:
         serviceID:
@@ -67,10 +66,6 @@ components:
             $ref: '#/components/schemas/ProtocolInfo-BLE-Characteristic'
 
     ProtocolInfo-BLE-Characteristic:
-      required:
-        - characteristicID
-        - flags
-        - descriptors
       type: object
       properties:
         characteristicID:
@@ -94,8 +89,6 @@ components:
             $ref: '#/components/schemas/ProtocolInfo-BLE-Descriptor'
 
     ProtocolInfo-BLE-Descriptor:
-      required:
-        - descriptorID
       type: object
       properties:
         descriptorID:
@@ -103,7 +96,7 @@ components:
           format: uuid
           example: 00002902-0000-1000-8000-00805f9b34fb
 
-##  Protocol Mapping for BLE Broadcast
+##  Protocol Info for BLE Broadcast
     ProtocolInfo-BLE-Broadcast:
       required:
         - ble

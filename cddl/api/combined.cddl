@@ -12,6 +12,13 @@ ActionStatus = (
   "COMPLETED"
 )
 ; ============================================
+; From: cddl/api/action.cddl
+; ============================================
+Action = {
+  ? action: text  ; NIPC action operation to execute
+}
+
+; ============================================
 ; From: cddl/api/data_app.cddl
 ; ============================================
 DataApp = {
@@ -121,6 +128,19 @@ GroupFailureResponse = {
   FailureResponse,
   ? deviceId: text
 }
+; ============================================
+; From: cddl/api/trigger_status_array.cddl
+; ============================================
+; Trigger status response array and item shape
+
+TriggerStatusResponseArray = [* TriggerResponse]
+
+TriggerResponse = {
+  SdfReference,
+  ? action: text,      ; NIPC action operation to execute
+  instanceId: text     ; UUID (as text)
+}
+
 ; ============================================
 ; From: cddl/api/property_value_array.cddl
 ; ============================================

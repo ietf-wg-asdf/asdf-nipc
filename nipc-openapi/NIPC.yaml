@@ -635,7 +635,7 @@ paths:
           type: string
           format: uuid
           example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
-      - name: sdfAffordance
+      - name: sdfName
         in: query
         description: |-
           sdf affordance that will trigger this action, this can be 
@@ -670,6 +670,7 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
+
     get:
       tags:
         - NIPC trigger APIs
@@ -710,6 +711,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
 
+    delete:
+      tags:
+        - NIPC trigger APIs
+      summary: Delete a trigger or all triggers for a device
+      description: |-
+        Delete a trigger for a device or all triggers 
+        if none specified
+      operationId: DeteteTrigger
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the device. 
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
+      - name: instanceId
+        in: query
+        description: |-
+          instance id of the action that needs to be checked
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 02ee282c-8915-4b2e-bbd2-88966773134a
+      responses:
+        '204':
+          description: Success, no content
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+
   /groups/{id}/triggers:
     post:
       tags:
@@ -728,7 +765,7 @@ paths:
           type: string
           format: uuid
           example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
-      - name: sdfAffordance
+      - name: sdfName
         in: query
         description: |-
           sdf affordance that will trigger this action, this can be 
@@ -803,6 +840,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/FailureResponse'
 
+    delete:
+      tags:
+        - NIPC trigger APIs
+      summary: Delete a trigger or all triggers for a grou of devices
+      description: |-
+        Delete a trigger for a group of devices or all triggers 
+        for a group of devices if none specified
+      operationId: DeteteTrigger
+      parameters:
+      - name: id
+        in: path
+        description: The ID of the group of devices. 
+        required: true
+        schema:
+          type: string
+          format: uuid
+          example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
+      - name: instanceId
+        in: query
+        description: |-
+          instance id of the action that needs to be checked
+        required: false
+        schema:
+          type: string
+          format: uuid
+          example: 02ee282c-8915-4b2e-bbd2-88966773134a
+      responses:
+        '200':
+          description: Success, trigger deleted
+          content:
+            application/nipc+json:
+              schema:
+                $ref: '#/components/schemas/TriggerStatusResponseArray'
+        default:
+          description: Error response
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+
 ### NIPC management APIs               
   /devices/{id}/connections:
     post:
@@ -831,7 +908,7 @@ paths:
             schema:
               anyOf:
                 - $ref: '#/components/schemas/Connection'
-                - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+                - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceMap'
             example:
               retries: 3
               protocolInformation:
@@ -849,7 +926,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
-                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceMap'
               example:
                 id: "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
                 protocolInformation:
@@ -890,7 +967,7 @@ paths:
         content:
           application/nipc+json:
             schema:
-              $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+              $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceMap'
             example:
               retries: 3
               protocolInformation:
@@ -908,7 +985,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
-                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceMap'
               example:
                 id: "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
                 protocolInformation:
@@ -984,7 +1061,7 @@ paths:
               schema:
                 allOf:
                   - $ref: '#/components/schemas/Id'
-                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceList'
+                  - $ref: './protocolinfo/ProtocolInfo.yaml#/components/schemas/ProtocolInfo-ServiceMap'
               example:
                 id: "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
                 protocolInformation:
@@ -1564,7 +1641,7 @@ components:
         sdfProperty:
           additionalProperties: 
             allOf:
-              - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
+              - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap'
           example:
             heartrate:
               sdfProtocolMap:
@@ -1582,7 +1659,7 @@ components:
             properties:
               sdfOutputData:
                 allOf:
-                  - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Event'
+                  - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap'
           example:
             fallDetected:
               sdfOutputData:
@@ -1598,7 +1675,7 @@ components:
         sdfAction:
           additionalProperties: 
             allOf:
-              - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap-Property'
+              - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap'
           example:
             start:
               sdfProtocolMap:
@@ -1752,14 +1829,8 @@ components:
     TriggerResponse:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Id'
-        - type: object
-          properties:
-            affordance:
-              type: string
-              description: |-
-                percent-encoded JSON pointer to the SDF event object
-              example: https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected
+        - $ref: '#/components/schemas/InstanceId'
+        - $ref: '#/components/schemas/SdfReference'
         - $ref: '#/components/schemas/Action'
 
     TriggerStatusResponseArray:

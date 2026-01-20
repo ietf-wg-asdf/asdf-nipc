@@ -12,36 +12,13 @@ paths: {}
 
 components:
   schemas:
-## Protocol Mapping for BLE Property
-    ProtocolMap-BLE-Propmap:
+## Protocol Mapping for BLE
+    ProtocolMap-BLE:
       required:
         - ble
       type: object
       properties:
         ble:
-          required:
-            - serviceID
-            - characteristicID
-          type: object
-          properties:
-            serviceID:
-              type: string
-              format: uuid
-              example: 00001809-0000-1000-8000-00805f9b34fb
-            characteristicID:
-              type: string
-              format: uuid
-              example: 00002a1c-0000-1000-8000-00805f9b34fb
-              
-## Defines different types of BLE events
-    ProtocolMap-BLE-Event:
-      required:
-        - ble
-      type: object
-      properties:
-        ble:
-          required:
-            - type
           type: object
           properties:
             type:
@@ -51,6 +28,7 @@ components:
                 - gatt
                 - connection_events
                 - advertisements
+                - triggers
             serviceID:
               type: string
               example: 00001809-0000-1000-8000-00805f9b34fb

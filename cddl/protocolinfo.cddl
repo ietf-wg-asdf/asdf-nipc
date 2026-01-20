@@ -1,0 +1,93 @@
+; CDDL translation of NIPC ProtocolInfo schemas (version 0.10.0)
+; Source: nipc-openapi/protocolinfo/ProtocolInfo.yaml (+ BLE/Zigbee variants)
+
+; Top-level wrappers
+protocol-info-service-map = {
+  protocolInformation: ble-service-map / zigbee-service-map,
+  ...
+}
+
+protocol-info-broadcast = {
+  protocolInformation: ble-broadcast / zigbee-broadcast,
+  ...
+}
+
+; BLE protocol information
+ble-service-map = {
+  ble?: {
+    services?: [* ble-service],
+    cached?: bool,
+    cacheExpiry?: int,
+    autoUpdate?: bool,
+    bonding?: bonding,
+    ...
+  },
+  ...
+}
+
+bonding = "default" / "none" / "justworks" / "passkey" / "oob"
+
+ble-service = {
+  serviceID: uuid,
+  characteristics?: [* ble-characteristic],
+  ...
+}
+
+ble-characteristic = {
+  characteristicID?: uuid,
+  flags?: [* ble-flag],
+  descriptors?: [* ble-descriptor],
+  ...
+}
+
+ble-flag = "read" / "write" / "notify"
+
+ble-descriptor = {
+  descriptorID?: uuid,
+  ...
+}
+
+ble-broadcast = {
+  ble: {
+    connectable?: bool,
+    ...
+  },
+  ...
+}
+
+; Zigbee protocol information
+zigbee-service-map = {
+  zigbee: {
+    endpoints?: [* zigbee-endpoint],
+    ...
+  },
+  ...
+}
+
+zigbee-endpoint = {
+  endpointID: int,
+  clusters?: [* zigbee-cluster],
+  ...
+}
+
+zigbee-cluster = {
+  clusterID?: int,
+  properties?: [* zigbee-property],
+  ...
+}
+
+zigbee-property = {
+  attributeID?: int,
+  propertyType?: int,
+  ...
+}
+
+zigbee-broadcast = {
+  zigbee: {
+    ...
+  },
+  ...
+}
+
+; Basic types
+uuid = tstr .regexp "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"

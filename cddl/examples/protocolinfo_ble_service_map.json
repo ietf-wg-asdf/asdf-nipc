@@ -1,0 +1,24 @@
+{
+  "protocolInformation": {
+    "ble": {
+      "services": [
+        {
+          "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
+          "characteristics": [
+            {
+              "characteristicID": "00002a1c-0000-1000-8000-00805f9b34fb",
+              "flags": ["read", "notify"],
+              "descriptors": [
+                { "descriptorID": "00002902-0000-1000-8000-00805f9b34fb" }
+              ]
+            }
+          ]
+        }
+      ],
+      "cached": true,
+      "cacheExpiry": 3600,
+      "autoUpdate": true,
+      "bonding": "default"
+    }
+  }
+}

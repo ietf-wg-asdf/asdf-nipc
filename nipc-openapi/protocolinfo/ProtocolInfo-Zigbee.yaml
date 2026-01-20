@@ -30,7 +30,6 @@ components:
     ProtocolInfo-Zigbee-Endpoint:
       required:
         - endpointID
-        - clusters
       type: object
       properties:
         endpointID:
@@ -43,9 +42,6 @@ components:
             $ref: '#/components/schemas/ProtocolInfo-Zigbee-Cluster'
 
     ProtocolInfo-Zigbee-Cluster:
-      required:
-        - clusterID
-        - properties
       type: object
       properties:
         clusterID:
@@ -58,9 +54,6 @@ components:
             $ref: '#/components/schemas/ProtocolInfo-Zigbee-Property'
 
     ProtocolInfo-Zigbee-Property:
-      required:
-        - attributeID
-        - propertyType
       type: object
       properties:
         attributeID:
