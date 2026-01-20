@@ -1,0 +1,7 @@
+{
+  "protocolInformation": {
+    "ble": {
+      "connectable": true
+    }
+  }
+}

@@ -12,8 +12,8 @@ paths: {}
 
 components:
   schemas:
-## Protocol mapping for Zigbee property
-    ProtocolMap-Zigbee-Propmap:
+## Protocol mapping for Zigbee
+    ProtocolMap-Zigbee:
       required:
         - zigbee
       type: object
@@ -41,7 +41,3 @@ components:
               type: integer
               format: int32
               example: 1
-
-    ProtocolMap-Zigbee-Event:
-      allOf:  
-        - $ref: '#/components/schemas/ProtocolMap-Zigbee-Propmap'

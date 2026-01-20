@@ -17,10 +17,12 @@ YAML_FOLDED= $(YAML_SOURCES:.yaml=.yaml.folded)
 # API Schema CDDL files (to be combined)
 CDDL_API_SOURCES= \
 	cddl/api/action_response.cddl \
+	cddl/api/action.cddl \
 	cddl/api/data_app.cddl \
 	cddl/api/event_status_array.cddl \
 	cddl/api/failure_response.cddl \
 	cddl/api/group_event_status_response_array.cddl \
+	cddl/api/trigger_status_array.cddl \
 	cddl/api/property_value_array.cddl \
 	cddl/api/property_value_read_response_array.cddl \
 	cddl/api/property_value_response_array.cddl \

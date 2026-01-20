@@ -1,0 +1,19 @@
+{
+  "protocolInformation": {
+    "zigbee": {
+      "endpoints": [
+        {
+          "endpointID": 10,
+          "clusters": [
+            {
+              "clusterID": 0,
+              "properties": [
+                { "attributeID": 1, "propertyType": 32 }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

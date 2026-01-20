@@ -15,21 +15,31 @@ paths: {}
 components:
   schemas:
 # Protocol Mapping
-## Protocol Map for a property
-    ProtocolMap-Property:
-      type: object
-      properties:
-        sdfProtocolMap:
-          oneOf:  
-            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-Propmap'
-            - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-Propmap'
 
-## Protocol Map for an event
-    ProtocolMap-Event:
+## Common protocol map
+    CommonProtocolMap:
+      oneOf:
+      - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE'
+      - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee'
+
+## Different protocol mapping for reading & writing an affordance
+    DistinctProtocolMap:
+      type: object
+      properties:
+        read:
+          oneOf:
+          - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE'
+          - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee'
+        write:
+          oneOf:
+          - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE'
+          - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee'
+          
+## Protocol Map 
+    ProtocolMap:
       type: object
       properties:
         sdfProtocolMap:
           oneOf:  
-            - $ref: './ProtocolMap-BLE.yaml#/components/schemas/ProtocolMap-BLE-Event'
-            - $ref: './ProtocolMap-Zigbee.yaml#/components/schemas/ProtocolMap-Zigbee-Event'
- 
+            - $ref: '#/components/schemas/CommonProtocolMap'
+            - $ref: '#/components/schemas/DistinctProtocolMap'
