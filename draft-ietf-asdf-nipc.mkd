@@ -394,7 +394,7 @@ A formal CBOR definition of the well-known response is as follows:
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="nipc_well_known.cddl"}
 
-### NIPC Registrations
+### NIPC Registrations {#nipc-registrations-paths}
 
 Registrations leverage the base path + /registrations. NIPC supports SDF model
 registrations and data-app registrations.
@@ -511,7 +511,7 @@ Example of a failure response:
 ~~~~~
 {: #failure title="Example failure response" sourcecode-markers="true"}
 
-# NIPC Registrations
+# NIPC Registration APIs
 
 ## SDF model registrations APIs
 
@@ -1296,8 +1296,12 @@ Request Body:
 Example body for trigger creation:
 
 ~~~~~ json
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 {
-  "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
+  "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?a\
+ctionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fb\
+ell%2FsdfAction%2Fring"
 }
 ~~~~~
 {:json #excreatetrigger title="Example trigger creation" sourcecode-markers="true"}
@@ -1312,8 +1316,8 @@ Example of a successful response:
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 HTTP/1.1 201 Created
-Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/trigger?insta\
-nceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/trigger?inst\
+anceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
 
 The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the event.
@@ -1375,12 +1379,15 @@ Example of a response:
 [
   {
     "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor",
-    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
+    "sdfName": "https://example.com/heartrate#/sdfObject/healthsenso\
+r",
+    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions\
+?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2\
+Fbell%2FsdfAction%2Fring"
   }
 ]
 ~~~~~
-{:json #exgetmresp title="Example get multiple events status response" sourcecode-markers="true"}
+{:json #exgetmtriggers title="Example get multiple triggers response" sourcecode-markers="true"}
 
 ### Create a trigger on a group of devices
 
@@ -1408,11 +1415,15 @@ Request Body:
 Example body for trigger creation:
 
 ~~~~~ json
+=============== NOTE: '\' line wrapping per RFC 8792 ================
+
 {
-  "action": "/groups/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
+  "action": "/groups/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?ac\
+tionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbe\
+ll%2FsdfAction%2Fring"
 }
 ~~~~~
-{:json #excreatetrigger title="Example trigger creation" sourcecode-markers="true"}
+{:json #excreategrouptrigger title="Example trigger creation" sourcecode-markers="true"}
 
 Response:
 
@@ -1424,8 +1435,8 @@ Example of a successful response:
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 HTTP/1.1 201 Created
-Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/trigger?insta\
-nceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/trigger?inst\
+anceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
 
 The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the event.
@@ -1484,24 +1495,27 @@ Example of a response:
 [
   {
     "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor",
-    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
+    "sdfName": "https://example.com/heartrate#/sdfObject/healthsenso\
+r",
+    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions\
+?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2\
+Fbell%2FsdfAction%2Fring"
   }
 ]
 ~~~~~
-{:json #exgetmresp title="Example get multiple events status response" sourcecode-markers="true"}
+{:json #exgetmgrouptriggers title="Example get multiple group triggers response" sourcecode-markers="true"}
 
 ## NIPC explicit connection management APIs {#nipc-connection-management-apis}
 
 Some protocols do not require explicit connection setup; for those protocols, the APIs in this section do not apply. For protocols that do require a connection (e.g., BLE), an NIPC gateway performs implicit connection management for individual operations (establish on demand; release on completion), so clients ordinarily need not manage connections. Clients MAY choose to explicitly establish and retain a connection to perform a sequence of operations that depends on intermediate results. This section specifies APIs for explicit connection lifecycle control. Examples use BLE.
 
-### Protocol Information Object {#protocol-information}
-The protocol information object is used to define protocol specific parameters for connections. The protocol information object is protocol specific and defined in the protocol extensions. An example of where a protocol info object would be used is to return protocol specific connection parameters when making connections, for example a BLE service map . An example of a BLE protocol information object is shown below.
+### Protocol Information Object {#protocol-information-obj}
+The protocol information object is used to define protocol specific parameters for connections. The protocol information object is protocol specific and defined in the protocol extensions. An example of where a protocol info object would be used is to return protocol specific connection parameters when making connections, for example a BLE service map. An example of a BLE protocol information object is shown below.
 
 This specification defines both the BLE and the Zigbee protocol information objects for connections and broadcast messages.
 
 ~~~~ cddl
-{::include cddl/protocolinfo.cddl.folded}
+{::include cddl/api/protocolinfo.cddl.folded}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="protocolinfo.cddl"}   
 
@@ -1524,7 +1538,7 @@ Example body of a connection without specific discovery of properties:
 
 ~~~~~ json
 {
-  "retries": 3,
+  "retries": 3
 }
 ~~~~~
 {:json #exconn title="Example connection" sourcecode-markers="true"}
@@ -1574,7 +1588,7 @@ where in the BLE protocol object:
     
 Response:
 
-Success responses includes an optional protocol information object with an array of discovered properties, as defined in the BLE protocol info object in section {{ble-protocol-information}}.
+Success responses includes an optional protocol information object with an array of discovered properties, as defined in the BLE protocol info object in section {{protocol-information-obj}}.
 This is an array of supported services, which in turn contains an array of characteristics, which in turn contains an array of descriptors, as shown in {{BLEservices}}.
 
 ~~~~~
@@ -1725,7 +1739,7 @@ where-
 
   - "id" is the ID of the device
   - "protocolInformation" contains an Array of BLE services as shown in
-   {{BLEservices}} and described in {{ble-protocol-information}}.
+   {{BLEservices}} and described in {{protocol-information-obj}}.
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -2564,11 +2578,6 @@ The OpenAPI model for SDF protocol mapping is provided in {{Appendix B of I-D.ie
 {::include nipc-openapi/protocolinfo/ProtocolInfo.yaml.folded}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="ProtocolInfo.yaml"}
-
-~~~ cddl
-{::include cddl/protocolinfo.cddl.folded}
-~~~
-{:cddl sourcecode-markers="true" sourcecode-name="protocolinfo.cddl"}
 
 ## Protocol Information for BLE
 
