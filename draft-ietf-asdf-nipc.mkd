@@ -106,7 +106,7 @@ A Non-Internet-Connected Physical Components (NIPC) gateway is an application la
 
 In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
 
-- The gateway has access to a device object, that contains is its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device. Provisioning this device object is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
+- The gateway has access to a device object, that contains its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device. Provisioning this device object is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
 - An interaction model for the class of devices must be available to the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
 
 Once these prerequisites are met, the gateway can resolve a referenced SDF affordance into the protocol-specific operations required for that device.
@@ -165,7 +165,7 @@ capitals, as shown here.
  - SDF: Semantic Device Format, a standardized format to describe devices
    and their interaction models, as defined in {{!I-D.ietf-asdf-sdf}}.
  - SDF Affordance: An interaction point on a device as defined in an SDF
-   model. Examples of affordances are properties, actions & events.
+   model. Examples of affordances are properties, actions, and events.
  - SDF Global Name: Absolute URI (with fragment) identifying an SDF affordance.
  - SCIM: System for Cross-domain Identity Management, a standardized
    protocol to manage identity information, as defined in {{!RFC7644}}.
@@ -231,7 +231,7 @@ In order for the NIPC gateway to perform operations on a device, it must have ac
 
 ### Device class information 
 
-Device class information is declared through SDF models. Thsec SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings that relate these affordances to protocol-specific operations. The SDF model fro a class of devices can be registered trough NIPC registration APIs, as described in {{nipc-registrations}}. 
+Device class information is declared through SDF models. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}. 
 
 The SDF model reference and/or data‑app registration MAY also be included in a device's SCIM object. See {{!I-D.ietf-scim-device-model}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for details.
 
@@ -451,7 +451,7 @@ Devices or groups of devices are identified by a unique UUID, adhering to {{!RFC
 | id            | uuid | 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 |
 {: #devicedef title="Definition of a device or group of devices"}
 
-ID is a UUID assigned to uniquely identify a device to the NIPC Gateway (e.g., by a SCIM server) and hte application calling the APIs. The NIPC Gateway must have access to a device object identified by this device ID and the application must store this UUID in order to use it to identify the device on which it wants to perform NIPC operations.
+ID is a UUID assigned to uniquely identify a device to the NIPC Gateway (e.g., by a SCIM server) and the application calling the APIs. The NIPC Gateway must have access to a device object identified by this device ID and the application must store this UUID in order to use it to identify the device on which it wants to perform NIPC operations.
 
 #### SDF Name
 
@@ -790,7 +790,7 @@ Response:
 
 # NIPC Operation APIs
 
-The NIPC operation APIs perform protocol‑neutral interactions on SDF affordances, properties, events, and actions. This allows applications to read & update device properties, invoke actions, and consume events.
+The NIPC operation APIs perform protocol‑neutral interactions on SDF affordances, properties, events, and actions. This allows applications to read and update device properties, invoke actions, and consume events.
 
 NIPC defines three API collections aligned with the SDF Affordances defined in {{Section 1.2 of !I-D.ietf-asdf-sdf}}:
 
@@ -821,14 +821,18 @@ Parameters:
 
 Query Parameters:
 
- - propertyName: Identifies a single property to update. If present, the request body MAY use any media type appropriate to the property payload. 
--or-
+ - propertyName: Identifies a single property to update. If present, the request body MAY use any media type appropriate to the property payload.
+
+ -or-
+
  - If absent, the request body MUST be application/nipc+json and contain an array of update items, each with a property and a value.
 
 Request Body:
 
   - If the query parameter propertyName is provided, the request body MAY use any media type appropriate to the property payload. The value is encoded as per the content type of the payload.
- -or- 
+
+ -or-
+
   - If the query parameter propertyName is NOT provided, the request body must be an array of properties to update, each containing a property and a value. The value attribute contains the raw binary data, which must be encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
 
 ~~~~ cddl
@@ -859,7 +863,9 @@ Example body for updating multiple properties:
 Response:
 
  - If the Accept header is set to `application/nipc+json`, the response must be an array with a status field set to 200 for each property that was updated, or a problem type object for each property that failed to update. The "properties" array must be an array of properties that were updated, each containing a property and a value.
--or- 
+
+ -or-
+
  - If the Accept header is set to any other media type and the propertyName query parameter is provided, the response must be 204 No Content with no body.
 
 ~~~~ cddl
@@ -907,7 +913,9 @@ Response:
  - If the Accept header is set to `application/nipc+json`, the response must be an array of properties, each containing a property and a value. The value must be the raw binary data read from the property, encoded in base64 with padding as per {{Section 5 of !RFC4648}}. The array must contain objects with 2 attributes:
        - property: The property that was read.
        - value: The bytes that were read in base64 encoding
--or-
+
+ -or-
+
  - If the Accept header is set to any other media type and a single propertyName query parameter is provided, the request body MAY use any media type appropriate to the property payload. The value is encoded as per the content type of the payload.
 
 ~~~~ cddl
@@ -1362,6 +1370,7 @@ Query Parameters:
 Response: 
 
 The response must be an array of triggers, each containing an instanceId, the sdfName of an affordance and an action.
+
  - instanceId: must be the instance ID for each installed trigger, as returned by the NIPC GW when the trigger was created.
  - sdfName: must be the sdfName of the affordance (event or action) that is associated with the trigger.
  - action: must be the NIPC URI of the action to be executed when the trigger is activated.
@@ -1464,6 +1473,7 @@ HTTP/1.1 204 No Content
 ~~~~~
 
 ### Get installed triggers for a group of devices
+
 Method: `GET /groups/{id}/triggers{?instanceId}`
 
 Description: Get the installed triggers for a group of devices, or a specific trigger when specifying an instanceId.
@@ -1471,10 +1481,12 @@ Description: Get the installed triggers for a group of devices, or a specific tr
 Parameters:
 
  - id: the ID of the group of devices
+
 Query Parameters:
 
  - instanceId: an InstanceID, or comma separated list of event instance IDs to filter by (optional)
  - If no query parameter is supplied, then all triggers for the group of devices must be retrieved
+
 Response: 
 
 The response must be an array of triggers, each containing an instanceId, the sdfName of an affordance and an action.
