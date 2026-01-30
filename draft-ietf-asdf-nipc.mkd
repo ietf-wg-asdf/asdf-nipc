@@ -1266,7 +1266,7 @@ Example of a response:
 ~~~~~
 {:json #exactionstatusresp title="Example action status response" sourcecode-markers="true"}
 
-## NIPC trigger APIs
+## NIPC Trigger APIs
 
 Triggers APIs do not actually execute an operation on a device or group of devices, but install a trigger that registers an operation. When triggered the registered operation gets executed. 
 
@@ -1546,6 +1546,11 @@ Request Body:
   - Connection retry parameters
   - A protocol info object representing the BLE service map to be discovered. In the case of BLE, if no protocol info object is included, service discovery is performed to discover all supported properties when connecting to a device. Optionally, service discovery may be limited to properties defined in the "ble" protocol extension. The services to be discovered can be added in an array. Property discovery can be buffered across connections, so the API also supports caching parameters. 
 
+~~~~ cddl
+{::include cddl/api/connection.cddl.folded}
+~~~~
+{:cddl sourcecode-markers="true" sourcecode-name="connection.cddl"}
+
 Example body of a connection without specific discovery of properties:
 
 ~~~~~ json
@@ -1575,7 +1580,7 @@ Example body of a BLE connection with specific discovery of properties:
         }
       ],
       "cached": false,
-      "cacheExpiry": 3600,
+      "cacheExpiryDuration": 3600,
       "autoUpdate": true,
       "bonding": "default"
     }
@@ -1591,7 +1596,7 @@ where in the BLE protocol object:
    If cached is true, the services will be discovered for this connection only if it is not present in the cache.
    If cached is false, the services will be discovered for this connection.
    The services will be cached once it is discovered.
- - "cacheExpiry" defines how long (in seconds) the cache should be maintained 
+ - "cacheExpiryDuration" defines how long (in seconds) the cache should be maintained 
    before purging.
  - some devices support notifications on changes in services, 
    "autoUpdate" allows the network to update services based on 
@@ -1685,7 +1690,7 @@ Example body of an update connection:
         }
       ],
       "cached": false,
-      "cacheExpiry": 3600,
+      "cacheExpiryDuration": 3600,
       "autoUpdate": true
     }
   }
