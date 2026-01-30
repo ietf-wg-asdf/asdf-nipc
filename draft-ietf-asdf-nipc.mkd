@@ -107,7 +107,7 @@ A Non-Internet-Connected Physical Components (NIPC) gateway is an application la
 In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
 
 - The gateway has access to a device object, that contains its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device. Provisioning this device object is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
-- An interaction model for the class of devices must be available to the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!I-D.ietf-asdf-sdf}}.
+- An interaction model for the class of devices must be available to the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!RFC9880}}.
 
 Once these prerequisites are met, the gateway can resolve a referenced SDF affordance into the protocol-specific operations required for that device.
 
@@ -163,7 +163,7 @@ capitals, as shown here.
  - NIPC Gateway: An application layer gateway that implements the NIPC
    interface.
  - SDF: Semantic Device Format, a standardized format to describe devices
-   and their interaction models, as defined in {{!I-D.ietf-asdf-sdf}}.
+   and their interaction models, as defined in {{!RFC9880}}.
  - SDF Affordance: An interaction point on a device as defined in an SDF
    model. Examples of affordances are properties, actions, and events.
  - SDF Global Name: Absolute URI (with fragment) identifying an SDF affordance.
@@ -204,7 +204,7 @@ A Non‑Internet‑Connected Physical Components (NIPC) gateway is an applicatio
 To execute NIPC operations on a device, both prerequisites MUST be met:
 
 1. The NIPC gateway has access to device instance information: The device object contains its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device (e.g., via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}). This device object is identified by the device ID referenced in NIPC API paths.
-2. The NIPC gateway has access to an interaction model (device class information): An SDF model {{!I-D.ietf-asdf-sdf}} is registered, providing protocol‑neutral affordances and mappings to protocol‑specific operations.
+2. The NIPC gateway has access to an interaction model (device class information): An SDF model {{!RFC9880}} is registered, providing protocol‑neutral affordances and mappings to protocol‑specific operations.
 
 ~~~~~ aasvg
 
@@ -252,7 +252,7 @@ must contain protocol mappings, mapping protocol-neutral SDF affordances
 to protocol-specific operations as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}. 
 The SDF affordances supported by the device, as well as its protocol-mappings,
 are provided to the gateway by means of SDF model registration. 
-SDF models are described in {{!I-D.ietf-asdf-sdf}}.
+SDF models are described in {{!RFC9880}}.
 
 ### Data application registrations
 
@@ -263,7 +263,7 @@ Applications that are authorized to perform NIPC operations on devices can defin
 
 ### Overview {#nipc-ops-overview}
 
-NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of !I-D.ietf-asdf-sdf}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload. 
+NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of !RFC9880}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload. 
 
 Failures use Problem Details {{!RFC9457}} with application/problem+json.
 
@@ -426,7 +426,7 @@ These are described in {{nipc-ops}}.
 ## Schema
 
 The NIPC schema leans heavily on the SDF schema, as defined in
-{{!I-D.ietf-asdf-sdf}}. NIPC operations map directly to SDF affordances.
+{{!RFC9880}}. NIPC operations map directly to SDF affordances.
 
 ### SDF model registrations
 
@@ -516,7 +516,7 @@ Example of a failure response:
 ## SDF model registrations APIs
 
 SDF model registration APIs allow applications to register an SDF model for a class of devices.
-These APIs use the `application/sdf+json` media type, as described in {{Section 7.1 of I-D.ietf-asdf-sdf}}.
+These APIs use the `application/sdf+json` media type, as described in {{Section 7.1 of RFC9880}}.
 
 ### Register an SDF model
 
@@ -792,13 +792,13 @@ Response:
 
 The NIPC operation APIs perform protocol‑neutral interactions on SDF affordances, properties, events, and actions. This allows applications to read and update device properties, invoke actions, and consume events.
 
-NIPC defines three API collections aligned with the SDF Affordances defined in {{Section 1.2 of !I-D.ietf-asdf-sdf}}:
+NIPC defines three API collections aligned with the SDF Affordances defined in {{Section 1.2 of !RFC9880}}:
 
  - Properties: read and write device properties.
  - Events: enable and disable device event reporting.
  - Actions: invoke device actions.
 
-To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{!I-D.ietf-scim-device-model}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of !I-D.ietf-asdf-sdf}}.
+To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{!I-D.ietf-scim-device-model}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of !RFC9880}}.
 
 The NIPC Gateway must match the SDF global name against the registered SDF model to resolve the protocol mapping (protocolmap) the gateway will execute. When carried in a URI, the SDF global name MUST be percent‑encoded per {{Section 2.1 of !RFC3986}}.
 
