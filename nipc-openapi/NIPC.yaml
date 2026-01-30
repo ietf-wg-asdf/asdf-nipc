@@ -625,7 +625,7 @@ paths:
       description: |-
         Creates a trigger on an affordance of a device. A trigger 
         will trigger an action on another device or a group of devices
-      operationId: CreateTrigger
+      operationId: CreateDeviceTrigger
       parameters:
       - name: id
         in: path
@@ -678,7 +678,7 @@ paths:
       description: |-
         Get information about a trigger for a device or all triggers 
         if none specified
-      operationId: GetTrigger
+      operationId: GetDeviceTrigger
       parameters:
       - name: id
         in: path
@@ -691,7 +691,7 @@ paths:
       - name: instanceId
         in: query
         description: |-
-          instance id of the action that needs to be checked
+          instance id of the trigger that needs to be checked
         required: false
         schema:
           type: string
@@ -718,7 +718,7 @@ paths:
       description: |-
         Delete a trigger for a device or all triggers 
         if none specified
-      operationId: DeteteTrigger
+      operationId: DeleteDeviceTrigger
       parameters:
       - name: id
         in: path
@@ -731,7 +731,7 @@ paths:
       - name: instanceId
         in: query
         description: |-
-          instance id of the action that needs to be checked
+          instance id of the trigger that needs to be checked
         required: false
         schema:
           type: string
@@ -755,7 +755,7 @@ paths:
       description: |-
         Creates a trigger on an affordance of a group of devices. A trigger 
         will trigger an action on a device or a group of devices
-      operationId: CreateTrigger
+      operationId: CreateGroupTrigger
       parameters:
       - name: id
         in: path
@@ -793,7 +793,7 @@ paths:
               schema:
                 type: string
                 format: uri
-                example: "/devices/{id}/triggers?instanceId={instanceId}"
+                example: "/groups/{id}/triggers?instanceId={instanceId}"
         default:
           description: Error response
           content:
@@ -807,7 +807,7 @@ paths:
       description: |-
         Get information about a trigger or all triggers 
         if none specified
-      operationId: GetTrigger
+      operationId: GetGroupTrigger
       parameters:
       - name: id
         in: path
@@ -820,7 +820,7 @@ paths:
       - name: instanceId
         in: query
         description: |-
-          instance id of the action that needs to be checked
+          instance id of the trigger that needs to be checked
         required: false
         schema:
           type: string
@@ -832,7 +832,7 @@ paths:
           content:
             application/nipc+json:
               schema:
-                $ref: '#/components/schemas/TriggerResponse'
+                $ref: '#/components/schemas/TriggerStatusResponseArray'
         default:
           description: Error response
           content:
@@ -847,7 +847,7 @@ paths:
       description: |-
         Delete a trigger for a group of devices or all triggers 
         for a group of devices if none specified
-      operationId: DeteteTrigger
+      operationId: DeleteGroupTrigger
       parameters:
       - name: id
         in: path
@@ -860,7 +860,7 @@ paths:
       - name: instanceId
         in: query
         description: |-
-          instance id of the action that needs to be checked
+          instance id of the trigger that needs to be checked
         required: false
         schema:
           type: string

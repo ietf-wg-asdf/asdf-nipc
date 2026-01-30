@@ -1,92 +1,73 @@
-; CDDL translation of NIPC ProtocolInfo schemas (version 0.10.0)
-; Source: nipc-openapi/protocolinfo/ProtocolInfo.yaml (+ BLE/Zigbee variants)
-
 ; Top-level wrappers
-protocol-info-service-map = {
-  protocolInformation: ble-service-map / zigbee-service-map,
-  ...
-}
+protocol-info-service-map = (
+  ? protocolInformation: ble-service-map / zigbee-service-map
+)
 
-protocol-info-broadcast = {
-  protocolInformation: ble-broadcast / zigbee-broadcast,
-  ...
-}
+protocol-info-broadcast = (
+  ? protocolInformation: ble-broadcast / zigbee-broadcast
+)
 
 ; BLE protocol information
 ble-service-map = {
-  ble?: {
-    services?: [* ble-service],
-    cached?: bool,
-    cacheExpiry?: int,
-    autoUpdate?: bool,
-    bonding?: bonding,
-    ...
-  },
-  ...
+  ble: {
+    ? services: [* ble-service],
+    ? cached: bool,
+    ? cacheExpiryDuration: int,
+    ? autoUpdate: bool,
+    ? bonding: bonding-type,
+  }
 }
 
-bonding = "default" / "none" / "justworks" / "passkey" / "oob"
+bonding-type = "default" / "none" / "justworks" / "passkey" / "oob"
 
 ble-service = {
   serviceID: uuid,
-  characteristics?: [* ble-characteristic],
-  ...
+  ? characteristics: [* ble-characteristic],
 }
 
 ble-characteristic = {
-  characteristicID?: uuid,
-  flags?: [* ble-flag],
-  descriptors?: [* ble-descriptor],
-  ...
+  characteristicID: uuid,
+  ? flags: [* ble-flag],
+  ? descriptors: [* ble-descriptor],
 }
 
 ble-flag = "read" / "write" / "notify"
 
 ble-descriptor = {
-  descriptorID?: uuid,
-  ...
+  descriptorID: uuid,
 }
 
 ble-broadcast = {
   ble: {
-    connectable?: bool,
-    ...
+    ? connectable: bool,
   },
-  ...
 }
 
 ; Zigbee protocol information
 zigbee-service-map = {
   zigbee: {
-    endpoints?: [* zigbee-endpoint],
-    ...
+    ? endpoints: [* zigbee-endpoint],
   },
-  ...
 }
 
 zigbee-endpoint = {
-  endpointID: int,
-  clusters?: [* zigbee-cluster],
-  ...
+  endpointID: uint,
+  ? clusters: [* zigbee-cluster],
 }
 
 zigbee-cluster = {
-  clusterID?: int,
-  properties?: [* zigbee-property],
-  ...
+  clusterID: uint,
+  ? properties: [* zigbee-property],
 }
 
 zigbee-property = {
-  attributeID?: int,
-  propertyType?: int,
-  ...
+  attributeID: uint,
+  propertyType: uint,
 }
 
 zigbee-broadcast = {
   zigbee: {
-    ...
   },
-  ...
 }
 
 ; Basic types
