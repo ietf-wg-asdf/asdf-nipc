@@ -32,7 +32,7 @@ components:
                 to be rediscovered before every connected.
               type: boolean
               default: false
-            cacheExpiry:
+            cacheExpiryDuration:
               description: cache expiry period in seconds, when device allows
               type: integer
               example: 3600 # default 1 hour

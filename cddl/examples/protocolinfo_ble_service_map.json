@@ -16,7 +16,7 @@
         }
       ],
       "cached": true,
-      "cacheExpiry": 3600,
+      "cacheExpiryDuration": 3600,
       "autoUpdate": true,
       "bonding": "default"
     }
