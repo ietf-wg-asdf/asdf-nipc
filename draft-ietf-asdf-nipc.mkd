@@ -1917,10 +1917,12 @@ The appropriate HTTP status code is returned in the response.
 
 Events are delivered via a publish/subscribe interface. Event types include: (1) streaming data (enabled/disabled via the NIPC Events API), (2) broadcasts (e.g., advertisements), and (3) connection status (device link up/down). Event payloads are encoded in CBOR {{!RFC8949}} and MAY be transported over MQTT, webhook, or websocket. CBOR is used because non‑IP device payloads are typically binary; it encodes such data efficiently and is more compact than JSON, reducing bandwidth. 
 
-## CDDL Definition
+## CDDL Definition {#cddl-data-subscription}
 
-The event streaming format is defined here in CDDL {{!RFC8610}}. 
+The event streaming format is defined here in CDDL {{!RFC8610}}.
 A DataSubscription is a CBOR map containing the raw payload (bytes) and a timestamp (epoch seconds). It MAY include deviceID (the SCIM device identifier) when the payload is associated with a known device. Optional members (e.g., apMacAddress, rssi) MAY be present but can reveal deployment topology and SHOULD be omitted unless required. A choice group within DataSubscription indicates the event type (e.g., advertisement, subscription notification, connection status). An event publication MAY carry one or more DataSubscription entries in an array. Such an array is represented as DataBatch.
+
+The subscription type choice uses a CDDL socket ($$subscription-extension) to allow extensibility. New subscription types registered with IANA (see {{iana-data-subscription-types}}) can be added using the CDDL plug syntax (//=) without modifying the base schema.
 
 ~~~~ cddl
 {::include cddl/data_subscription.cddl.folded}
@@ -1999,7 +2001,7 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
         "endpointID": 1,
         "clusterID": 6,
         "attributeID": 12,
-        "type": 1
+        "attributeType": 1
     }
   }
 ]
@@ -2529,6 +2531,54 @@ IANA is requested to register the following well-known URI in the "Well-Known UR
 The well-known URI for NIPC is:
 
     /.well-known/nipc
+
+## Data Subscription Types {#iana-data-subscription-types}
+
+IANA is requested to create a new registry called "NIPC Data Subscription Types".
+
+This registry tracks the subscription types used in the NIPC publish/subscribe 
+interface for streaming event data from devices. Each subscription type defines 
+a specific data format for a particular protocol or use case.
+
+The registry must contain the following attributes:
+
+- Type Name: The CDDL key name used in the subscription choice
+- Description: A brief description of the subscription type
+- CDDL Definition: Reference to the CDDL structure defining the subscription data
+- Reference: Document defining the subscription type
+
+IANA is requested to register the following initial entries:
+
+| Type Name            | Description                                      | CDDL Definition     | Reference     |
+|----------------------|--------------------------------------------------|---------------------|---------------|
+| bleSubscription      | BLE GATT notification/indication                 | BleSubscription     | This document |
+| bleAdvertisement     | BLE advertisement data                           | BleAdvertisement    | This document |
+| bleConnectionStatus  | BLE device connection status changes             | BleConnectionStatus | This document |
+| zigbeeSubscription   | Zigbee attribute report subscription             | ZigbeeSubscription  | This document |
+
+The CDDL definitions for these subscription types are provided in {{cddl-data-subscription}}.
+
+## NIPC Protocols {#iana-protocol-info-types}
+
+IANA is requested to create a new registry called "NIPC Protocols".
+
+This registry tracks the protocols used in the `protocolInformation` object 
+for NIPC connection management and service discovery operations. Each protocol 
+type defines a specific schema for protocol-specific information, as defined 
+in {{protocol-information-obj}}.
+
+The registry must contain the following attributes:
+
+- Protocol Name: The key name used in the `protocolInformation` object
+- Description: A brief description of the protocol type
+- Reference: Document defining the protocol type
+
+IANA is requested to register the following initial entries:
+
+| Protocol Name | Description                              | Reference     |
+|---------------|------------------------------------------|---------------|
+| ble           | Bluetooth Low Energy                     | This document |
+| zigbee        | Zigbee                                   | This document |
 
 ## Problem Details for NIPC APIs {#iana-problem-details}
 
