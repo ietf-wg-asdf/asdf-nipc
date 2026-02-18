@@ -1,3 +1,11 @@
 GroupEventStatusResponseArray = [* GroupEventStatusResponse]
 
-GroupEventStatusResponse = { event: text, deviceId: text }
+GroupEventSuccessResponse = { event: text, deviceId: text }
+
+; Each item is either an event+deviceId success or a GroupFailureResponse
+GroupEventStatusResponse = (GroupEventSuccessResponse // GroupFailureResponse)
+
+GroupFailureResponse = {
+  FailureResponse,
+  ? deviceId: text
+}

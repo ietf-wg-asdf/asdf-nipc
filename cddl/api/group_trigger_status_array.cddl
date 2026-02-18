@@ -2,8 +2,15 @@
 
 GroupTriggerStatusResponseArray = [* GroupTriggerResponse]
 
-GroupTriggerResponse = {
+GroupTriggerResponse = (GroupTriggerSuccessResponse // GroupTriggerFailureResponse)
+
+GroupTriggerSuccessResponse = {
   SdfReference,
   ? action: text,      ; NIPC action operation to execute
   deviceId: text     ; UUID (as text)
+}
+
+GroupTriggerFailureResponse = {
+  FailureResponse,
+  ? deviceId: text
 }
