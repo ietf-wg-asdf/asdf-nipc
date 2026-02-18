@@ -1,9 +1,7 @@
-EventStatusResponseArray = [* EventStatusResponseArrayItem]
-
-EventStatusResponseArrayItem = ( EventInstanceSuccess // FailureResponse )
+EventStatusResponseArray = [* EventStatusResponse]
 
 ; Success item = { event, instanceId }
-EventInstanceSuccess = {
+EventStatusResponse = {
   event: text,        ; SDF global name of the event (absolute URI with fragment)
   instanceId: text    ; UUID (as text)
 }

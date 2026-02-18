@@ -832,7 +832,7 @@ paths:
           content:
             application/nipc+json:
               schema:
-                $ref: '#/components/schemas/TriggerStatusResponseArray'
+                $ref: '#/components/schemas/GroupTriggerStatusResponseArray'
         default:
           description: Error response
           content:
@@ -872,7 +872,7 @@ paths:
           content:
             application/nipc+json:
               schema:
-                $ref: '#/components/schemas/TriggerStatusResponseArray'
+                $ref: '#/components/schemas/GroupTriggerStatusResponseArray'
         default:
           description: Error response
           content:
@@ -1837,3 +1837,20 @@ components:
       type: array
       items:
           $ref: '#/components/schemas/TriggerResponse'  
+
+    GroupTriggerResponse:
+      type: object
+      allOf:
+        - type: object
+          properties:
+            deviceId:
+              type: string
+              format: uuid
+              example: 0dc729d7-f6c3-491d-9b9d-e7176d2be243
+        - $ref: '#/components/schemas/SdfReference'
+        - $ref: '#/components/schemas/Action'
+
+    GroupTriggerStatusResponseArray:
+      type: array
+      items:
+          $ref: '#/components/schemas/GroupTriggerResponse'  

@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-Internet-Connected Physical Components (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-16
+docname: draft-ietf-asdf-nipc-17
 submissionType: IETF
 category: std
 
@@ -65,7 +65,7 @@ informative:
 
 --- abstract
 
-This memo describes an API that allows applications to perform operations against a gateway serving one or more devices described by an SDF model. The document describes a RESTful application layer interface to perform operations on those devices, as well as a CBOR-based publish-subscribe interface for streaming data. 
+This document describes an API that allows applications to perform operations against a gateway serving one or more devices described by an SDF model. The API consists of a RESTful application layer interface that performs operations on those devices, as well as a CBOR-based publish-subscribe interface for streaming data. 
 
 --- middle
 
@@ -92,29 +92,30 @@ a particular use case. In absence of an open standard describing how
 applications on an IP network communicate with devices on other operational networks, bespoke and
 vendor-specific implementations have proliferated. 
 Each deployment then requires: (1) defining or adapting yet another API, and (2) deploying additional gateway functions, increasing operational and integration cost. 
-This specification defines a single, extensible application layer interface for cross-network and cross-protocol device interaction through a network gateway. The intent is to support multiple network and network protocols (and versions) concurrently, allow incremental addition of new protocols via mapping, and reduce redundant infrastructure by enabling multiple applications to share one standardized gateway function.
+This specification defines a single, extensible application layer interface for cross-network and cross-protocol device interaction through a network gateway. The intent is to support multiple network and network protocols (and versions) concurrently, allow incremental addition of new protocols via mapping, and reduce redundant infrastructure by enabling multiple applications to share one standardized gateway function. Furthermore, by leveraging interaction models, the application and gateway are able to maintain a protocol-neutral interface, while the gateway handles the protocol-specific interactions with devices.
 
 A standardized Application Layer Gateway interface has the following benefits:
 
  1. Eliminates repeated bespoke integration effort across deployments.
  2. Avoids deploying multiple overlapping gateway functions for different networks, protocols or use cases.
  3. Reduces time and operational cost to integrate new networks and devices.
+ 4. Allows applications to interact with devices in a protocol-neutral way, leveraging interaction models.
 
 ## Non-IP Gateway
 
-A Non-Internet-Connected Physical Components (NIPC) gateway is an application layer gateway (ALG) that implements APIs for applications to communicate with devices on different networks, leveraging different protocols. These NIPC APIs consist of reading or writing properties of devices, invoking actions on devices, as well as enabling or disabling events on devices.
+A Non-Internet-Connected Physical Components (NIPC) gateway is an application layer gateway (ALG) that implements APIs for applications to communicate with devices on different networks connected to the Gateway. These devices may leverage different protocols, IP based or non-IP based. NIPC APIs allow reading or writing properties of devices, invoking actions on devices, as well as enabling or disabling events on devices, by means of a supporting gateway, in a protocol-neutral way. 
 
 In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
 
-- The gateway has access to a device object, that contains its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device. Provisioning this device object is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
-- An interaction model for the class of devices must be available to the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, described in {{!RFC9880}}.
+- The gateway has access to a device object, that contains its identity, in the form of a unique UUID and any credentials & trust material required to communicate with the device. Provisioning this device object is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
+- An interaction model for the class of devices must be available to the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, as described in {{!RFC9880}}.
 
-Once these prerequisites are met, the gateway can resolve a referenced SDF affordance into the protocol-specific operations required for that device.
+Once these prerequisites are met, the gateway can resolve an SDF affordance referenced in the SDF model into the protocol-specific operations required for that device.
 
 A NIPC gateway provides the following functions:
 
  - Authentication and authorization of application clients that will leverage the NIPC APIs. 
- - Maintain a repository of device objects.
+ - Maintain or have access to a repository of device objects, including device identity and trust material.
  - Accept and validate SDF interaction model registrations.
  - Expose APIs for property, action, and event operations.
  - Perform implicit connection management to devices where required; optionally support explicit connection management.
@@ -123,7 +124,7 @@ A NIPC gateway provides the following functions:
  - Operate one or more channels to supported wired or wireless networks.
  - Optionally provide a bridge between devices on one or more device networks connected to the NIPC-Gateway. This may include translating between different protocols, if multiple protocols are supported on the device network(s).
 
-The gateway’s role is to proxy traffic between application and device networks; it is not intended to be middleware that inspects, decodes, or transforms device payloads.
+The gateway’s role is to provide gateway functions between application and device networks; it is not intended to be middleware that inspects, decodes, or transforms device payloads.
 
 ~~~~~ aasvg
 
@@ -223,7 +224,7 @@ To execute NIPC operations on a device, both prerequisites MUST be met:
 ~~~~~
 {: #prereq title="NIPC prerequisites"}
 
-Once both prerequisites are met, authorized applications can perform NIPC operations on devices identified by their IDs. See {{security-considerations}} for authorization details. NIPC operations act on SDF affordances—properties, actions, and events—defined in the registered SDF model. Certain NIPC operations may also be performed on groups of devices identified by a group ID.
+Once both prerequisites are met, authorized applications can perform NIPC operations on devices identified by their IDs. See {{security-considerations}} for authorization details. NIPC operations act on SDF affordances—properties, actions, and events defined in the registered SDF model. Certain NIPC operations may also be performed on groups of devices identified by a group ID.
 
 ### Device instance information
 
@@ -231,7 +232,7 @@ In order for the NIPC gateway to perform operations on a device, it must have ac
 
 ### Device class information 
 
-Device class information is declared through SDF models. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}. 
+Device class information is declared through SDF models, as defined in {{!RFC9880}}. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}. 
 
 The SDF model reference and/or data‑app registration MAY also be included in a device's SCIM object. See {{!I-D.ietf-scim-device-model}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for details.
 
@@ -251,13 +252,13 @@ these devices in a protocol-neutral way. To enable this, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
 to protocol-specific operations as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}. 
 The SDF affordances supported by the device, as well as its protocol-mappings,
-are provided to the gateway by means of SDF model registration. 
+are provided to the gateway by means of an SDF model. 
 SDF models are described in {{!RFC9880}}.
 
 ### Data application registrations
 
 NIPC operations can enable or disable event reporting on a device. Events are reported through a publish-subscribe interface.
-Applications that are authorized to perform NIPC operations on devices can define which applications are permitted to receive streaming event data for that device. The data-app registrations API maps an event to an application that is authorized to receive that data. The registration also defines what protocol will be used to deliver the data (e.g., MQTT, webhook, websocket). This registration basically allows applications to determine which data-streams are consumed by which data-applications.
+Applications that are authorized to perform NIPC operations on devices can define which applications are permitted to receive streaming event data for that device. The data-app registrations API maps an event to an application that is authorized to receive that data. The registration also defines what protocol will be used to deliver the data (e.g., MQTT, webhook, websocket). This registration basically allows applications to instruct the gateway to direct event data-streams to specific data-applications.
 
 ## NIPC Operations {#nipc-ops}
 
@@ -265,7 +266,7 @@ Applications that are authorized to perform NIPC operations on devices can defin
 
 NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of !RFC9880}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload. 
 
-Failures use Problem Details {{!RFC9457}} with application/problem+json.
+Failures use Problem Details {{!RFC9457}} with media type application/problem+json.
 
 NIPC operations are protocol-neutral operations on SDF affordances, more specifically properties, actions & events. NIPC operations can happen against
 affordances registered in an SDF model. Operations reference affordances by their SDF global name. If the underlying protocol requires a connection, the gateway establishes and tears down the connection implicitly unless an explicit connection is already in place.
@@ -275,11 +276,13 @@ NIPC exposes four operation groups:
 - Properties APIs: These APIs allow applications to perform operations on properties, such as to read or write values to them.
 - Actions APIs: These APIs perform actions on devices, such as enabling or disabling a feature on a device.
 - Events APIs: These APIs allow apps to enable or disable event reporting on devices. Events are reported over the events publish/subscribe interface.
-- Trigger APIs: These APIs allow an action or an event on one device to trigger an action on another device.
+- Trigger APIs: These APIs allow an event on one device or group to trigger an action on another device or group. Trigger APIs are not a fundamental operation, but rather tie 2 fundamental operations together; an event triggers an action.
 
 ### Properties
 
 Property operations allow clients to read and write values for SDF properties.
+
+An example of using a property API is reading the property temperature from a temperature sensor.
 
 Requests and responses use application/nipc+json unless another media type is negotiated via Content‑Type and Accept.
 When using JSON, binary property values are base64‑encoded with padding per {{Section 5 of !RFC4648}}.
@@ -290,6 +293,8 @@ On success, the response returns either 200 with per‑property status (JSON) or
 
 Action operations invoke SDF actions on devices.
 
+An example of using am action API is to turn on a lightbulb.
+
 A successful action request returns 202 Accepted with a Location header referencing the action instance.
 Clients poll the instance URI to obtain status (e.g., IN_PROGRESS, COMPLETED).
 Request bodies are optional and MAY carry action input in a media type appropriate to the underlying protocol (e.g., octet‑stream).
@@ -298,13 +303,17 @@ Request bodies are optional and MAY carry action input in a media type appropria
 
 Event operations enable and disable device event reporting.
 
+An example of using an event API receiving an event that a button has been pressed.
+
 Enabling an event returns 201 Created with a Location header referencing the event instance.
 Disabling an event uses the instance identifier and returns 204 No Content on success (for a single device) or 200 Success with a per‑device status list (for a group).
 Event payloads are delivered via the publish/subscribe interface encoded in CBOR {{!RFC8949}}.
 
 ### Triggers
 
-Triggers allow an action or an event on one device to trigger an action on another device. Triggers are not protocol-specific. As an example, an event on a BLE device can trigger an action on a Zigbee device.
+Triggers allow an event on one device or group to trigger an action on another device or group. Triggers are not protocol-specific. As an example, an event on a BLE device can trigger an action on a Zigbee device.
+
+An example of a Trigger is when a button is pressed (event), a lightbulb should turn on (action). Multiple buttons (group) can also turn on a lightbulb (device). A single button (device) could also turn on multiple lights (group).
 
 Creating a trigger returns 201 Created with a Location header referencing the trigger instance.
 Deleting a trigger uses the instance identifier and returns 204 No Content on success (for a single device) or 200 Success with a per‑device trigger list (for a group).
@@ -798,6 +807,10 @@ NIPC defines three API collections aligned with the SDF Affordances defined in {
  - Events: enable and disable device event reporting.
  - Actions: invoke device actions.
 
+Additionally, NIPC defines one more API collection that allows applications to install triggers on events. Triggers will trigger an action if the event is executed. Trigger collection:
+
+  - Triggers: Install a trigger on an event (invokes an action)
+   
 To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{!I-D.ietf-scim-device-model}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of !RFC9880}}.
 
 The NIPC Gateway must match the SDF global name against the registered SDF model to resolve the protocol mapping (protocolmap) the gateway will execute. When carried in a URI, the SDF global name MUST be percent‑encoded per {{Section 2.1 of !RFC3986}}.
@@ -949,6 +962,7 @@ Event APIs enable or disable reporting of device events. For certain protocols, 
 
 Events are referenced by the SDF global name of an sdfEvent. The {id} path segment identifies a device or a group of devices. A group event MAY be enabled only if the underlying protocol supports group activation (e.g., BLE advertisement or connection status events).
 
+Events are delivered ito registered data-apps over a publish/subscribe interface, as defined in {{pubsub}}. 
 If the data application registered for this event is an MQTT broker or client, the event SDF global name may be used to construct the MQTT topic for the event. The topic is constructed using the data application ID, the default namespace for the event, and the event itself. 
 For example, if the data application ID is "0927ce7c-b258-4bfa-a345-bcc9f74385b4"
 and the event is "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent", the topic will be:
@@ -1272,9 +1286,9 @@ Triggers APIs do not actually execute an operation on a device or group of devic
 
 Triggers can be installed for devices or groups of devices, represented by their id as a path parameter.
 
-The trigger can be an action or an event. the global name of the trigger is passed as a path parameter. 
+The trigger must always be triggered by an event. the global name of the event must be passed as a path parameter. 
 
-The operation is always an action. Since an action can be executed against both a device and a group, the trigger API also supports actions on both devices and groups of devices. The action is defined by its full NIPC URI to be executed, for example: "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https://example.com/AlarmSystem#/sdfObject/bell/sdfAction/ring"
+The triggered operation must always be an action. Since an action can be executed against both a device and a group, the trigger API also supports actions on both devices and groups of devices. The action is defined by its full NIPC URI to be executed, for example: "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https://example.com/AlarmSystem#/sdfObject/bell/sdfAction/ring"
 
 If a NIPC Gateway supports multiple protocols, then a trigger can be defined on a devices that supports one protocol and triggers an action on a device that supports a different protocol. As an example, an event on a BLE device can trigger an action on a Zigbee device.
 
@@ -1290,7 +1304,7 @@ Parameters:
 
 Query Parameters:
 
- - sdfName: the sdfName of the affordance that is associated with the trigger. This can be either an event or an action. the event to enable. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent` or an `sdfAction`. 
+ - sdfName: the sdfName of the affordance that is associated with the trigger. This must be an event. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
 
 Request Body:
   
@@ -1369,10 +1383,10 @@ Query Parameters:
 
 Response: 
 
-The response must be an array of triggers, each containing an instanceId, the sdfName of an affordance and an action.
+The response must be an array of triggers, each containing an instanceId, the sdfName of an event and an action.
 
  - instanceId: must be the instance ID for each installed trigger, as returned by the NIPC GW when the trigger was created.
- - sdfName: must be the sdfName of the affordance (event or action) that is associated with the trigger.
+ - sdfName: must be the sdfName of the event that is associated with the trigger.
  - action: must be the NIPC URI of the action to be executed when the trigger is activated.
 
 ~~~~ cddl
@@ -1410,7 +1424,7 @@ Parameters:
 
 Query Parameters:
 
- - sdfName: the sdfName of the affordance that is associated with the trigger. This can be either an event or an action. the event to enable. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent` or an `sdfAction`. 
+ - sdfName: the sdfName of the affordance that is associated with the trigger. This must be an event. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
 
 Request Body:
   
@@ -1490,14 +1504,14 @@ Query Parameters:
 Response: 
 
 The response must be an array of triggers, each containing an instanceId, the sdfName of an affordance and an action.
- - instanceId: must be the instance ID for each installed trigger, as returned by the NIPC GW when the trigger was created.
+ - deviceId: must be the device ID for each installed trigger.
  - sdfName: must be the sdfName of the affordance (event or action) that is associated with the trigger.
  - action: must be the NIPC URI of the action to be executed when the trigger is activated.
 
 ~~~~ cddl
-{::include cddl/api/trigger_status_array.cddl.folded}
+{::include cddl/api/group_trigger_status_array.cddl.folded}
 ~~~~
-{:cddl sourcecode-markers="true" sourcecode-name="trigger_status_array.cddl"}
+{:cddl sourcecode-markers="true" sourcecode-name="group_trigger_status_array.cddl"}
 
 Example of a response:
 
@@ -1506,7 +1520,7 @@ Example of a response:
 
 [
   {
-    "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
+    "deviceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
     "sdfName": "https://example.com/heartrate#/sdfObject/healthsenso\
 r",
     "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions\
@@ -1712,7 +1726,7 @@ where in the BLE protocol object:
 
 Response:
 
-Success responses include a protocol mapping with an array of 
+Success responses include a protocol information object with an array of 
 discovered properties, as defined in the specific protocol.
 For example, for BLE, this is an array of supported services, which in turn
 contains an array of characteristics, which in turn contains an array of
@@ -1873,8 +1887,7 @@ In the appendix {{NIPCextensions}}, we have defined a few example extensions.
 # NIPC Error Handling
 {: #errorhandling}
 
-Error types in NIPC APIs must use URI-based error type identifiers as defined in {{iana-problem-details}}. The error types 
-can be generic or specific to the API category. The error types are organized into the following categories:
+Error types in NIPC APIs must use URI-based error type identifiers as defined in {{iana-problem-details}}. The error types can be generic or specific to the API category. The error types are organized into the following categories:
 
   - Generic: Broadly applicable errors, including authorization, invalid identifiers, and generic failures.
   - Property APIs: Errors related to property APIs (read/write).
@@ -1913,7 +1926,7 @@ NIPC error types are defined in the table below:
 
 The appropriate HTTP status code is returned in the response. 
 
-# Publish/Subscribe Interface
+# Publish/Subscribe Interface {#pubsub}
 
 Events are delivered via a publish/subscribe interface. Event types include: (1) streaming data (enabled/disabled via the NIPC Events API), (2) broadcasts (e.g., advertisements), and (3) connection status (device link up/down). Event payloads are encoded in CBOR {{!RFC8949}} and MAY be transported over MQTT, webhook, or websocket. CBOR is used because non‑IP device payloads are typically binary; it encodes such data efficiently and is more compact than JSON, reducing bandwidth. 
 
@@ -2671,3 +2684,8 @@ The following is a combined reference of all NIPC API CDDL definitions used in t
 {::include nipc-sdf-example/thermometer.sdf.json}
 ~~~
 {: title="Example SDF model with protocol mappings for BLE" sourcecode-markers="true" sourcecode-name="thermometer.sdf.json" }
+
+# Acknowledgements
+
+This document relies on SDF models described in {{!RFC9880}}, as such, we are grateful to the authors of this
+document for putting their time and effort into defining SDF in depth, allowing us to make use of it. The authors would also like to thank the ASDF working group for their excellent feedback and steering of the document. 
