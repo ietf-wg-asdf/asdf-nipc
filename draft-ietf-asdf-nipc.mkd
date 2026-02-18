@@ -159,7 +159,7 @@ capitals, as shown here.
 
 ## Glossary
 
- - NIPC: Non-IP Control, the application layer interface defined in this
+ - NIPC: Non-Internet-Connected Physical Components, the application layer interface defined in this
    document.
  - NIPC Gateway: An application layer gateway that implements the NIPC
    interface.
@@ -293,7 +293,7 @@ On success, the response returns either 200 with per‑property status (JSON) or
 
 Action operations invoke SDF actions on devices.
 
-An example of using am action API is to turn on a lightbulb.
+An example of using an action API is to turn on a lightbulb.
 
 A successful action request returns 202 Accepted with a Location header referencing the action instance.
 Clients poll the instance URI to obtain status (e.g., IN_PROGRESS, COMPLETED).
@@ -962,7 +962,7 @@ Event APIs enable or disable reporting of device events. For certain protocols, 
 
 Events are referenced by the SDF global name of an sdfEvent. The {id} path segment identifies a device or a group of devices. A group event MAY be enabled only if the underlying protocol supports group activation (e.g., BLE advertisement or connection status events).
 
-Events are delivered ito registered data-apps over a publish/subscribe interface, as defined in {{pubsub}}. 
+Events are delivered to registered data-apps over a publish/subscribe interface, as defined in {{pubsub}}. 
 If the data application registered for this event is an MQTT broker or client, the event SDF global name may be used to construct the MQTT topic for the event. The topic is constructed using the data application ID, the default namespace for the event, and the event itself. 
 For example, if the data application ID is "0927ce7c-b258-4bfa-a345-bcc9f74385b4"
 and the event is "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent", the topic will be:
@@ -976,7 +976,7 @@ data-app/0927ce7c-b258-4bfa-a345-bcc9f74385b4/thermometer/sdfThing/\
 thermometer/sdfEvent/isPresent
 ~~~~~
 
-A data application may subscribe to this topic using the topic or it  may use MQTT wildcards to subscribe to `data-app/+/temperature/#` to receive all events for the `temperature` namespace.
+A data application may subscribe to this topic using the topic or it may use MQTT wildcards to subscribe to `data-app/+/temperature/#` to receive all events for the `temperature` namespace.
 
 If a customTopic was supplied in the data‑app registration (mqttBroker case), that topic MUST be used instead of the constructed default.
 
@@ -1168,7 +1168,7 @@ Parameters:
 
 Query Parameters:
 
- - instanceId: the instance ID of the event to disable (obtained from the Location header when the event was enabled).
+ - instanceId: the instance ID of the event (obtained from the Location header when the event was enabled).
 
 Response: 
 
@@ -1338,11 +1338,11 @@ Example of a successful response:
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 HTTP/1.1 201 Created
-Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/trigger?inst\
-anceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/triggers?ins\
+tanceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
 
-The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the event.
+The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the trigger.
 
 ### Delete a trigger on a device
 
@@ -1458,11 +1458,11 @@ Example of a successful response:
 =============== NOTE: '\' line wrapping per RFC 8792 ================
 
 HTTP/1.1 201 Created
-Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/trigger?inst\
-anceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/triggers?ins\
+tanceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
 
-The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the event.
+The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the trigger.
 
 ### Delete a trigger on a group of devices
 
@@ -2181,7 +2181,7 @@ The sequence of operations for this are:
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
     POST /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?eventNa\
-    me=https%23%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
+    me=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
     meter%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
@@ -2280,7 +2280,7 @@ The sequence of operations for this are:
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
 
     POST /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?eventNa\
-    me=https%23%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
+    me=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
     meter%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
@@ -2363,7 +2363,7 @@ Level of maturity: Open-source prototype
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: All versions up to draft-16
+Version compatibility: All versions up to draft-17
 
 Licensing: Apache License, Version 2.0
 
@@ -2395,7 +2395,7 @@ Level of maturity: Beta
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: draft-16
+Version compatibility: draft-17
 
 Licensing: Proprietary
 
@@ -2629,7 +2629,7 @@ registry:
 | https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-invalid-service-or-characteristic | Invalid BLE service or characteristic ID      | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-connection-timeout | Zigbee connection timeout                     | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-invalid-endpoint-or-cluster | Invalid Zigbee endpoint or cluster ID         | This document   |
-| https://www.iana.org/assignments/nipc-problem-types#extension-broadcast-invalid-data | Invalid transmit data                         | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#extension-transmit-invalid-data | Invalid transmit data                         | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#extension-firmware-rollback | Firmware rollback                             | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#extension-firmware-update-failed | Firmware update failed                        | This document   |
 

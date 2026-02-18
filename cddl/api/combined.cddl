@@ -105,7 +105,7 @@ FailureTypeURI = (
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-invalid-service-or-characteristic" /
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-connection-timeout" /
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-invalid-endpoint-or-cluster" /
-  "https://www.iana.org/assignments/nipc-problem-types#extension-broadcast-invalid-data" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-transmit-invalid-data" /
   "https://www.iana.org/assignments/nipc-problem-types#extension-firmware-rollback" /
   "https://www.iana.org/assignments/nipc-problem-types#extension-firmware-update-failed" /
   "about:blank"
@@ -117,14 +117,34 @@ GroupEventStatusResponseArray = [* GroupEventStatusResponse]
 
 GroupEventSuccessResponse = { event: text, deviceId: text }
 
-; Each item is either an event+deviceId success or a FailureResponse
-GroupEventStatusResponse = (GroupEventSuccessResponse // FailureResponse)
+; Each item is either an event+deviceId success or a GroupFailureResponse
+GroupEventStatusResponse = (GroupEventSuccessResponse // GroupFailureResponse)
 
-; FailureResponse (Problem Details subset; align with your existing definition if present)
 GroupFailureResponse = {
   FailureResponse,
   ? deviceId: text
 }
+
+; ============================================
+; From: cddl/api/group_trigger_status_array.cddl
+; ============================================
+; Group Trigger status response array and item shape
+
+GroupTriggerStatusResponseArray = [* GroupTriggerResponse]
+
+GroupTriggerResponse = (GroupTriggerSuccessResponse // GroupTriggerFailureResponse)
+
+GroupTriggerSuccessResponse = {
+  SdfReference,
+  ? action: text,      ; NIPC action operation to execute
+  deviceId: text     ; UUID (as text)
+}
+
+GroupTriggerFailureResponse = {
+  FailureResponse,
+  ? deviceId: text
+}
+
 ; ============================================
 ; From: cddl/api/trigger_status_array.cddl
 ; ============================================

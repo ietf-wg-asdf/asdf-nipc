@@ -28,7 +28,7 @@ FailureTypeURI = (
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-invalid-service-or-characteristic" /
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-connection-timeout" /
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-zigbee-invalid-endpoint-or-cluster" /
-  "https://www.iana.org/assignments/nipc-problem-types#extension-broadcast-invalid-data" /
+  "https://www.iana.org/assignments/nipc-problem-types#extension-transmit-invalid-data" /
   "https://www.iana.org/assignments/nipc-problem-types#extension-firmware-rollback" /
   "https://www.iana.org/assignments/nipc-problem-types#extension-firmware-update-failed" /
   "about:blank"

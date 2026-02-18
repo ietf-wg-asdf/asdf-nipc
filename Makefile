@@ -22,6 +22,7 @@ CDDL_API_SOURCES= \
 	cddl/api/event_status_array.cddl \
 	cddl/api/failure_response.cddl \
 	cddl/api/group_event_status_response_array.cddl \
+	cddl/api/group_trigger_status_array.cddl \
 	cddl/api/trigger_status_array.cddl \
 	cddl/api/property_value_array.cddl \
 	cddl/api/property_value_read_response_array.cddl \
