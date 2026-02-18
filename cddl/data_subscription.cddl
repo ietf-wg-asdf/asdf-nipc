@@ -10,12 +10,13 @@ DataSubscription = {
   subscription
 }
 
+; Subscription type - IANA registered types
 subscription = (
   bleSubscription: BleSubscription //
   bleAdvertisement: BleAdvertisement //
   bleConnectionStatus: BleConnectionStatus //
   zigbeeSubscription: ZigbeeSubscription //
-  rawPayload: RawPayload
+  $$subscription-extension
 )
 
 BleSubscription = {
@@ -37,10 +38,6 @@ BleConnectionStatus = {
 ZigbeeSubscription = {
   endpointID: int,
   clusterID: int,
-  attributeID: int
+  attributeID: int,
   attributeType: int
-}
-
-RawPayload = {
-  contextID: text
 }
