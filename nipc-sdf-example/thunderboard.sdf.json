@@ -97,25 +97,21 @@
                     "sdfEvent": {
                         "hall_state": {
                             "description": "State",
-                            "sdfOutputData": {
-                                "sdfProtocolMap": {
-                                    "ble": {
-                                        "type": "gatt",
-                                        "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
-                                        "characteristicID": "f598dbc5-2f01-4ec5-9936-b3d1aa4f957f"
-                                    }
+                            "sdfProtocolMap": {
+                                "ble": {
+                                    "type": "gatt",
+                                    "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
+                                    "characteristicID": "f598dbc5-2f01-4ec5-9936-b3d1aa4f957f"
                                 }
                             }
                         },
                         "hall_field_strength": {
                             "description": "Field Strength",
-                            "sdfOutputData": {
-                                "sdfProtocolMap": {
-                                    "ble": {
-                                        "type": "gatt",
-                                        "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
-                                        "characteristicID": "f598dbc5-2f02-4ec5-9936-b3d1aa4f957f"
-                                    }
+                            "sdfProtocolMap": {
+                                "ble": {
+                                    "type": "gatt",
+                                    "serviceID": "f598dbc5-2f00-4ec5-9936-b3d1aa4f957f",
+                                    "characteristicID": "f598dbc5-2f02-4ec5-9936-b3d1aa4f957f"
                                 }
                             }
                         }
@@ -170,13 +166,11 @@
                     "sdfEvent": {
                         "aio_digital_in": {
                             "description": "Digital",
-                            "sdfOutputData": {
-                                "sdfProtocolMap": {
-                                    "ble": {
-                                        "type": "gatt",
-                                        "serviceID": "1815",
-                                        "characteristicID": "2A56"
-                                    }
+                            "sdfProtocolMap": {
+                                "ble": {
+                                    "type": "gatt",
+                                    "serviceID": "1815",
+                                    "characteristicID": "2A56"
                                 }
                             }
                         }
@@ -279,13 +273,11 @@
                     "sdfEvent": {
                         "batt_measurement": {
                             "description": "Battery Level",
-                            "sdfOutputData": {
-                                "sdfProtocolMap": {
-                                    "ble": {
-                                        "type": "gatt",
-                                        "serviceID": "180F",
-                                        "characteristicID": "2A19"
-                                    }
+                            "sdfProtocolMap": {
+                                "ble": {
+                                    "type": "gatt",
+                                    "serviceID": "180F",
+                                    "characteristicID": "2A19"
                                 }
                             }
                         }
@@ -340,37 +332,31 @@
                     "sdfEvent": {
                         "imu_acceleration": {
                             "description": "Acceleration",
-                            "sdfOutputData": {
-                                "sdfProtocolMap": {
-                                    "ble": {
-                                        "type": "gatt",
-                                        "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
-                                        "characteristicID": "c4c1f6e2-4be5-11e5-885d-feff819cdc9f"
-                                    }
+                            "sdfProtocolMap": {
+                                "ble": {
+                                    "type": "gatt",
+                                    "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
+                                    "characteristicID": "c4c1f6e2-4be5-11e5-885d-feff819cdc9f"
                                 }
                             }
                         },
                         "imu_orientation": {
                             "description": "Orientation",
-                            "sdfOutputData": {
-                                "sdfProtocolMap": {
-                                    "ble": {
-                                        "type": "gatt",
-                                        "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
-                                        "characteristicID": "b7c4b694-bee3-45dd-ba9f-f3b5e994f49a"
-                                    }
+                            "sdfProtocolMap": {
+                                "ble": {
+                                    "type": "gatt",
+                                    "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
+                                    "characteristicID": "b7c4b694-bee3-45dd-ba9f-f3b5e994f49a"
                                 }
                             }
                         },
                         "imu_control_point": {
                             "description": "Control Point",
-                            "sdfOutputData": {
-                                "sdfProtocolMap": {
-                                    "ble": {
-                                        "type": "gatt",
-                                        "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
-                                        "characteristicID": "71e30b8c-4131-4703-b0a0-b0bbba75856b"
-                                    }
+                            "sdfProtocolMap": {
+                                "ble": {
+                                    "type": "gatt",
+                                    "serviceID": "a4e649f4-4be5-11e5-885d-feff819cdc9f",
+                                    "characteristicID": "71e30b8c-4131-4703-b0a0-b0bbba75856b"
                                 }
                             }
                         }
@@ -479,21 +465,17 @@
             "sdfEvent": {
                 "isPresent": {
                     "description": "BLE advertisements",
-                    "sdfOutputData": {
-                        "sdfProtocolMap": {
-                            "ble": {
-                                "type": "advertisements"
-                            }
+                    "sdfProtocolMap": {
+                        "ble": {
+                            "type": "advertisements"
                         }
                     }
                 },
                 "isConnected": {
                     "description": "BLE connection events",
-                    "sdfOutputData": {
-                        "sdfProtocolMap": {
-                            "ble": {
-                                "type": "connection_events"
-                            }
+                    "sdfProtocolMap": {
+                        "ble": {
+                            "type": "connection_events"
                         }
                     }
                 }

@@ -22,15 +22,15 @@
             },
             "sdfEvent": {
                 "fallDetected": {
-                    "sdfOutputData": {
-                        "type": "boolean",
-                        "sdfProtocolMap": {
-                            "ble": {
-                                "type": "gatt",
-                                "serviceID": "12345678-1234-5678-1234-56789abcdef1",
-                                "characteristicID": "12345678-1234-5678-1234-56789abcdef1"
-                            }
+                    "sdfProtocolMap": {
+                        "ble": {
+                            "type": "gatt",
+                            "serviceID": "12345678-1234-5678-1234-56789abcdef1",
+                            "characteristicID": "12345678-1234-5678-1234-56789abcdef1"
                         }
+                    },
+                    "sdfOutputData": {
+                        "type": "boolean"
                     }
                 },
                 "isPresent": {
@@ -43,21 +43,21 @@
                             "rssi": {
                                 "type": "number"
                             }
-                        },
-                        "sdfProtocolMap": {
-                            "ble": {
-                                "type": "advertisements"
-                            }
+                        }
+                    },
+                    "sdfProtocolMap": {
+                        "ble": {
+                            "type": "advertisements"
                         }
                     }
                 },
                 "isConnected": {
                     "sdfOutputData": {
-                        "type": "boolean",
-                        "sdfProtocolMap": {
-                            "ble": {
-                                "type": "connection_events"
-                            }
+                        "type": "boolean"
+                    },
+                    "sdfProtocolMap": {
+                        "ble": {
+                            "type": "connection_events"
                         }
                     }
                 }
