@@ -37,25 +37,21 @@
           "sdfEvent": {
             "temperature_measurement": {
               "description": "Temperature Measurement",
-              "sdfOutputData": {
-                "sdfProtocolMap": {
-                  "ble": {
-                    "type": "gatt",
-                    "serviceID": "1809",
-                    "characteristicID": "2A1C"
-                  }
+              "sdfProtocolMap": {
+                "ble": {
+                  "type": "gatt",
+                  "serviceID": "1809",
+                  "characteristicID": "2A1C"
                 }
               }
             },
             "intermediate_temperature": {
               "description": "Intermediate Temperature",
-              "sdfOutputData": {
-                "sdfProtocolMap": {
-                  "ble": {
-                    "type": "gatt",
-                    "serviceID": "1809",
-                    "characteristicID": "2A1E"
-                  }
+              "sdfProtocolMap": {
+                "ble": {
+                  "type": "gatt",
+                  "serviceID": "1809",
+                  "characteristicID": "2A1E"
                 }
               }
             }
@@ -152,21 +148,17 @@
       "sdfEvent": {
         "isPresent": {
           "description": "BLE advertisements",
-          "sdfOutputData": {
-            "sdfProtocolMap": {
-              "ble": {
-                "type": "advertisements"
-              }
+          "sdfProtocolMap": {
+            "ble": {
+              "type": "advertisements"
             }
           }
         },
         "isConnected": {
           "description": "BLE connection events",
-          "sdfOutputData": {
-            "sdfProtocolMap": {
-              "ble": {
-                "type": "connection_events"
-              }
+          "sdfProtocolMap": {
+            "ble": {
+              "type": "connection_events"
             }
           }
         }
