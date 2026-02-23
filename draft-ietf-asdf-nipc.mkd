@@ -2515,6 +2515,8 @@ Change controller: IETF
 
 IANA is requested to create a new registry called "NIPC API extensions". 
 
+The registration policy for this registry is Specification Required {{!RFC8126}}.
+
 The registry must contain following attributes:
 
 - Extension URI 
@@ -2553,6 +2555,8 @@ This registry tracks the subscription types used in the NIPC publish/subscribe
 interface for streaming event data from devices. Each subscription type defines 
 a specific data format for a particular protocol or use case.
 
+The registration policy for this registry is Specification Required {{!RFC8126}}.
+
 The registry must contain the following attributes:
 
 - Type Name: The CDDL key name used in the subscription choice
@@ -2580,6 +2584,8 @@ for NIPC connection management and service discovery operations. Each protocol
 type defines a specific schema for protocol-specific information, as defined 
 in {{protocol-information-obj}}.
 
+The registration policy for this registry is Specification Required {{!RFC8126}}.
+
 The registry must contain the following attributes:
 
 - Protocol Name: The key name used in the `protocolInformation` object
@@ -2598,7 +2604,9 @@ IANA is requested to register the following initial entries:
 IANA is requested to create a new registry, the "NIPC Problem Type" registry, 
 with following URL: [](https://www.iana.org/assignments/nipc-problem-types).
 
-Registrations MUST use the prefix []("https://iana.org/assignments/nipc-problem-types#") for the type URI. 
+The registration policy for this registry is Specification Required {{!RFC8126}}.
+
+Registrations MUST use the prefix []("https://www.iana.org/assignments/nipc-problem-types#") for the type URI. 
 
 The registration requests MUST use the template defined in {{Section 4.2 of RFC9457}}.
 

@@ -1577,10 +1577,9 @@ components:
             multipleSensor:
               sdfEvent:
                 isPresent:
-                  sdfOutputData:
-                    sdfProtocolMap:
-                      ble:
-                        type: advertisement
+                  sdfProtocolMap:
+                    ble:
+                      type: advertisement
               sdfObject:
                 healthsensor:
                   sdfProperty:
@@ -1591,7 +1590,6 @@ components:
                           characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
                   sdfEvent:
                     fallDetected:
-                      sdfOutputData:
                         sdfProtocolMap:
                           ble:
                             serviceID: 00001809-0000-1000-8000-00805f9b34fb
@@ -1623,10 +1621,9 @@ components:
                       characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
               sdfEvent:
                 fallDetected:
-                  sdfOutputData:
-                    sdfProtocolMap:
-                      ble:
-                        type: advertisements
+                  sdfProtocolMap:
+                    ble:
+                      type: advertisements
               sdfAction:
                 start:
                   sdfProtocolMap:
@@ -1651,26 +1648,23 @@ components:
           
     SdfEvent:
       type: object
-      description: Sample SDF property
+      description: Sample SDF event
       properties:
         sdfEvent:
           additionalProperties: #example, this will be the registered event
-            type: object
-            properties:
-              sdfOutputData:
-                allOf:
-                  - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap'
+            allOf:
+              - $ref: './protocolmaps/ProtocolMap.yaml#/components/schemas/ProtocolMap'
           example:
             fallDetected:
-              sdfOutputData:
                 sdfProtocolMap:
                   ble:
+                    type: gatt
                     serviceID: 00001809-0000-1000-8000-00805f9b34fb
                     characteristicID: 00002a1c-0000-1000-8000-00805f9b34fb
     
     SdfAction:
       type: object
-      description: Sample SDF property
+      description: Sample SDF action
       properties:
         sdfAction:
           additionalProperties: 
