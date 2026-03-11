@@ -17,7 +17,7 @@ stand_alone: no
 pi: [toc, sortrefs, symrefs]
 
 author:
- - 
+ -
     ins: B. Brinckman
     name: Bart Brinckman
     org: Cisco Systems
@@ -65,7 +65,7 @@ informative:
 
 --- abstract
 
-This document describes an API that allows applications to perform operations against a gateway serving one or more devices described by an SDF model. The API consists of a RESTful application layer interface that performs operations on those devices, as well as a CBOR-based publish-subscribe interface for streaming data. 
+This document describes an API that allows applications to perform operations against a gateway serving one or more devices described by an SDF model. The API consists of a RESTful application layer interface that performs operations on those devices, as well as a CBOR-based publish-subscribe interface for streaming data.
 
 --- middle
 
@@ -76,11 +76,11 @@ This document describes an API that allows applications to perform operations ag
 Low‑power sensors, actuators, and other connected devices deployed for building management, healthcare, workplace, manufacturing, logistics, and hospitality use cases are often resource and battery constrained. Many lack native IP connectivity and instead attach via heterogeneous non‑IP operational networks. Common non‑IP protocols include BLE {{BLE53}} and Zigbee {{Zigbee22}}. When IP is available, constrained application protocols such as CoAP {{?RFC7252}} may be used. These devices still need to exchange data with IP‑based applications. Accordingly, applications on the IP network obtain telemetry from and issue operations to such devices through an application‑layer gateway. This gateway bridges the application network and one or more separate operational networks where devices are connected, allowing applications on the IP network to perform operations on devices connected to these other operational networks.
 
 ~~~~~ aasvg
-                                                               
+
     +-------------+              +---------+              +--------+
-    | Application |<------------>| Gateway |<------------>| Device |                     
+    | Application |<------------>| Gateway |<------------>| Device |
     |             | Application  |         |    Device    |        |
-    +-------------+   network    +---------+    network   +--------+                 
+    +-------------+   network    +---------+    network   +--------+
 
 ~~~~~
 {: #gw title="Gateway for non-Internet-Connected Devices"}
@@ -90,8 +90,8 @@ a particular protocol, such as a BLE GATT REST API for BLE Gateways
 ({{Gatt-REST-API}}), however they have been limited to a single protocol or
 a particular use case. In absence of an open standard describing how
 applications on an IP network communicate with devices on other operational networks, bespoke and
-vendor-specific implementations have proliferated. 
-Each deployment then requires: (1) defining or adapting yet another API, and (2) deploying additional gateway functions, increasing operational and integration cost. 
+vendor-specific implementations have proliferated.
+Each deployment then requires: (1) defining or adapting yet another API, and (2) deploying additional gateway functions, increasing operational and integration cost.
 This specification defines a single, extensible application layer interface for cross-network and cross-protocol device interaction through a network gateway. The intent is to support multiple network and network protocols (and versions) concurrently, allow incremental addition of new protocols via mapping, and reduce redundant infrastructure by enabling multiple applications to share one standardized gateway function. Furthermore, by leveraging interaction models, the application and gateway are able to maintain a protocol-neutral interface, while the gateway handles the protocol-specific interactions with devices.
 
 A standardized Application Layer Gateway interface has the following benefits:
@@ -103,7 +103,7 @@ A standardized Application Layer Gateway interface has the following benefits:
 
 ## Non-IP Gateway
 
-A Non-Internet-Connected Physical Components (NIPC) gateway is an application layer gateway (ALG) that implements APIs for applications to communicate with devices on different networks connected to the Gateway. These devices may leverage different protocols, IP based or non-IP based. NIPC APIs allow reading or writing properties of devices, invoking actions on devices, as well as enabling or disabling events on devices, by means of a supporting gateway, in a protocol-neutral way. 
+A Non-Internet-Connected Physical Components (NIPC) gateway is an application layer gateway (ALG) that implements APIs for applications to communicate with devices on different networks connected to the Gateway. These devices may leverage different protocols, IP based or non-IP based. NIPC APIs allow reading or writing properties of devices, invoking actions on devices, as well as enabling or disabling events on devices, by means of a supporting gateway, in a protocol-neutral way.
 
 In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
 
@@ -114,7 +114,7 @@ Once these prerequisites are met, the gateway can resolve an SDF affordance refe
 
 A NIPC gateway provides the following functions:
 
- - Authentication and authorization of application clients that will leverage the NIPC APIs. 
+ - Authentication and authorization of application clients that will leverage the NIPC APIs.
  - Maintain or have access to a repository of device objects, including device identity and trust material.
  - Accept and validate SDF interaction model registrations.
  - Expose APIs for property, action, and event operations.
@@ -209,9 +209,9 @@ To execute NIPC operations on a device, both prerequisites MUST be met:
 
 ~~~~~ aasvg
 
-    +------------+   
-    |    SCIM    |                      
-    |   object   |           +----------------+          
+    +------------+
+    |    SCIM    |
+    |   object   |           +----------------+
     |    {ID}    +---------->|                |
     +------------+           | NIPC Operation |
                              |    - Property  |
@@ -219,7 +219,7 @@ To execute NIPC operations on a device, both prerequisites MUST be met:
     +------------+           |    - Event     |
     |     SDF    +---------->|                |
     |    model   |           +----------------+
-    +------------+  
+    +------------+
 
 ~~~~~
 {: #prereq title="NIPC prerequisites"}
@@ -230,9 +230,9 @@ Once both prerequisites are met, authorized applications can perform NIPC operat
 
 In order for the NIPC gateway to perform operations on a device, it must have access to the device's instance information. This includes the device’s identity and any credentials or trust material required to communicate with the device. The device object MUST include a unique identity (UUID) and sufficient information to bootstrap trust and establish connectivity, as NIPC operations assume connectivity can be established without separate API calls. While provisioning devices instance information can be performed in various ways, it is RECOMMENDED to use SCIM {{!RFC7644}} with the device schema {{!I-D.ietf-scim-device-model}}, which defines the necessary attributes and extensions to support NIPC. As per {{Section 4.2 of !RFC7643}}, group objects may also be declared, and leveraged in NIPC operations.
 
-### Device class information 
+### Device class information
 
-Device class information is declared through SDF models, as defined in {{!RFC9880}}. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}. 
+Device class information is declared through SDF models, as defined in {{!RFC9880}}. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}.
 
 The SDF model reference and/or data‑app registration MAY also be included in a device's SCIM object. See {{!I-D.ietf-scim-device-model}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for details.
 
@@ -250,9 +250,9 @@ NIPC supports two registration types:
 The SDF model for a class of devices determines how a gateway can interact with
 these devices in a protocol-neutral way. To enable this, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
-to protocol-specific operations as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}. 
+to protocol-specific operations as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
 The SDF affordances supported by the device, as well as its protocol-mappings,
-are provided to the gateway by means of an SDF model. 
+are provided to the gateway by means of an SDF model.
 SDF models are described in {{!RFC9880}}.
 
 ### Data application registrations
@@ -264,7 +264,7 @@ Applications that are authorized to perform NIPC operations on devices can defin
 
 ### Overview {#nipc-ops-overview}
 
-NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of !RFC9880}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload. 
+NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of !RFC9880}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload.
 
 Failures use Problem Details {{!RFC9457}} with media type application/problem+json.
 
@@ -349,16 +349,16 @@ Event types include:
 ### General {#paths-general}
 
 The NIPC HTTP protocol is described in terms of a path relative to a Base URI.
-The Base URI MUST NOT contain a query string, as clients MAY append additional 
+The Base URI MUST NOT contain a query string, as clients MAY append additional
 path information and query parameters as part of forming the request.  The base
 URI is a URL that most often consists of the "https" protocol scheme, a domain
-name, and an initial path {{!RFC3986}}.  That initial path for NIPC is 
+name, and an initial path {{!RFC3986}}.  That initial path for NIPC is
 recommended to be /nipc.
 For example:
 
       "https://example.com/nipc/"
 
-Additionally a version number may be added, for example: 
+Additionally a version number may be added, for example:
 
       "https://example.com/nipc/v1/"
 
@@ -373,7 +373,7 @@ The collection identifier can be one of the following:
 The well-known URI `/.well-known/nipc` defined in {{iana-well-known}} can
 be used to discover the base path of the NIPC APIs and the supported versions
 and extensions. The response to a GET request on this URI MUST be a JSON
-document that contains the base path, and optionally the supported versions and  
+document that contains the base path, and optionally the supported versions and
 extension APIs. The paths MUST be a URI template as defined in {{!RFC6570}}.
 The following is an example of a template defining the NIPC base path as well
 as supported extensions on a server.
@@ -416,7 +416,7 @@ paths:
 ### NIPC Operations
 
 Every NIPC Operations API pertains to either a device or group of devices, identified by
-an ID, hence the ID must be reflected as the first parameter in the path. 
+an ID, hence the ID must be reflected as the first parameter in the path.
 For example:
 
       "https://example.com/nipc/v1/{id}"
@@ -481,7 +481,7 @@ To minimize deployment risk arising from inconsistent URI path normalization and
 
 ### Responses  {#responses}
 
-A NIPC Gateway must respond to a NIPC operation request synchronously, and provide the result of the completed operation in the HTTP response. 
+A NIPC Gateway must respond to a NIPC operation request synchronously, and provide the result of the completed operation in the HTTP response.
 
 Exceptions to this are the following:
 
@@ -489,7 +489,7 @@ Exceptions to this are the following:
 NIPC operations. On acceptance, the gateway returns 202 Accepted. Clients poll the extension URI (GET) for execution status. If a callback URI was supplied in the request, the gateway MAY send the final result upon completion.
 2. Actions: Action requests return 202 Accepted with a Location header pointing to the action instance used for status tracking.
 
-A failure response must contain an HTTP status code of 4xx or 5xx, and use {{!RFC9457}} Problem Details with `application/problem+json` media type. 
+A failure response must contain an HTTP status code of 4xx or 5xx, and use {{!RFC9457}} Problem Details with `application/problem+json` media type.
 
 All NIPC failure responses must include the following attributes:
 
@@ -693,11 +693,11 @@ Request Body:
     - password: the password to authenticate with the MQTT broker.
     - brokerCACert: the base64-encoded CA certificate of the MQTT broker (optional).
     - customTopic: By default, the topic will be composed of `data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>`, as described in {{nipc-event-apis}}. In this attribute, a custom topic can be configured (optional).
- - webhook: The data app supports a webhook. This object contains a webhook URL along with any credentials that are required to authenticate the webhook. 
+ - webhook: The data app supports a webhook. This object contains a webhook URL along with any credentials that are required to authenticate the webhook.
     - URI: the webhook URI. The URI MUST include the scheme used by the webhook server (e.g., "https://"). It is up to the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
     - headers: An object that contains the headers to be sent with the webhook request. The headers can contain any authentication information required by the webhook server. Each header is represented as a key-value pair in the object.
     - serverCACert: the CA certificate of the webhook server, encoded as per {{!RFC7468}} and newlines encoded as '\n' (optional)
- - websocket: The data app supports a websocket. This object contains a websocket URL along with any credentials that are required to authenticate the websocket. 
+ - websocket: The data app supports a websocket. This object contains a websocket URL along with any credentials that are required to authenticate the websocket.
    The websocket URL is the endpoint where the streaming data will be sent.
     - URI: the websocket URI. The URI MUST include the scheme used by the websocket server (e.g., "wss://"). It is up to the implementation to support different schemes. If a scheme is not supported, the NIPC gateway MUST return an error response with type "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme".
     - headers: An object that contains the headers to be sent with the websocket request. The headers can contain any authentication information required by the websocket server. Each header is represented as a key-value pair in the object.
@@ -749,13 +749,13 @@ r/sdfEvent/fallDetected"
 
 Response:
 
- - If successful, the response will be identical to the request body. 
+ - If successful, the response will be identical to the request body.
 
 ### Update a data application
 
 Method: `PUT /registrations/data-apps{?dataAppId}`
 
-Description: Updates a data application registration. 
+Description: Updates a data application registration.
 
 Query Parameters:
 
@@ -810,7 +810,7 @@ NIPC defines three API collections aligned with the SDF Affordances defined in {
 Additionally, NIPC defines one more API collection that allows applications to install triggers on events. Triggers will trigger an action if the event is executed. Trigger collection:
 
   - Triggers: Install a trigger on an event (invokes an action)
-   
+
 To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{!I-D.ietf-scim-device-model}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of !RFC9880}}.
 
 The NIPC Gateway must match the SDF global name against the registered SDF model to resolve the protocol mapping (protocolmap) the gateway will execute. When carried in a URI, the SDF global name MUST be percent‑encoded per {{Section 2.1 of !RFC3986}}.
@@ -819,7 +819,7 @@ The NIPC Gateway must match the SDF global name against the registered SDF model
 
 These APIs allow applications to read and update device properties. If the underlying protocol requires a connection, the gateway establishes it implicitly for the operation; when an explicit connection is already active, operations reuse it without modification.
 
-Requests and responses support content negotiation via Content-Type and Accept. 
+Requests and responses support content negotiation via Content-Type and Accept.
 When using "application/nipc+json", payloads must follow the examples above. Binary property values must be base64‑encoded with padding per {{Section 5 of !RFC4648}} in the "value" field. For other media types, payload semantics must follow the selected media type.
 
 ### Update one or multiple values
@@ -934,7 +934,7 @@ Response:
 ~~~~ cddl
 {::include cddl/api/property_value_read_response_array.cddl.folded}
 ~~~~
-{:cddl sourcecode-markers="true" sourcecode-name="property_value_read_response_array.cddl"} 
+{:cddl sourcecode-markers="true" sourcecode-name="property_value_read_response_array.cddl"}
 
 Example of a response:
 
@@ -962,8 +962,8 @@ Event APIs enable or disable reporting of device events. For certain protocols, 
 
 Events are referenced by the SDF global name of an sdfEvent. The {id} path segment identifies a device or a group of devices. A group event MAY be enabled only if the underlying protocol supports group activation (e.g., BLE advertisement or connection status events).
 
-Events are delivered to registered data-apps over a publish/subscribe interface, as defined in {{pubsub}}. 
-If the data application registered for this event is an MQTT broker or client, the event SDF global name may be used to construct the MQTT topic for the event. The topic is constructed using the data application ID, the default namespace for the event, and the event itself. 
+Events are delivered to registered data-apps over a publish/subscribe interface, as defined in {{pubsub}}.
+If the data application registered for this event is an MQTT broker or client, the event SDF global name may be used to construct the MQTT topic for the event. The topic is constructed using the data application ID, the default namespace for the event, and the event itself.
 For example, if the data application ID is "0927ce7c-b258-4bfa-a345-bcc9f74385b4"
 and the event is "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent", the topic will be:
 
@@ -992,7 +992,7 @@ Parameters:
 
 Query Parameters:
 
- - eventName: the event to enable. The eventName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
+ - eventName: the event to enable. The eventName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`.
 
 Response:
 
@@ -1046,7 +1046,7 @@ Query Parameters:
 
  - instanceId: a comma separated list of event instance IDs to filter by (optional)
 
-Response: 
+Response:
 The response must be an array of events, each containing an instanceID and an event.
  - instanceId: must be the unique instance ID for each enabled event.
  - event: must be the event URI for each enabled event.
@@ -1084,7 +1084,7 @@ Parameters:
 Query Parameters:
 
  - eventName: the event to enable. The eventName is a URL encoded string that is the absolute URI that is the global
-name of an `sdfEvent`. 
+name of an `sdfEvent`.
 
 Response:
 
@@ -1170,14 +1170,14 @@ Query Parameters:
 
  - instanceId: the instance ID of the event (obtained from the Location header when the event was enabled).
 
-Response: 
+Response:
 
 MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully enabled, the entry MUST include deviceId and event (SDF global name). For each device where enabling failed, the entry MUST be a Problem Details error object for that device.
 
 ~~~~ cddl
 {::include cddl/api/group_event_status_response_array.cddl.folded}
 ~~~~
-{:cddl sourcecode-markers="true" sourcecode-name="group_event_status_response_array.cddl"} 
+{:cddl sourcecode-markers="true" sourcecode-name="group_event_status_response_array.cddl"}
 
 Example of a response:
 
@@ -1282,11 +1282,11 @@ Example of a response:
 
 ## NIPC Trigger APIs
 
-Triggers APIs do not actually execute an operation on a device or group of devices, but install a trigger that registers an operation. When triggered the registered operation gets executed. 
+Triggers APIs do not actually execute an operation on a device or group of devices, but install a trigger that registers an operation. When triggered the registered operation gets executed.
 
 Triggers can be installed for devices or groups of devices, represented by their id as a path parameter.
 
-The trigger must always be triggered by an event. the global name of the event must be passed as a path parameter. 
+The trigger must always be triggered by an event. the global name of the event must be passed as a path parameter.
 
 The triggered operation must always be an action. Since an action can be executed against both a device and a group, the trigger API also supports actions on both devices and groups of devices. The action is defined by its full NIPC URI to be executed, for example: "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https://example.com/AlarmSystem#/sdfObject/bell/sdfAction/ring"
 
@@ -1304,11 +1304,11 @@ Parameters:
 
 Query Parameters:
 
- - sdfName: the sdfName of the affordance that is associated with the trigger. This must be an event. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
+ - sdfName: the sdfName of the affordance that is associated with the trigger. This must be an event. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`.
 
 Request Body:
-  
- - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter. 
+
+ - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter.
 
 ~~~~ cddl
 {::include cddl/api/action.cddl.folded}
@@ -1381,7 +1381,7 @@ Query Parameters:
  - instanceId: an InstanceID, or comma separated list of event instance IDs to filter by (optional)
  - If no query parameter is supplied, then all triggers for the device must be retrieved
 
-Response: 
+Response:
 
 The response must be an array of triggers, each containing an instanceId, the sdfName of an event and an action.
 
@@ -1424,11 +1424,11 @@ Parameters:
 
 Query Parameters:
 
- - sdfName: the sdfName of the affordance that is associated with the trigger. This must be an event. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
+ - sdfName: the sdfName of the affordance that is associated with the trigger. This must be an event. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`.
 
 Request Body:
-  
- - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter. 
+
+ - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter.
 
 ~~~~ cddl
 {::include cddl/api/action.cddl.folded}
@@ -1501,7 +1501,7 @@ Query Parameters:
  - instanceId: an InstanceID, or comma separated list of event instance IDs to filter by (optional)
  - If no query parameter is supplied, then all triggers for the group of devices must be retrieved
 
-Response: 
+Response:
 
 The response must be an array of triggers, each containing an instanceId, the sdfName of an affordance and an action.
  - deviceId: must be the device ID for each installed trigger.
@@ -1543,7 +1543,7 @@ This specification defines both the BLE and the Zigbee protocol information obje
 ~~~~ cddl
 {::include cddl/api/protocolinfo.cddl.folded}
 ~~~~
-{:cddl sourcecode-markers="true" sourcecode-name="protocolinfo.cddl"}   
+{:cddl sourcecode-markers="true" sourcecode-name="protocolinfo.cddl"}
 
 ### Connect to a device
 
@@ -1558,7 +1558,7 @@ Parameters:
 Request Body:
 
   - Connection retry parameters
-  - A protocol info object representing the BLE service map to be discovered. In the case of BLE, if no protocol info object is included, service discovery is performed to discover all supported properties when connecting to a device. Optionally, service discovery may be limited to properties defined in the "ble" protocol extension. The services to be discovered can be added in an array. Property discovery can be buffered across connections, so the API also supports caching parameters. 
+  - A protocol info object representing the BLE service map to be discovered. In the case of BLE, if no protocol info object is included, service discovery is performed to discover all supported properties when connecting to a device. Optionally, service discovery may be limited to properties defined in the "ble" protocol extension. The services to be discovered can be added in an array. Property discovery can be buffered across connections, so the API also supports caching parameters.
 
 ~~~~ cddl
 {::include cddl/api/connection.cddl.folded}
@@ -1576,7 +1576,7 @@ Example body of a connection without specific discovery of properties:
 
 where-
 
- - "retries" defines the number of retries in case the operation does not 
+ - "retries" defines the number of retries in case the operation does not
    succeed
 
 In case the application would like to discover specific properties of a device, an additional protocol information object can be provided that defines what properties should be discovered.
@@ -1603,20 +1603,20 @@ Example body of a BLE connection with specific discovery of properties:
 ~~~~~
 {:json #exconnprp title="Example connection with explicit discovery of connections" sourcecode-markers="true"}
 
-where in the BLE protocol object: 
+where in the BLE protocol object:
 
  - "services" is an array of services defined by their serviceIDs.
  - "cached" refers to whether the services need to be discovered for this connection.
    If cached is true, the services will be discovered for this connection only if it is not present in the cache.
    If cached is false, the services will be discovered for this connection.
    The services will be cached once it is discovered.
- - "cacheExpiryDuration" defines how long (in seconds) the cache should be maintained 
+ - "cacheExpiryDuration" defines how long (in seconds) the cache should be maintained
    before purging.
- - some devices support notifications on changes in services, 
-   "autoUpdate" allows the network to update services based on 
+ - some devices support notifications on changes in services,
+   "autoUpdate" allows the network to update services based on
    notification (on by default)
  - "bonding" allows you to override the bonding method configured in the device object. Possible values are default, none, justworks, passkey, oob. Default behavior is to use the bonding method defined in the device object.
-    
+
 Response:
 
 Success responses includes an optional protocol information object with an array of discovered properties, as defined in the BLE protocol info object in section {{protocol-information-obj}}.
@@ -1647,7 +1647,7 @@ Example of a response:
           "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
           "characteristics": [
             {
-              "characteristicID": 
+              "characteristicID":
                   "00002a1c-0000-1000-8000-00805f9b34fb",
               "flags": [
                 "read",
@@ -1655,7 +1655,7 @@ Example of a response:
               ],
               "descriptors": [
                 {
-                  "descriptorID": 
+                  "descriptorID":
                       "00002902-0000-1000-8000-00805f9b34fb"
                 }
               ]
@@ -1712,21 +1712,21 @@ Example body of an update connection:
 ~~~~~
 {:json #exupconn title="Example service discovery response" sourcecode-markers="true"}
 
-where in the BLE protocol object: 
+where in the BLE protocol object:
 
  - "services" is an array of services defined by their serviceIDs
- - "cached" refers to whether the services need to be cached for 
+ - "cached" refers to whether the services need to be cached for
    subsequent connects, in order not to perform service discovery on
    each request
- - "cacheExpiryDuration" defines how long the cache should be maintained 
+ - "cacheExpiryDuration" defines how long the cache should be maintained
    before purging
- - some devices support notifications on changes in services, 
-   "autoUpdate" allows the network to update services based on 
+ - some devices support notifications on changes in services,
+   "autoUpdate" allows the network to update services based on
    notification (on by default)
 
 Response:
 
-Success responses include a protocol information object with an array of 
+Success responses include a protocol information object with an array of
 discovered properties, as defined in the specific protocol.
 For example, for BLE, this is an array of supported services, which in turn
 contains an array of characteristics, which in turn contains an array of
@@ -1744,7 +1744,7 @@ Example of a response:
           "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
           "characteristics": [
             {
-              "characteristicID": 
+              "characteristicID":
                 "00002a1c-0000-1000-8000-00805f9b34fb",
               "flags": [
                 "read",
@@ -1752,7 +1752,7 @@ Example of a response:
               ],
               "descriptors": [
                 {
-                  "descriptorID": 
+                  "descriptorID":
                     "00002902-0000-1000-8000-00805f9b34fb"
                 }
               ]
@@ -1829,7 +1829,7 @@ Example of a response:
           "serviceID": "00001809-0000-1000-8000-00805f9b34fb",
           "characteristics": [
             {
-              "characteristicID": 
+              "characteristicID":
                 "00002a1c-0000-1000-8000-00805f9b34fb",
               "flags": [
                 "read",
@@ -1837,7 +1837,7 @@ Example of a response:
               ],
               "descriptors": [
                 {
-                  "descriptorID": 
+                  "descriptorID":
                     "00002902-0000-1000-8000-00805f9b34fb"
                 }
               ]
@@ -1877,7 +1877,7 @@ The extension APIs allow for extensibility of the APIs.
 Extension APIs may leverage the basic NIPC defined APIs and combine them in compound statements in order to streamline application operation against devices, make operations more expedient and convenient in one API call. An example of this is the bulk API extension.
 They may also introduce new functionality that is specific to a use case or protocol, such as the BLE transmit API.
 
-Extensions must be defined under the /extensions path element. The extension name is defined as a path parameter after the /extensions path element. Extensions may define their own request and response payloads, as well as their own query parameters. 
+Extensions must be defined under the /extensions path element. The extension name is defined as a path parameter after the /extensions path element. Extensions may define their own request and response payloads, as well as their own query parameters.
 Extensions must be IANA registered as defined in {{iana-api-ext}}.
 
 Extensions MAY implement long‑running operations (e.g., firmware updates, bulk actions). For such operations, the server SHOULD respond with 202 Accepted and a Location header referencing a status URI. Clients MAY poll the status URI (GET) to obtain progress. While the operation is in progress, the status endpoint SHOULD return 200 OK with status information; upon completion, the server MAY redirect with 303 See Other to the final result resource, or return 200 OK with the completed result from the status endpoint. This pattern minimizes client state, supports retry, and provides a uniform mechanism for tracking asynchronous execution.
@@ -1924,11 +1924,11 @@ NIPC error types are defined in the table below:
 | extension-firmware-update-failed           | Firmware update failed                        | Extension APIs    |
 {: #errorcodes title="Error Codes"}
 
-The appropriate HTTP status code is returned in the response. 
+The appropriate HTTP status code is returned in the response.
 
 # Publish/Subscribe Interface {#pubsub}
 
-Events are delivered via a publish/subscribe interface. Event types include: (1) streaming data (enabled/disabled via the NIPC Events API), (2) broadcasts (e.g., advertisements), and (3) connection status (device link up/down). Event payloads are encoded in CBOR {{!RFC8949}} and MAY be transported over MQTT, webhook, or websocket. CBOR is used because non‑IP device payloads are typically binary; it encodes such data efficiently and is more compact than JSON, reducing bandwidth. 
+Events are delivered via a publish/subscribe interface. Event types include: (1) streaming data (enabled/disabled via the NIPC Events API), (2) broadcasts (e.g., advertisements), and (3) connection status (device link up/down). Event payloads are encoded in CBOR {{!RFC8949}} and MAY be transported over MQTT, webhook, or websocket. CBOR is used because non‑IP device payloads are typically binary; it encodes such data efficiently and is more compact than JSON, reducing bandwidth.
 
 ## CDDL Definition {#cddl-data-subscription}
 
@@ -2029,7 +2029,7 @@ This section contains a few examples on how applications can leverage NIPC opera
 
 In this example, we will connect to a device and read and write from a property.
 
-The sequence of operations for this are:  
+The sequence of operations for this are:
 
   - Declare a device instance using the SCIM Interface (out of scope of this
     memo)
@@ -2080,7 +2080,7 @@ The sequence of operations for this are:
       }
     ]
     ~~~~~
- 
+
   - Write to a property on the BLE device
 
     ~~~~~
@@ -2115,7 +2115,7 @@ The sequence of operations for this are:
 In this example, we will declare a device instance, and setup an advertisement
 subscription event for that device.
 
-The sequence of operations for this are:  
+The sequence of operations for this are:
 
   - Declaring a device instance and endpoint app using the SCIM Interface (out of scope of this
    memo)
@@ -2143,8 +2143,8 @@ The sequence of operations for this are:
     ~~~~~
 
     Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
-    
-  - Register the data app with the event 
+
+  - Register the data app with the event
 
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
@@ -2214,7 +2214,7 @@ The sequence of operations for this are:
 In this example, we will enable an advertisement subscription event
 for a group of devices.
 
-The sequence of operations for this are:  
+The sequence of operations for this are:
 
   - Provision a device and endpoint app using the SCIM Interface (out of scope of this
    memo)
@@ -2242,8 +2242,8 @@ The sequence of operations for this are:
     ~~~~~
 
     Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
-    
-  - Register the data app with the event 
+
+  - Register the data app with the event
 
     ~~~~~
     ============== NOTE: '\' line wrapping per RFC 8792 ==============
@@ -2469,7 +2469,7 @@ This section provides guidance to the Internet Assigned Numbers Authority (IANA)
 
 ## Media Type Registration {#iana-media-types}
 
-This document registers the "application/nipc+json" media type  for messages of the NIPC APIs defined in this document carrying parameters encoded in JSON. 
+This document registers the "application/nipc+json" media type  for messages of the NIPC APIs defined in this document carrying parameters encoded in JSON.
 
 Type name: application
 
@@ -2494,7 +2494,7 @@ Fragment identifier considerations: none
 Additional information:
 
 - Deprecated alias names for this type: none
- 
+
 - Magic number(s): none
 
 - File extension(s): none
@@ -2513,16 +2513,16 @@ Change controller: IETF
 
 ## API extensions {#iana-api-ext}
 
-IANA is requested to create a new registry called "NIPC API extensions". 
+IANA is requested to create a new registry called "NIPC API extensions".
 
 The registration policy for this registry is Specification Required {{!RFC8126}}.
 
 The registry must contain following attributes:
 
-- Extension URI 
+- Extension URI
 - Extension name
 - Description
-- Openapi model describing the extension. This model must be reviewed by an expert.  
+- Openapi model describing the extension. This model must be reviewed by an expert.
 
 Following API extensions are described in this document:
 
@@ -2551,8 +2551,8 @@ The well-known URI for NIPC is:
 
 IANA is requested to create a new registry called "NIPC Data Subscription Types".
 
-This registry tracks the subscription types used in the NIPC publish/subscribe 
-interface for streaming event data from devices. Each subscription type defines 
+This registry tracks the subscription types used in the NIPC publish/subscribe
+interface for streaming event data from devices. Each subscription type defines
 a specific data format for a particular protocol or use case.
 
 The registration policy for this registry is Specification Required {{!RFC8126}}.
@@ -2579,9 +2579,9 @@ The CDDL definitions for these subscription types are provided in {{cddl-data-su
 
 IANA is requested to create a new registry called "NIPC Protocols".
 
-This registry tracks the protocols used in the `protocolInformation` object 
-for NIPC connection management and service discovery operations. Each protocol 
-type defines a specific schema for protocol-specific information, as defined 
+This registry tracks the protocols used in the `protocolInformation` object
+for NIPC connection management and service discovery operations. Each protocol
+type defines a specific schema for protocol-specific information, as defined
 in {{protocol-information-obj}}.
 
 The registration policy for this registry is Specification Required {{!RFC8126}}.
@@ -2601,16 +2601,16 @@ IANA is requested to register the following initial entries:
 
 ## Problem Details for NIPC APIs {#iana-problem-details}
 
-IANA is requested to create a new registry, the "NIPC Problem Type" registry, 
+IANA is requested to create a new registry, the "NIPC Problem Type" registry,
 with following URL: [](https://www.iana.org/assignments/nipc-problem-types).
 
 The registration policy for this registry is Specification Required {{!RFC8126}}.
 
-Registrations MUST use the prefix []("https://www.iana.org/assignments/nipc-problem-types#") for the type URI. 
+Registrations MUST use the prefix []("https://www.iana.org/assignments/nipc-problem-types#") for the type URI.
 
 The registration requests MUST use the template defined in {{Section 4.2 of RFC9457}}.
 
-IANA is requested to register the following URIs in the "NIPC Problem Type" 
+IANA is requested to register the following URIs in the "NIPC Problem Type"
 registry:
 
 | Problem Type URI                                                                 | Description                                  | Reference         |
@@ -2744,4 +2744,4 @@ The following is a combined reference of all NIPC API CDDL definitions used in t
 # Acknowledgements
 
 This document relies on SDF models described in {{!RFC9880}}, as such, we are grateful to the authors of this
-document for putting their time and effort into defining SDF in depth, allowing us to make use of it. The authors would also like to thank the ASDF working group for their excellent feedback and steering of the document. 
+document for putting their time and effort into defining SDF in depth, allowing us to make use of it. The authors would also like to thank the ASDF working group for their excellent feedback and steering of the document.
