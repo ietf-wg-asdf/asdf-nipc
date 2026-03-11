@@ -2452,7 +2452,7 @@ As with all NIPC communications, bearer tokens and HTTP cookies MUST be exchange
 Bearer tokens MUST have a limited lifetime that can be determined directly or indirectly (e.g., by checking with a validation service) by the application.  By expiring tokens, applications are forced to obtain a new token (which usually involves re-authentication) for continued authorized access.  For example, in OAuth 2.0, an application MAY use OAuth token refresh to obtain a new bearer token after authenticating to an authorization server.  See {{Section 6 of !RFC6749}}. As with bearer tokens, an HTTP cookie SHOULD last no longer than the lifetime of a browser session.  An expiry time should be set that limits session cookie lifetime as per {{Section 5.2.1 of !RFC6265}}.
 
 Implementations supporting OAuth bearer tokens need to factor in security considerations of this authorization method {{!RFC7521}}.
-Implementers also need to consider authentication choices coupled with OAuth bearer tokens.  For example, when using OAuth bearer tokens with client authentication via client credentials {{Section 4.4 of !RFC6749}}, implementers need to consider the security considerations of client authentication via client credentials as described in Section 3.2 of {{!RFC6819}}.
+Implementers also need to consider authentication choices coupled with OAuth bearer tokens.  For example, when using OAuth bearer tokens with client authentication via client credentials {{Section 4.4 of !RFC6749}}, implementers need to consider the security considerations of client authentication via client credentials as described in {{Section 3.2 of !RFC6819}}.
 
 ## Other Security Considerations
 
