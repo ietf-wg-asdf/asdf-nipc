@@ -500,25 +500,23 @@ All NIPC failure responses must include the following attributes:
 Additional attributes MAY be included as permitted by {{!RFC9457}}.
 
 ~~~~ cddl
-{::include cddl/api/failure_response.cddl.folded}
+{::include-fold cddl/api/failure_response.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="failure_response.cddl"}
 
 Example of a failure response:
 
 ~~~~~ json
-=============== NOTE: '\\' line wrapping per RFC 8792 ===============
-
 {
-  "type": "https://www.iana.org/assignments/nipc-problem-types#inval\
-\id-id",
+  "type": "https://www.iana.org/assignments/nipc-problem-types#invalid-id",
   "status": 400,
   "title": "Invalid Device ID",
-  "detail": "Device ID 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 does not\
-\ exist or is not a device"
+  "detail": "Device ID 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 does not exist or is not a device"
 }
 ~~~~~
-{: #failure title="Example failure response" sourcecode-markers="true"}
+{: #failure title="Example failure response"
+   sourcecode-name="example-failure-response.json"
+   sourcecode-markers="true" post="fold"}
 
 # NIPC Registration APIs
 
