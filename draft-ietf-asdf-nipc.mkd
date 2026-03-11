@@ -2649,10 +2649,8 @@ Each Problem Type URI is intended for use as the "type" member in Problem Detail
 
 The following non-normative model is provided for convenience of the implementer.
 
-~~~~~~
-<CODE BEGINS> file "openapi.yml"
+~~~~~~ yaml
 {::include nipc-openapi/NIPC.yaml.folded}
-<CODE ENDS>
 ~~~~~~
 {: #openAPI sourcecode-markers="true" sourcecode-name="NIPC.yaml"}
 
