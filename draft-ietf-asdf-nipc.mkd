@@ -1288,7 +1288,12 @@ Triggers can be installed for devices or groups of devices, represented by their
 
 The trigger must always be triggered by an event. the global name of the event must be passed as a path parameter.
 
-The triggered operation must always be an action. Since an action can be executed against both a device and a group, the trigger API also supports actions on both devices and groups of devices. The action is defined by its full NIPC URI to be executed, for example: "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https://example.com/AlarmSystem#/sdfObject/bell/sdfAction/ring"
+The triggered operation must always be an action. Since an action can be executed against both a device and a group, the trigger API also supports actions on both devices and groups of devices. The action is defined by its full NIPC URI to be executed, for example:
+
+~~~
+/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https://example.com/AlarmSystem#/sdfObject/bell/sdfAction/ring
+~~~
+{: post="fold"}
 
 If a NIPC Gateway supports multiple protocols, then a trigger can be defined on a devices that supports one protocol and triggers an action on a device that supports a different protocol. As an example, an event on a BLE device can trigger an action on a Zigbee device.
 
