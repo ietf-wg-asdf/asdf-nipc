@@ -2647,7 +2647,7 @@ Each Problem Type URI is intended for use as the "type" member in Problem Detail
 
 # OpenAPI definition
 
-The following non-normative model is provided for convenience of the implementor.
+The following non-normative model is provided for convenience of the implementer.
 
 ~~~~~~
 <CODE BEGINS> file "openapi.yml"
