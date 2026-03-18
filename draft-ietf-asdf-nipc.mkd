@@ -1846,6 +1846,8 @@ NIPC error types are defined in the table below:
 | unsupported-uri-scheme                     | Unsupported URI scheme                        | Generic           |
 | property-not-readable                      | Property not readable                         | Property APIs     |
 | property-not-writable                      | Property not writable                         | Property APIs     |
+| property-read-failed                       | Property read failed                          | Property APIs     |
+| property-write-failed                      | Property write failed                         | Property APIs     |
 | event-already-enabled                      | Event already enabled                         | Event APIs        |
 | event-not-enabled                          | Event not enabled                             | Event APIs        |
 | event-not-registered                       | Event not registered for any data application | Event APIs        |
