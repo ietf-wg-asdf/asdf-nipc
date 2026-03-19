@@ -209,7 +209,7 @@ ConnectionRequest = {
 }
 
 ConnectionResponse = {
-  id: text,  ; UUID of the connection
+  id: text,  ; Device ID
   ? protocol-info-service-map
 }
 
@@ -249,7 +249,7 @@ ble-characteristic = {
   ? descriptors: [* ble-descriptor],
 }
 
-ble-flag = "read" / "write" / "notify" / "indicate" / "write-no-response"
+ble-flag = "read" / "write" / "notify"
 
 ble-descriptor = {
   descriptorID: uuid,
