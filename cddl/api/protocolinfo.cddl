@@ -31,7 +31,7 @@ ble-characteristic = {
   ? descriptors: [* ble-descriptor],
 }
 
-ble-flag = "read" / "write" / "notify" / "indicate" / "write-no-response
+ble-flag = "read" / "write" / "notify" / "indicate" / "write-no-response"
 
 ble-descriptor = {
   descriptorID: uuid,
