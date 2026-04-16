@@ -41,6 +41,11 @@ author:
     country: USA
     email: braeden.sanford@philips.com
 
+normative:
+  RFC8610: cddl
+  RFC9880: sdf
+  I-D.ietf-scim-device-model: scim-devices
+
 informative:
   BLE53:
     title: Bluetooth Core Specification, Version 5.3
@@ -107,8 +112,8 @@ A Non-Internet-Connected Physical Components (NIPC) gateway is an application la
 
 In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
 
-- The gateway has access to a device object, that contains its identity, in the form of a unique UUID and any credentials & trust material required to communicate with the device. Provisioning this device object is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}.
-- An interaction model for the class of devices must be available to the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, as described in {{!RFC9880}}.
+- The gateway has access to a device object, that contains its identity, in the form of a unique UUID and any credentials & trust material required to communicate with the device. Provisioning this device object is out of scope of this document. It may be performed via SCIM {{!RFC7644}} with {{-scim-devices}}.
+- An interaction model for the class of devices must be available to the gateway. This allows the gateway to understand how to interact with the device in a protocol-neutral way. The interaction model is provided to the gateway by means of an SDF model, as described in {{-sdf}}.
 
 Once these prerequisites are met, the gateway can resolve an SDF affordance referenced in the SDF model into the protocol-specific operations required for that device.
 
@@ -164,7 +169,7 @@ capitals, as shown here.
  - NIPC Gateway: An application layer gateway that implements the NIPC
    interface.
  - SDF: Semantic Device Format, a standardized format to describe devices
-   and their interaction models, as defined in {{!RFC9880}}.
+   and their interaction models, as defined in {{-sdf}}.
  - SDF Affordance: An interaction point on a device as defined in an SDF
    model. Examples of affordances are properties, actions, and events.
  - SDF Global Name: Absolute URI (with fragment) identifying an SDF affordance.
@@ -204,8 +209,8 @@ A Non‑Internet‑Connected Physical Components (NIPC) gateway is an applicatio
 
 To execute NIPC operations on a device, both prerequisites MUST be met:
 
-1. The NIPC gateway has access to device instance information: The device object contains its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device (e.g., via SCIM {{!RFC7644}} with {{!I-D.ietf-scim-device-model}}). This device object is identified by the device ID referenced in NIPC API paths.
-2. The NIPC gateway has access to an interaction model (device class information): An SDF model {{!RFC9880}} is registered, providing protocol‑neutral affordances and mappings to protocol‑specific operations.
+1. The NIPC gateway has access to device instance information: The device object contains its identity, in the form of a unique UUID and any credentials/trust material required to communicate with the device (e.g., via SCIM {{!RFC7644}} with {{-scim-devices}}). This device object is identified by the device ID referenced in NIPC API paths.
+2. The NIPC gateway has access to an interaction model (device class information): An SDF model {{-sdf}} is registered, providing protocol‑neutral affordances and mappings to protocol‑specific operations.
 
 ~~~~~ aasvg
 
@@ -228,13 +233,13 @@ Once both prerequisites are met, authorized applications can perform NIPC operat
 
 ### Device instance information
 
-In order for the NIPC gateway to perform operations on a device, it must have access to the device's instance information. This includes the device’s identity and any credentials or trust material required to communicate with the device. The device object MUST include a unique identity (UUID) and sufficient information to bootstrap trust and establish connectivity, as NIPC operations assume connectivity can be established without separate API calls. While provisioning devices instance information can be performed in various ways, it is RECOMMENDED to use SCIM {{!RFC7644}} with the device schema {{!I-D.ietf-scim-device-model}}, which defines the necessary attributes and extensions to support NIPC. As per {{Section 4.2 of !RFC7643}}, group objects may also be declared, and leveraged in NIPC operations.
+In order for the NIPC gateway to perform operations on a device, it must have access to the device's instance information. This includes the device’s identity and any credentials or trust material required to communicate with the device. The device object MUST include a unique identity (UUID) and sufficient information to bootstrap trust and establish connectivity, as NIPC operations assume connectivity can be established without separate API calls. While provisioning devices instance information can be performed in various ways, it is RECOMMENDED to use SCIM {{!RFC7644}} with the device schema {{-scim-devices}}, which defines the necessary attributes and extensions to support NIPC. As per {{Section 4.2 of !RFC7643}}, group objects may also be declared, and leveraged in NIPC operations.
 
 ### Device class information 
 
-Device class information is declared through SDF models, as defined in {{!RFC9880}}. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}. 
+Device class information is declared through SDF models, as defined in {{-sdf}}. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}. 
 
-The SDF model reference and/or data‑app registration MAY also be included in a device's SCIM object. See {{!I-D.ietf-scim-device-model}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for details.
+The SDF model reference and/or data‑app registration MAY also be included in a device's SCIM object. See {{-scim-devices}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for details.
 
 ## NIPC Registrations {#nipc-registrations}
 
@@ -253,7 +258,7 @@ must contain protocol mappings, mapping protocol-neutral SDF affordances
 to protocol-specific operations as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}. 
 The SDF affordances supported by the device, as well as its protocol-mappings,
 are provided to the gateway by means of an SDF model. 
-SDF models are described in {{!RFC9880}}.
+SDF models are described in {{-sdf}}.
 
 ### Data application registrations
 
@@ -264,7 +269,7 @@ Applications that are authorized to perform NIPC operations on devices can defin
 
 ### Overview {#nipc-ops-overview}
 
-NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of !RFC9880}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload. 
+NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of -sdf}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload. 
 
 Failures use Problem Details {{!RFC9457}} with media type application/problem+json.
 
@@ -399,7 +404,7 @@ as supported extensions on a server.
 A formal CBOR definition of the well-known response is as follows:
 
 ~~~~ cddl
-{::include cddl/nipc_well_known.cddl.folded}
+{::include-fold cddl/nipc_well_known.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="nipc_well_known.cddl"}
 
@@ -435,7 +440,7 @@ These are described in {{nipc-ops}}.
 ## Schema
 
 The NIPC schema leans heavily on the SDF schema, as defined in
-{{!RFC9880}}. NIPC operations map directly to SDF affordances.
+{{-sdf}}. NIPC operations map directly to SDF affordances.
 
 ### SDF model registrations
 
@@ -500,25 +505,21 @@ All NIPC failure responses must include the following attributes:
 Additional attributes MAY be included as permitted by {{!RFC9457}}.
 
 ~~~~ cddl
-{::include cddl/api/failure_response.cddl.folded}
+{::include-fold cddl/api/failure_response.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="failure_response.cddl"}
 
 Example of a failure response:
 
 ~~~~~ json
-=============== NOTE: '\\' line wrapping per RFC 8792 ===============
-
 {
-  "type": "https://www.iana.org/assignments/nipc-problem-types#inval\
-\id-id",
+  "type": "https://www.iana.org/assignments/nipc-problem-types#invalid-id",
   "status": 400,
   "title": "Invalid Device ID",
-  "detail": "Device ID 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 does not\
-\ exist or is not a device"
+  "detail": "Device ID 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30 does not exist or is not a device"
 }
 ~~~~~
-{: #failure title="Example failure response" sourcecode-markers="true"}
+{:#failure post="fold" title="Example failure response" sourcecode-markers="true"}
 
 # NIPC Registration APIs
 
@@ -543,7 +544,7 @@ Response:
 A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model.
 
 ~~~~ cddl
-{::include cddl/api/sdf_reference.cddl.folded}
+{::include-fold cddl/api/sdf_reference.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="sdf_reference.cddl"}
 
@@ -569,7 +570,7 @@ Response:
 A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model.
 
 ~~~~ cddl
-{::include cddl/api/sdf_reference.cddl.folded}
+{::include-fold cddl/api/sdf_reference.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="sdf_reference.cddl"}
 
@@ -614,10 +615,11 @@ Query Parameters:
 
 Response:
 
- - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+  - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
+
 
 ~~~~ cddl
-{::include cddl/api/sdf_reference.cddl.folded}
+{::include-fold cddl/api/sdf_reference.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="sdf_reference.cddl"}
 
@@ -648,8 +650,9 @@ Response:
 
  - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
+
 ~~~~ cddl
-{::include cddl/api/sdf_reference.cddl.folded}
+{::include-fold cddl/api/sdf_reference.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="sdf_reference.cddl"}
 
@@ -664,7 +667,7 @@ Example of a response:
 
 ## Data application registrations APIs
 
-Data-app registration APIs allow applications to register a data application that will receive streaming data from the gateway. These APIs operate on a data app ID. This ID corresponds to the endpoint app ID of the telemetry endpoint app that is registered with the SCIM server as an authorized endpoint that can receive data for a device. The endpoint app is defined in {{Section 6 of I-D.ietf-scim-device-model}}.
+Data-app registration APIs allow applications to register a data application that will receive streaming data from the gateway. These APIs operate on a data app ID. This ID corresponds to the endpoint app ID of the telemetry endpoint app that is registered with the SCIM server as an authorized endpoint that can receive data for a device. The endpoint app is defined in {{Section 6 of -scim-devices}}.
 
 Apart from the endpoint app ID, the API also configures the protocol the data-app supports. These should be one of the following:
 
@@ -704,37 +707,31 @@ Request Body:
     - serverCACert: the CA certificate of the websocket server, encoded as per {{!RFC7468}} and newlines encoded as '\n' (optional)
 
 ~~~~ cddl
-{::include cddl/api/data_app.cddl.folded}
+{::include-fold cddl/api/data_app.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="data_app.cddl"}
 
 Example of a request body:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 {
   "events": [
     {
-      "event": "https://example.com/heartrate#/sdfObject/healthsenso\
-r/sdfEvent/fallDetected"
+      "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
     }
   ],
   "mqttClient": true
 }
 ~~~~~
-{:json #exregmqttclientrsp title="Example with mqttClient" sourcecode-markers="true"}
+{:json post="fold" #exregmqttclientrsp title="Example with mqttClient" sourcecode-markers="true"}
 
 Example of a request body for a data application that is an MQTT broker:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 {
   "events": [
     {
-      "event": "https://example.com/heartrate#/sdfObject/healthsenso\
-r/sdfEvent/fallDetected"
+      "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
     }
   ],
   "mqttBroker": {
@@ -745,7 +742,7 @@ r/sdfEvent/fallDetected"
   }
 }
 ~~~~~
-{:json #exregmqttbrokerrsp title="Example with mqttBroker" sourcecode-markers="true"}
+{:json post="fold" #exregmqttbrokerrsp title="Example with mqttBroker" sourcecode-markers="true"}
 
 Response:
 
@@ -801,7 +798,7 @@ Response:
 
 The NIPC operation APIs perform protocol‑neutral interactions on SDF affordances, properties, events, and actions. This allows applications to read and update device properties, invoke actions, and consume events.
 
-NIPC defines three API collections aligned with the SDF Affordances defined in {{Section 1.2 of !RFC9880}}:
+NIPC defines three API collections aligned with the SDF Affordances defined in {{Section 1.2 of -sdf}}:
 
  - Properties: read and write device properties.
  - Events: enable and disable device event reporting.
@@ -811,7 +808,7 @@ Additionally, NIPC defines one more API collection that allows applications to i
 
   - Triggers: Install a trigger on an event (invokes an action)
    
-To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{!I-D.ietf-scim-device-model}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of !RFC9880}}.
+To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{-scim-devices}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of -sdf}}.
 
 The NIPC Gateway must match the SDF global name against the registered SDF model to resolve the protocol mapping (protocolmap) the gateway will execute. When carried in a URI, the SDF global name MUST be percent‑encoded per {{Section 2.1 of !RFC3986}}.
 
@@ -849,29 +846,25 @@ Request Body:
   - If the query parameter propertyName is NOT provided, the request body must be an array of properties to update, each containing a property and a value. The value attribute contains the raw binary data, which must be encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
 
 ~~~~ cddl
-{::include cddl/api/property_value_array.cddl.folded}
+{::include-fold cddl/api/property_value_array.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="property_value_array.cddl"}
 
 Example body for updating multiple properties:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 [
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat\
-/sdfProperty/temperature",
+    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
     "value": "dGVzdA=="
   },
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat\
-/sdfProperty/humidity",
+    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/humidity",
     "value": "eGVzdB=="
   }
 ]
 ~~~~~
-{:json #exupmprop title="Example updating multiple properties" sourcecode-markers="true"}
+{:json post="fold" #exupmprop title="Example updating multiple properties" sourcecode-markers="true"}
 
 Response:
 
@@ -882,30 +875,26 @@ Response:
  - If the Accept header is set to any other media type and the propertyName query parameter is provided, the response must be 204 No Content with no body.
 
 ~~~~ cddl
-{::include cddl/api/property_value_response_array.cddl.folded}
+{::include-fold cddl/api/property_value_response_array.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="property_value_response_array.cddl"}
 
 Example of a response:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 [
   {
     "status": 200
   },
   {
-    "type": "https://www.iana.org/assignments/nipc-problem-types#inv\
-alid-property",
+    "type": "https://www.iana.org/assignments/nipc-problem-types#invalid-property",
     "status": 400,
     "title": "Invalid Property",
-    "detail": "Property https://example.com/heartrate#/sdfObject/the\
-rmostat/sdfProperty/temperature does not exist or is not writable"
+    "detail": "Property https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature does not exist or is not writable"
   }
 ]
 ~~~~~
-{:json #exupmresp title="Example update multiple properties response" sourcecode-markers="true"}
+{:json post="fold" #exupmresp title="Example update multiple properties response" sourcecode-markers="true"}
 
 ### Read one or multiple values
 
@@ -932,29 +921,25 @@ Response:
  - If the Accept header is set to any other media type and a single propertyName query parameter is provided, the request body MAY use any media type appropriate to the property payload. The value is encoded as per the content type of the payload.
 
 ~~~~ cddl
-{::include cddl/api/property_value_read_response_array.cddl.folded}
+{::include-fold cddl/api/property_value_read_response_array.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="property_value_read_response_array.cddl"} 
 
 Example of a response:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 [
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat\
-/sdfProperty/temperature",
+    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature",
     "value": "dGVzdA=="
   },
   {
-    "property": "https://example.com/heartrate#/sdfObject/thermostat\
-/sdfProperty/humidity",
+    "property": "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/humidity",
     "value": "eGVzdB=="
   }
 ]
 ~~~~~
-{:json #exreadmresp title="Example read multiple properties response" sourcecode-markers="true"}
+{:json post="fold" #exreadmresp title="Example read multiple properties response" sourcecode-markers="true"}
 
 ## NIPC Event APIs {#nipc-event-apis}
 
@@ -968,13 +953,11 @@ For example, if the data application ID is "0927ce7c-b258-4bfa-a345-bcc9f74385b4
 and the event is "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent", the topic will be:
 
 ~~~~~
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 data-app/<dataAppId>/<namespace>/<json_pointer_to_sdf_event>
 
-data-app/0927ce7c-b258-4bfa-a345-bcc9f74385b4/thermometer/sdfThing/\
-thermometer/sdfEvent/isPresent
+data-app/0927ce7c-b258-4bfa-a345-bcc9f74385b4/thermometer/sdfThing/thermometer/sdfEvent/isPresent
 ~~~~~
+{: post="fold"}
 
 A data application may subscribe to this topic using the topic or it may use MQTT wildcards to subscribe to `data-app/+/temperature/#` to receive all events for the `temperature` namespace.
 
@@ -1001,12 +984,10 @@ Response:
 Example of a successful response:
 
 ~~~~~
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 HTTP/1.1 201 Created
-Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?insta\
-nceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
+{: post="fold"}
 
 The Location header must contain the URI for the created event instance, which may be used to check status or disable the event.
 
@@ -1052,24 +1033,21 @@ The response must be an array of events, each containing an instanceID and an ev
  - event: must be the event URI for each enabled event.
 
 ~~~~ cddl
-{::include cddl/api/event_status_array.cddl.folded}
+{::include-fold cddl/api/event_status_array.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="event_status_array.cddl"}
 
 Example of a response:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 [
   {
     "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected"
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
   }
 ]
 ~~~~~
-{:json #exgetmresp title="Example get multiple events status response" sourcecode-markers="true"}
+{:json post="fold" #exgetmresp title="Example get multiple events status response" sourcecode-markers="true"}
 
 ### Enable event reporting on a group of devices
 
@@ -1093,12 +1071,10 @@ Response:
 Example of a successful response:
 
 ~~~~~
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 HTTP/1.1 201 Created
-Location: /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?instan\
-ceId=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
+Location: /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?instanceId=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
 ~~~~~
+{: post="fold"}
 
 ### Disable event reporting on a group of devices
 
@@ -1119,42 +1095,36 @@ Response:
 MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully disabled, the entry MUST include deviceId and event (SDF global name). For each device where disabling failed, the entry MUST be a Problem Details error object for that device.
 
 ~~~~ cddl
-{::include cddl/api/group_event_status_response_array.cddl.folded}
+{::include-fold cddl/api/group_event_status_response_array.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="group_event_status_response_array.cddl"}
 
 Example of a response:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 [
   {
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected",
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
     "deviceId": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
   },
   {
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected",
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
     "deviceId": "d62c7fb2-a216-4811-a388-053b17fdbedc"
   },
   {
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected",
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
     "deviceId": "01b52a23-b98c-454c-ba9e-086a43bdfd79"
   },
   {
-    "type": "https://www.iana.org/assignments/nipc-problem-types#eve\
-nt-not-enabled",
+    "type": "https://www.iana.org/assignments/nipc-problem-types#event-not-enabled",
     "status": 400,
     "title": "Event Not Enabled",
     "deviceId": "9171ec16-e3c1-4ccf-ad23-b92a1a3f069d",
-    "detail": "Failed to disable the event for device 9171ec16-e3c1-\
-    4ccf-ad23-b92a1a3f069d"
+    "detail": "Failed to disable the event for device 9171ec16-e3c1-4ccf-ad23-b92a1a3f069d"
   }
 ]
 ~~~~~
+{: post="fold"}
 
 ### Get event status on a group of devices
 
@@ -1175,43 +1145,36 @@ Response:
 MUST return 200 OK with an array of per‑device event status entries. For each device where the event was successfully enabled, the entry MUST include deviceId and event (SDF global name). For each device where enabling failed, the entry MUST be a Problem Details error object for that device.
 
 ~~~~ cddl
-{::include cddl/api/group_event_status_response_array.cddl.folded}
+{::include-fold cddl/api/group_event_status_response_array.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="group_event_status_response_array.cddl"} 
 
 Example of a response:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 [
   {
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected",
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
     "deviceId": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
   },
   {
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected",
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
     "deviceId": "d62c7fb2-a216-4811-a388-053b17fdbedc"
   },
   {
-    "event": "https://example.com/heartrate#/sdfObject/healthsensor/\
-sdfEvent/fallDetected",
+    "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
     "deviceId": "01b52a23-b98c-454c-ba9e-086a43bdfd79"
   },
   {
-    "type": "https://www.iana.org/assignments/nipc-problem-types#eve\
-nt-not-enabled",
+    "type": "https://www.iana.org/assignments/nipc-problem-types#event-not-enabled",
     "status": 400,
     "title": "Event Not Enabled",
     "deviceId": "9171ec16-e3c1-4ccf-ad23-b92a1a3f069d",
-    "detail": "Failed to disable the event for device 9171ec16-e3c1-\
-4ccf-ad23-b92a1a3f069d"
+    "detail": "Failed to disable the event for device 9171ec16-e3c1-4ccf-ad23-b92a1a3f069d"
   }
 ]
 ~~~~~
-{:json #exgetmgevntsresp title="Example get multiple group events status response" sourcecode-markers="true"}
+{:json post="fold" #exgetmgevntsresp title="Example get multiple group events status response" sourcecode-markers="true"}
 
 ## NIPC Action APIs
 
@@ -1242,12 +1205,10 @@ Actions are performed asynchronously. A successful request returns HTTP status c
 Example of a successful response:
 
 ~~~~~
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 HTTP/1.1 202 Accepted
-Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/actions?inst\
-anceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/actions?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
+{: post="fold"}
 
 ### Check action status
 
@@ -1267,7 +1228,7 @@ Response:
 MUST return 200 OK with an action status, which may be "in progress" or "completed".
 
 ~~~~ cddl
-{::include cddl/api/action_response.cddl.folded}
+{::include-fold cddl/api/action_response.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="action_response.cddl"}
 
@@ -1311,22 +1272,18 @@ Request Body:
  - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter. 
 
 ~~~~ cddl
-{::include cddl/api/action.cddl.folded}
+{::include-fold cddl/api/action.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="action.cddl"}
 
 Example body for trigger creation:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 {
-  "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?a\
-ctionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fb\
-ell%2FsdfAction%2Fring"
+  "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
 }
 ~~~~~
-{:json #excreatetrigger title="Example trigger creation" sourcecode-markers="true"}
+{:json post="fold" #excreatetrigger title="Example trigger creation" sourcecode-markers="true"}
 
 Response:
 
@@ -1335,12 +1292,10 @@ Response:
 Example of a successful response:
 
 ~~~~~
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 HTTP/1.1 201 Created
-Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/triggers?ins\
-tanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/triggers?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
+{:http post="fold"}
 
 The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the trigger.
 
@@ -1390,27 +1345,22 @@ The response must be an array of triggers, each containing an instanceId, the sd
  - action: must be the NIPC URI of the action to be executed when the trigger is activated.
 
 ~~~~ cddl
-{::include cddl/api/trigger_status_array.cddl.folded}
+{::include-fold cddl/api/trigger_status_array.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="trigger_status_array.cddl"}
 
 Example of a response:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 [
   {
     "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "sdfName": "https://example.com/heartrate#/sdfObject/healthsenso\
-r",
-    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions\
-?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2\
-Fbell%2FsdfAction%2Fring"
+    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor",
+    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
   }
 ]
 ~~~~~
-{:json #exgetmtriggers title="Example get multiple triggers response" sourcecode-markers="true"}
+{:json post="fold" #exgetmtriggers title="Example get multiple triggers response" sourcecode-markers="true"}
 
 ### Create a trigger on a group of devices
 
@@ -1431,22 +1381,18 @@ Request Body:
  - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter. 
 
 ~~~~ cddl
-{::include cddl/api/action.cddl.folded}
+{::include-fold cddl/api/action.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="action.cddl"}
 
 Example body for trigger creation:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 {
-  "action": "/groups/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?ac\
-tionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbe\
-ll%2FsdfAction%2Fring"
+  "action": "/groups/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
 }
 ~~~~~
-{:json #excreategrouptrigger title="Example trigger creation" sourcecode-markers="true"}
+{:json post="fold" #excreategrouptrigger title="Example trigger creation" sourcecode-markers="true"}
 
 Response:
 
@@ -1455,12 +1401,10 @@ Response:
 Example of a successful response:
 
 ~~~~~
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 HTTP/1.1 201 Created
-Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/triggers?ins\
-tanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/triggers?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
 ~~~~~
+{: post="fold"}
 
 The Location header must contain the URI for the created trigger instance, which may be used to check status or disable the trigger.
 
@@ -1509,27 +1453,22 @@ The response must be an array of triggers, each containing an instanceId, the sd
  - action: must be the NIPC URI of the action to be executed when the trigger is activated.
 
 ~~~~ cddl
-{::include cddl/api/group_trigger_status_array.cddl.folded}
+{::include-fold cddl/api/group_trigger_status_array.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="group_trigger_status_array.cddl"}
 
 Example of a response:
 
 ~~~~~ json
-=============== NOTE: '\' line wrapping per RFC 8792 ================
-
 [
   {
     "deviceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "sdfName": "https://example.com/heartrate#/sdfObject/healthsenso\
-r",
-    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions\
-?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2\
-Fbell%2FsdfAction%2Fring"
+    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor",
+    "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
   }
 ]
 ~~~~~
-{:json #exgetmgrouptriggers title="Example get multiple group triggers response" sourcecode-markers="true"}
+{:json post="fold" #exgetmgrouptriggers title="Example get multiple group triggers response" sourcecode-markers="true"}
 
 ## NIPC explicit connection management APIs {#nipc-connection-management-apis}
 
@@ -1541,7 +1480,7 @@ The protocol information object is used to define protocol specific parameters f
 This specification defines both the BLE and the Zigbee protocol information objects for connections and broadcast messages.
 
 ~~~~ cddl
-{::include cddl/api/protocolinfo.cddl.folded}
+{::include-fold cddl/api/protocolinfo.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="protocolinfo.cddl"}   
 
@@ -1561,7 +1500,7 @@ Request Body:
   - A protocol info object representing the BLE service map to be discovered. In the case of BLE, if no protocol info object is included, service discovery is performed to discover all supported properties when connecting to a device. Optionally, service discovery may be limited to properties defined in the "ble" protocol extension. The services to be discovered can be added in an array. Property discovery can be buffered across connections, so the API also supports caching parameters. 
 
 ~~~~ cddl
-{::include cddl/api/connection.cddl.folded}
+{::include-fold cddl/api/connection.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="connection.cddl"}
 
@@ -1572,7 +1511,7 @@ Example body of a connection without specific discovery of properties:
   "retries": 3
 }
 ~~~~~
-{:json #exconn title="Example connection" sourcecode-markers="true"}
+{:json post="fold" #exconn title="Example connection" sourcecode-markers="true"}
 
 where-
 
@@ -1601,7 +1540,7 @@ Example body of a BLE connection with specific discovery of properties:
   }
 }
 ~~~~~
-{:json #exconnprp title="Example connection with explicit discovery of connections" sourcecode-markers="true"}
+{:json post="fold" #exconnprp title="Example connection with explicit discovery of connections" sourcecode-markers="true"}
 
 where in the BLE protocol object: 
 
@@ -1932,13 +1871,13 @@ Events are delivered via a publish/subscribe interface. Event types include: (1)
 
 ## CDDL Definition {#cddl-data-subscription}
 
-The event streaming format is defined here in CDDL {{!RFC8610}}.
+The event streaming format is defined here in CDDL {{-cddl}}.
 A DataSubscription is a CBOR map containing the raw payload (bytes) and a timestamp (epoch seconds). It MAY include deviceID (the SCIM device identifier) when the payload is associated with a known device. Optional members (e.g., apMacAddress, rssi) MAY be present but can reveal deployment topology and SHOULD be omitted unless required. A choice group within DataSubscription indicates the event type (e.g., advertisement, subscription notification, connection status). An event publication MAY carry one or more DataSubscription entries in an array. Such an array is represented as DataBatch.
 
 The subscription type choice uses a CDDL socket ($$subscription-extension) to allow extensibility. New subscription types registered with IANA (see {{iana-data-subscription-types}}) can be added using the CDDL plug syntax (//=) without modifying the base schema.
 
 ~~~~ cddl
-{::include cddl/data_subscription.cddl.folded}
+{::include-fold cddl/data_subscription.cddl}
 ~~~~
 {:cddl sourcecode-markers="true" sourcecode-name="data_subscription.cddl"}
 
@@ -2036,8 +1975,6 @@ The sequence of operations for this are:
   - Register an SDF model for the device
 
     ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
     POST /registrations/models
     Content-Type: application/sdf+json
     Accept: application/nipc+json
@@ -2050,22 +1987,18 @@ The sequence of operations for this are:
 
     [
       {
-        "sdfName": "https://example.com/thermometer#/sdfThing/thermom\
-    eter"
+        "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
       }
     ]
     ~~~~~
+    {: post="fold66"}
 
     Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
 
   - Read a property from the BLE device
 
-    ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
-    GET /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?prop\
-    ertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2F\
-    thermometer%2FsdfProperty%2Fdevice_name
+    ~~~~~  
+    GET /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties?propertyName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfProperty%2Fdevice_name
     Accept: application/nipc+json
     Host: localhost
 
@@ -2074,26 +2007,23 @@ The sequence of operations for this are:
 
     [
       {
-        "property": "https://example.com/thermometer#/sdfThing/thermo\
-    meter/sdfProperty/device_name",
+        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
         "value": "dGVzdA=="
       }
     ]
     ~~~~~
+    {: post="fold66"}
  
   - Write to a property on the BLE device
 
     ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
     PUT /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties
     Content-Type: application/nipc+json
     Host: localhost
 
     [
       {
-        "property": "https://example.com/thermometer#/sdfThing/thermo\
-    meter/sdfProperty/device_name",
+        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
         "value": "dGVzdA=="
       }
     ]
@@ -2103,12 +2033,12 @@ The sequence of operations for this are:
 
     [
       {
-        "property": "https://example.com/thermometer#/sdfThing/thermo\
-    meter/sdfProperty/device_name",
+        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
         "value": "dGVzdA=="
       }
     ]
     ~~~~~
+    {: post="fold66"}
 
 ## Enabling an Event on a Device
 
@@ -2122,8 +2052,6 @@ The sequence of operations for this are:
   - Register an SDF model for the device
 
     ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
     POST /registrations/models
     Content-Type: application/sdf+json
     Accept: application/nipc+json
@@ -2136,29 +2064,27 @@ The sequence of operations for this are:
 
     [
       {
-        "sdfName": "https://example.com/thermometer#/sdfThing/thermom\
-    eter"
+        "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
       }
     ]
     ~~~~~
+    {: post="fold66"}
 
     Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
     
   - Register the data app with the event 
 
     ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
-    POST /registrations/data-apps?dataAppId=0927ce7c-b258-4bfa-a345-\
-    bcc9f74385b4
+    POST /registrations/data-apps?dataAppId=0927ce7c-b258-4bfa-a345-bcc9f74385b4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
     Host: localhost
 
     {
       "events": [
-        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
-    nt/isPresent"
+        {
+          "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+        }
       ],
       "mqttClient": true
     }
@@ -2168,46 +2094,41 @@ The sequence of operations for this are:
 
     {
       "events": [
-        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
-    nt/isPresent"
+        {
+          "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+        }
       ],
       "mqttClient": true
     }
     ~~~~~
+    {: post="fold66"}
 
   - Enable the advertisement event
 
-    ~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
-    POST /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?eventNa\
-    me=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
-    meter%2FsdfEvent%2FisPresent
+    ~~~~  
+    POST /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?eventName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
 
     HTTP/1.1 201 Created
-    Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?in\
-    stanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+    Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
     ~~~~
+    {: post="fold66"}
 
   - Check the status of the event
 
     ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
-    GET /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?instance\
-    Id=02ee282c-8915-4b2e-bbd2-88966773134a
+    GET /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
     Host: localhost
 
     HTTP/1.1 200 OK
     content-type: application/nipc+json
 
     {
-      "event": "https://example.com/thermometer#/sdfThing/thermometer\
-    /sdfEvent/isPresent"
+      "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
     }
     ~~~~~
+    {: post="fold66"}
 
 ## Enabling an Event on a Group of Devices
 
@@ -2220,9 +2141,7 @@ The sequence of operations for this are:
    memo)
   - Register an SDF model for the devices
 
-    ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
+    ~~~~~  
     POST /registrations/models
     Content-Type: application/sdf+json
     Accept: application/nipc+json
@@ -2235,29 +2154,27 @@ The sequence of operations for this are:
 
     [
       {
-        "sdfName": "https://example.com/thermometer#/sdfThing/thermom\
-    eter"
+        "sdfName": "https://example.com/thermometer#/sdfThing/thermometer"
       }
     ]
     ~~~~~
+    {: post="fold66"}
 
     Request Body: JSON object with the SDF model, from {{thermometer-sdf}}
     
   - Register the data app with the event 
 
     ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
-    POST /registrations/data-apps?dataAppId=0927ce7c-b258-4bfa-a345-\
-    bcc9f74385b4
+    POST /registrations/data-apps?dataAppId=0927ce7c-b258-4bfa-a345-bcc9f74385b4
     Content-Type: application/nipc+json
     Accept: application/nipc+json
     Host: localhost
 
     {
       "events": [
-        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
-    nt/isPresent"
+        {
+          "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+        }
       ],
       "mqttClient": true
     }
@@ -2267,36 +2184,31 @@ The sequence of operations for this are:
 
     {
       "events": [
-        "https://example.com/thermometer#/sdfThing/thermometer/sdfEve\
-    nt/isPresent"
+        {
+          "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+        }
       ],
       "mqttClient": true
     }
     ~~~~~
+    {: post="fold66"}
 
   - Enable the advertisement event on a group of devices
 
     ~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
-    POST /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?eventNa\
-    me=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermo\
-    meter%2FsdfEvent%2FisPresent
+    POST /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?eventName=https%3A%2F%2Fexample.com%2Fthermometer%23%2FsdfThing%2Fthermometer%2FsdfEvent%2FisPresent
     Host: localhost
     Content-Length: 0
 
     HTTP/1.1 201 Created
-    Location: /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?in\
-    stanceId=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
+    Location: /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?instanceId=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
     ~~~~
+    {: post="fold66"}
 
   - Check the status of the event
 
     ~~~~~
-    ============== NOTE: '\' line wrapping per RFC 8792 ==============
-
-    GET /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?instance\
-    Id=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
+    GET /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/events?instanceId=f1b9f26b-21ce-4deb-9d57-289ba7e17cce
     Host: localhost
 
     HTTP/1.1 200 OK
@@ -2304,31 +2216,27 @@ The sequence of operations for this are:
 
     [
       {
-        "event": "https://example.com/heartrate#/sdfObject/healthsen\
-    sor/sdfEvent/fallDetected",
+        "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
         "deviceId": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
       },
       {
-        "event": "https://example.com/heartrate#/sdfObject/healthsen\
-    sor/sdfEvent/fallDetected",
+        "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
         "deviceId": "d62c7fb2-a216-4811-a388-053b17fdbedc"
       },
       {
-        "event": "https://example.com/heartrate#/sdfObject/healthsen\
-    sor/sdfEvent/fallDetected",
+        "event": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
         "deviceId": "01b52a23-b98c-454c-ba9e-086a43bdfd79"
       },
       {
-        "type": "https://www.iana.org/assignments/nipc-problem-types\
-    #event-not-enabled",
+        "type": "https://www.iana.org/assignments/nipc-problem-types#event-not-enabled",
         "status": 400,
         "title": "Event Not Enabled",
         "deviceId": "9171ec16-e3c1-4ccf-ad23-b92a1a3f069d",
-        "detail": "Failed to disable the event for device 9171ec16-e\
-3c1-4ccf-ad23-b92a1a3f069d"
+        "detail": "Failed to disable the event for device 9171ec16-e3c1-4ccf-ad23-b92a1a3f069d"
       }
     ]
     ~~~~~
+    {: post="fold66"}
 
 # Implementation Status
 {:removeinrfc="true"}
@@ -2651,7 +2559,7 @@ The following non-normative model is provided for convenience of the implementor
 
 ~~~~~~
 <CODE BEGINS> file "openapi.yml"
-{::include nipc-openapi/NIPC.yaml.folded}
+{::include-fold nipc-openapi/NIPC.yaml}
 <CODE ENDS>
 ~~~~~~
 {: #openAPI sourcecode-markers="true" sourcecode-name="NIPC.yaml"}
@@ -2663,21 +2571,21 @@ The OpenAPI model for SDF protocol mapping is provided in {{Appendix B of I-D.ie
 # Protocol Information
 
 ~~~ yaml
-{::include nipc-openapi/protocolinfo/ProtocolInfo.yaml.folded}
+{::include-fold nipc-openapi/protocolinfo/ProtocolInfo.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="ProtocolInfo.yaml"}
 
 ## Protocol Information for BLE
 
 ~~~ yaml
-{::include nipc-openapi/protocolinfo/ProtocolInfo-BLE.yaml.folded}
+{::include-fold nipc-openapi/protocolinfo/ProtocolInfo-BLE.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="ProtocolInfo-BLE.yaml"}
 
 ## Protocol Information for Zigbee
 
 ~~~ yaml
-{::include nipc-openapi/protocolinfo/ProtocolInfo-Zigbee.yaml.folded}
+{::include-fold nipc-openapi/protocolinfo/ProtocolInfo-Zigbee.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="ProtocolInfo-Zigbee.yaml"}
 
@@ -2688,42 +2596,42 @@ The following OpenAPI models define a few example extensions to the NIPC API.
 ## NIPC API write binary blob extension
 
 ~~~ yaml
-{::include nipc-openapi/extensions/Extension-Blob.yaml.folded}
+{::include-fold nipc-openapi/extensions/Extension-Blob.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="Extension-Blob.yaml"}
 
 ## NIPC API bulk operations extension
 
 ~~~ yaml
-{::include nipc-openapi/extensions/Extension-Bulk.yaml.folded}
+{::include-fold nipc-openapi/extensions/Extension-Bulk.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="Extension-Bulk.yaml"}
 
 ## NIPC API write file extension
 
 ~~~ yaml
-{::include nipc-openapi/extensions/Extension-File.yaml.folded}
+{::include-fold nipc-openapi/extensions/Extension-File.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="Extension-File.yaml"}
 
 ## NIPC API conditional read extension
 
 ~~~ yaml
-{::include nipc-openapi/extensions/Extension-ReadConditional.yaml.folded}
+{::include-fold nipc-openapi/extensions/Extension-ReadConditional.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="Extension-ReadConditional.yaml"}
 
 ## NIPC API conditional event extension
 
 ~~~ yaml
-{::include nipc-openapi/extensions/Extension-EventConditional.yaml.folded}
+{::include-fold nipc-openapi/extensions/Extension-EventConditional.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="Extension-EventConditional.yaml"}
 
 ## NIPC API property extensions
 
 ~~~ yaml
-{::include nipc-openapi/extensions/Extension-Property.yaml.folded}
+{::include-fold nipc-openapi/extensions/Extension-Property.yaml}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="Extension-Property.yaml"}
 
@@ -2732,18 +2640,18 @@ The following OpenAPI models define a few example extensions to the NIPC API.
 The following is a combined reference of all NIPC API CDDL definitions used in this document.
 
 ~~~ cddl
-{::include cddl/api/combined.cddl.folded}
+{::include-fold cddl/api/combined.cddl}
 ~~~
 {: sourcecode-markers="true" sourcecode-name="combined.cddl"}
 
 # Example SDF model with protocol mappings for BLE {#thermometer-sdf}
 
 ~~~ json
-{::include nipc-sdf-example/thermometer.sdf.json}
+{::include-fold nipc-sdf-example/thermometer.sdf.json}
 ~~~
 {: title="Example SDF model with protocol mappings for BLE" sourcecode-markers="true" sourcecode-name="thermometer.sdf.json" }
 
 # Acknowledgements
 
-This document relies on SDF models described in {{!RFC9880}}, as such, we are grateful to the authors of this
+This document relies on SDF models described in {{-sdf}}, as such, we are grateful to the authors of this
 document for putting their time and effort into defining SDF in depth, allowing us to make use of it. The authors would also like to thank the ASDF working group for their excellent feedback and steering of the document. 
