@@ -76,10 +76,10 @@ EventInstanceSuccess = {
 ; From: cddl/api/failure_response.cddl
 ; ============================================
 FailureResponse = {
-  ? type: FailureTypeURI,
-  ? status: uint,
-  ? title: text,
-  ? detail: text
+  type: FailureTypeURI,
+  status: uint,
+  title: text,
+  detail: text
 }
 
 ; Enumerated problem type URIs registered for NIPC
@@ -89,6 +89,7 @@ FailureTypeURI = (
   "https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed" /
   "https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered" /
   "https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use" /
+  "https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme" /
   "https://www.iana.org/assignments/nipc-problem-types#property-not-readable" /
   "https://www.iana.org/assignments/nipc-problem-types#property-read-failed" /
   "https://www.iana.org/assignments/nipc-problem-types#property-not-writable" /
@@ -96,6 +97,7 @@ FailureTypeURI = (
   "https://www.iana.org/assignments/nipc-problem-types#event-already-enabled" /
   "https://www.iana.org/assignments/nipc-problem-types#event-not-enabled" /
   "https://www.iana.org/assignments/nipc-problem-types#event-not-registered" /
+  "https://www.iana.org/assignments/nipc-problem-types#trigger-already-enabled" /
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-already-connected" /
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-no-connection" /
   "https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-timeout" /
@@ -135,7 +137,7 @@ GroupTriggerStatusResponseArray = [* GroupTriggerResponse]
 GroupTriggerResponse = (GroupTriggerSuccessResponse // GroupTriggerFailureResponse)
 
 GroupTriggerSuccessResponse = {
-  SdfReference,
+  eventName: text,      ; SDF event name
   ? action: text,      ; NIPC action operation to execute
   deviceId: text     ; UUID (as text)
 }
@@ -153,7 +155,7 @@ GroupTriggerFailureResponse = {
 TriggerStatusResponseArray = [* TriggerResponse]
 
 TriggerResponse = {
-  SdfReference,
+  eventName: text,      ; SDF event name
   ? action: text,      ; NIPC action operation to execute
   instanceId: text     ; UUID (as text)
 }
@@ -187,7 +189,7 @@ PropertyValueResponseArrayItem = ( SuccessResponse // FailureResponse )
 
 ; Minimal success shape (may be extended)
 SuccessResponse = {
-  ? status: uint
+  status: uint
 }
 
 ; ============================================

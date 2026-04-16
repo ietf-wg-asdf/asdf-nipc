@@ -475,6 +475,12 @@ paths:
                 type: string
                 format: uri
                 example: "/devices/{id}/actions?instanceId={instanceId}"
+            Retry-After:
+              description: |-
+                Number of seconds to wait before polling the status endpoint again
+              schema:
+                type: integer
+                example: 5
         default:
           description: Error response
           content:
@@ -569,6 +575,12 @@ paths:
                 type: string
                 format: uri
                 example: "/groups/{id}/actions?instanceId={instanceId}"
+            Retry-After:
+              description: |-
+                Number of seconds to wait before polling the status endpoint again
+              schema:
+                type: integer
+                example: 5
         default:
           description: Error response
           content:
@@ -1708,6 +1720,7 @@ components:
             - https://www.iana.org/assignments/nipc-problem-types#event-already-enabled
             - https://www.iana.org/assignments/nipc-problem-types#event-not-enabled
             - https://www.iana.org/assignments/nipc-problem-types#event-not-registered
+            - https://www.iana.org/assignments/nipc-problem-types#trigger-already-enabled
             - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-already-connected
             - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-no-connection
             - https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-timeout
