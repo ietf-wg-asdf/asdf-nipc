@@ -4,5 +4,5 @@ PropertyValueResponseArrayItem = ( SuccessResponse // FailureResponse )
 
 ; Minimal success shape (may be extended)
 SuccessResponse = {
-  ? status: uint
+  status: uint
 }
