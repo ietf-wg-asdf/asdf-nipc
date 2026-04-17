@@ -12,7 +12,7 @@ ActionStatus = "IN_PROGRESS" / "COMPLETED"
 ; From: cddl/api/action.cddl
 ; ============================================
 Action = {
-  ? action: text  ; NIPC action operation to execute
+  action: text  ; NIPC action operation to execute
 }
 
 ; ============================================
@@ -138,7 +138,7 @@ GroupTriggerResponse = (GroupTriggerSuccessResponse // GroupTriggerFailureRespon
 
 GroupTriggerSuccessResponse = {
   eventName: text,      ; SDF event name
-  ? action: text,      ; NIPC action operation to execute
+  action: text,      ; NIPC action operation to execute
   deviceId: text     ; UUID (as text)
 }
 
@@ -156,7 +156,7 @@ TriggerStatusResponseArray = [* TriggerResponse]
 
 TriggerResponse = {
   eventName: text,      ; SDF event name
-  ? action: text,      ; NIPC action operation to execute
+  action: text,      ; NIPC action operation to execute
   instanceId: text     ; UUID (as text)
 }
 

@@ -6,7 +6,7 @@ GroupTriggerResponse = (GroupTriggerSuccessResponse // GroupTriggerFailureRespon
 
 GroupTriggerSuccessResponse = {
   eventName: text,      ; SDF event name
-  ? action: text,      ; NIPC action operation to execute
+  action: text,      ; NIPC action operation to execute
   deviceId: text     ; UUID (as text)
 }
 

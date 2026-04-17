@@ -4,6 +4,6 @@ TriggerStatusResponseArray = [* TriggerResponse]
 
 TriggerResponse = {
   eventName: text,      ; SDF event name
-  ? action: text,      ; NIPC action operation to execute
+  action: text,      ; NIPC action operation to execute
   instanceId: text     ; UUID (as text)
 }

@@ -394,8 +394,7 @@ as supported extensions on a server.
     "/extensions/{id}/properties/blob",
     "/extensions/{id}/properties/file",
     "/extensions/{id}/properties/read/conditional",
-    "/extensions/{id}/events/conditional",
-    "/extensions/{id}/properties/write"
+    "/extensions/{id}/events/conditional"
   ]
 }
 ~~~~~
@@ -2625,9 +2624,9 @@ The following OpenAPI models define a few example extensions to the NIPC API.
 ## NIPC API property extensions
 
 ~~~ yaml
-{::include-fold nipc-openapi/extensions/Extension-Property.yaml}
+{::include-fold nipc-openapi/extensions/Extension-Transmit.yaml}
 ~~~
-{: sourcecode-markers="true" sourcecode-name="Extension-Property.yaml"}
+{: sourcecode-markers="true" sourcecode-name="Extension-Transmit.yaml"}
 
 # NIPC API CDDL Definition
 
