@@ -1,7 +1,7 @@
 ---
 title: An Application Layer Interface for Non-Internet-Connected Physical Components (NIPC)
 abbrev: NIPC
-docname: draft-ietf-asdf-nipc-18
+docname: draft-ietf-asdf-nipc-19
 submissionType: IETF
 category: std
 
@@ -2263,7 +2263,7 @@ Level of maturity: Open-source prototype
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: All versions up to draft-17
+Version compatibility: All versions up to draft-19
 
 Licensing: Apache License, Version 2.0
 
@@ -2295,7 +2295,7 @@ Level of maturity: Beta
 
 Coverage: All NIPC APIs for BLE protocol mapping
 
-Version compatibility: draft-17
+Version compatibility: draft-19
 
 Licensing: Proprietary
 
