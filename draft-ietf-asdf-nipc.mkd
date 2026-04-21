@@ -43,6 +43,7 @@ normative:
   RFC8610: cddl
   RFC9880: sdf
   I-D.ietf-scim-device-model: scim-devices
+  I-D.ietf-asdf-sdf-protocol-mapping: sdf-protocol-mapping
 
 informative:
   BLE53:
@@ -235,9 +236,9 @@ In order for the NIPC gateway to perform operations on a device, it must have ac
 
 ### Device class information
 
-Device class information is declared through SDF models, as defined in {{!RFC9880}}. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}.
+Device class information is declared through SDF models, as defined in {{-sdf}}. These SDF models define the protocol-neutral affordances of a class of devices, as well as protocol mappings {{-sdf-protocol-mapping}} that relate these affordances to protocol-specific operations. The SDF model for a class of devices can be registered through NIPC registration APIs, as described in {{nipc-registrations}}.
 
-The SDF model reference and/or data‑app registration MAY also be included in a device's SCIM object. See {{-scim-devices}} and {{!I-D.ietf-asdf-sdf-protocol-mapping}} for details.
+The SDF model reference and/or data‑app registration MAY also be included in a device's SCIM object. See {{-scim-devices}} and {{-sdf-protocol-mapping}} for details.
 
 ## NIPC Registrations {#nipc-registrations}
 
@@ -253,10 +254,10 @@ NIPC supports two registration types:
 The SDF model for a class of devices determines how a gateway can interact with
 these devices in a protocol-neutral way. To enable this, the SDF model
 must contain protocol mappings, mapping protocol-neutral SDF affordances
-to protocol-specific operations as defined in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
+to protocol-specific operations as defined in {{-sdf-protocol-mapping}}.
 The SDF affordances supported by the device, as well as its protocol-mappings,
 are provided to the gateway by means of an SDF model.
-SDF models are described in {{!RFC9880}}.
+SDF models are described in {{-sdf}}.
 
 ### Data application registrations
 
@@ -267,7 +268,7 @@ Applications that are authorized to perform NIPC operations on devices can defin
 
 ### Overview {#nipc-ops-overview}
 
-NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of !RFC9880}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload.
+NIPC APIs are exposed over HTTP {{!RFC9110}}. Requests and responses use JSON {{!RFC8259}} unless another media type is negotiated via Content-Type and Accept. A media type for an SDF affordance can also be stipulated in the SDF ContentFormat data quality, as described in {{Section 4.7 of -sdf}}. The default media type is “application/nipc+json” (see {{iana-media-types}}). SDF model registrations use “application/sdf+json”. Property APIs MAY use other media types appropriate to the property payload.
 
 Failures use Problem Details {{!RFC9457}} with media type application/problem+json.
 
@@ -523,7 +524,7 @@ Example of a failure response:
 ## SDF model registrations APIs
 
 SDF model registration APIs allow applications to register an SDF model for a class of devices.
-These APIs use the `application/sdf+json` media type, as described in {{Section 7.1 of RFC9880}}.
+These APIs use the `application/sdf+json` media type, as described in {{Section 7.1 of -sdf}}.
 
 ### Register an SDF model
 
@@ -534,7 +535,7 @@ Description: Registers one or more SDF models for a class of devices. If the SDF
 Request Body:
 
  - The SDF document in JSON format containing one or more sdfThings or sdfObjects, similar to the example in {{thermometer-sdf}}.
- - The SDF document MUST contain protocol mappings, as described in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
+ - The SDF document MUST contain protocol mappings, as described in {{-sdf-protocol-mapping}}.
 
 Response:
 
@@ -803,7 +804,7 @@ Additionally, NIPC defines one more API collection that allows applications to i
 
   - Triggers: Install a trigger on an event (invokes an action)
 
-To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{!I-D.ietf-scim-device-model}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of !RFC9880}}.
+To invoke NIPC operations APIs on a device, one or more SDF models MUST be registered for that device. The SDF model MAY have a top‑level sdfThing (with multiple sdfObjects) or a top‑level sdfObject. Operations depend on affordances (sdfProperty, sdfEvent, sdfAction) defined in the registered SDF model and on a device ID (see {{-scim-devices}}). Affordances are referenced by their SDF global name (absolute URI with fragment) as described in {{Section 4 of -sdf}}.
 
 The NIPC Gateway must match the SDF global name against the registered SDF model to resolve the protocol mapping (protocolmap) the gateway will execute. When carried in a URI, the SDF global name MUST be percent‑encoded per {{Section 2.1 of !RFC3986}}.
 
@@ -1792,13 +1793,13 @@ definition of failed response.
 
 NIPC is designed to be extensible in two complementary ways:
 
- - Protocol mappings: NIPC relies on SDF protocol mappings to relate protocol‑neutral affordances to protocol‑specific operations. Adding a new mapping enables support for additional device protocols (or versions) without the need to change the NIPC API itself. This allows deployments to evolve as device ecosystems change, while preserving application portability and gateway interoperability. Protocol mapping is an extension to SDF and described in {{!I-D.ietf-asdf-sdf-protocol-mapping}}.
+ - Protocol mappings: NIPC relies on SDF protocol mappings to relate protocol‑neutral affordances to protocol‑specific operations. Adding a new mapping enables support for additional device protocols (or versions) without the need to change the NIPC API itself. This allows deployments to evolve as device ecosystems change, while preserving application portability and gateway interoperability. Protocol mapping is an extension to SDF and described in {{-sdf-protocol-mapping}}.
 
  - API extensions: Extensions compose multiple NIPC operations into a single request or introduce specialized flows optimized for common scenarios (e.g., bulk property updates, conditional reads, firmware operations). Extensions MUST use the “/extensions” path element and SHOULD focus on efficiency, latency reduction, and operational simplicity (fewer round trips, reduced state management). To ensure interoperability and consistent security review, extensions MUST be registered with IANA as defined in {{iana-api-ext}}.
 
 ## Protocol mappings
 
-NIPC relies on SDF protocol mappings {{!I-D.ietf-asdf-sdf-protocol-mapping}} to relate protocol‑neutral affordances to protocol‑specific operations. In {{!I-D.ietf-asdf-sdf-protocol-mapping}} BLE and Zigbee are used as examples, however the mapping mechanism is extensible; so support for additional protocols (or versions) can be added without changing the NIPC schema or API.
+NIPC relies on SDF protocol mappings {{-sdf-protocol-mapping}} to relate protocol‑neutral affordances to protocol‑specific operations. In {{-sdf-protocol-mapping}} BLE and Zigbee are used as examples, however the mapping mechanism is extensible; so support for additional protocols (or versions) can be added without changing the NIPC schema or API.
 
 ## API extensions {#apiextensions}
 
@@ -2649,5 +2650,5 @@ The following is a combined reference of all NIPC API CDDL definitions used in t
 
 # Acknowledgements
 
-This document relies on SDF models described in {{!RFC9880}}, as such, we are grateful to the authors of this
+This document relies on SDF models described in {{-sdf}}, as such, we are grateful to the authors of this
 document for putting their time and effort into defining SDF in depth, allowing us to make use of it. The authors would also like to thank the ASDF working group for their excellent feedback and steering of the document.
