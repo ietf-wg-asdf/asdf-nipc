@@ -1,20 +1,18 @@
 ---
+v: 3
+
 title: An Application Layer Interface for Non-Internet-Connected Physical Components (NIPC)
 abbrev: NIPC
 docname: draft-ietf-asdf-nipc-19
 submissionType: IETF
 category: std
 
-ipr: trust200902
 keyword: Internet-Draft
 venue:
   group: "A Semantic Definition Format for Data and Interactions of Things"
   type: "Working Group"
   mail: "asdf@ietf.org"
   github: "ietf-wg-asdf/asdf-nipc"
-
-stand_alone: no
-pi: [toc, sortrefs, symrefs]
 
 author:
  -
