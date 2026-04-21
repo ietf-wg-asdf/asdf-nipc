@@ -4,6 +4,6 @@ ConnectionRequest = {
 }
 
 ConnectionResponse = {
-  id: text,  ; UUID of the connection
+  id: text,  ; Device ID
   ? protocol-info-service-map
 }

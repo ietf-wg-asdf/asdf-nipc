@@ -394,8 +394,7 @@ as supported extensions on a server.
     "/extensions/{id}/properties/blob",
     "/extensions/{id}/properties/file",
     "/extensions/{id}/properties/read/conditional",
-    "/extensions/{id}/events/conditional",
-    "/extensions/{id}/properties/write"
+    "/extensions/{id}/events/conditional"
   ]
 }
 ~~~~~
@@ -492,7 +491,7 @@ Exceptions to this are the following:
 
 1. Extensions: Extension APIs (see {{apiextensions}}) execute compound operations and thus require the gateway to execute multiple
 NIPC operations. On acceptance, the gateway returns 202 Accepted. Clients poll the extension URI (GET) for execution status. If a callback URI was supplied in the request, the gateway MAY send the final result upon completion.
-2. Actions: Action requests return 202 Accepted with a Location header pointing to the action instance used for status tracking.
+2. Actions: Action requests return 202 Accepted with a Location header pointing to the action instance used for status tracking, and a Retry-After header indicating the number of seconds the client should wait before polling for status.
 
 A failure response must contain an HTTP status code of 4xx or 5xx, and use {{!RFC9457}} Problem Details with `application/problem+json` media type. 
 
@@ -532,7 +531,7 @@ These APIs use the `application/sdf+json` media type, as described in {{Section 
 
 Method: `POST /registrations/models`
 
-Description: Registers one or more SDF models for a class of devices.
+Description: Registers one or more SDF models for a class of devices. If the SDF model is already registered, the gateway will return an error with the `sdf-model-already-registered` problem type. 
 
 Request Body:
 
@@ -541,7 +540,7 @@ Request Body:
 
 Response:
 
-A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model.
+A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model. The response uses the `201 Created` status code.
 
 ~~~~ cddl
 {::include-fold cddl/api/sdf_reference.cddl}
@@ -615,8 +614,7 @@ Query Parameters:
 
 Response:
 
-  - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
-
+ - An object with an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
 ~~~~ cddl
 {::include-fold cddl/api/sdf_reference.cddl}
@@ -648,8 +646,7 @@ Request Body:
 
 Response:
 
- - A list containing objects where each object has an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
-
+ - An object with an "sdfName" which is the global name of the top-level sdfThing or sdfObject in the SDF model
 
 ~~~~ cddl
 {::include-fold cddl/api/sdf_reference.cddl}
@@ -792,7 +789,7 @@ Query Parameters:
 
 Response:
 
- - If successful, the response will be identical to the request body for the register data application API {{register-data-app}}.
+ - If successful, the response will be `204 No Content`.
 
 # NIPC Operation APIs
 
@@ -1170,7 +1167,7 @@ Example of a response:
     "status": 400,
     "title": "Event Not Enabled",
     "deviceId": "9171ec16-e3c1-4ccf-ad23-b92a1a3f069d",
-    "detail": "Failed to disable the event for device 9171ec16-e3c1-4ccf-ad23-b92a1a3f069d"
+    "detail": "Failed to enable the event for device 9171ec16-e3c1-4ccf-ad23-b92a1a3f069d"
   }
 ]
 ~~~~~
@@ -1200,13 +1197,14 @@ The request body is optional and may contain a value. The media type of the valu
 
 Response:
 
-Actions are performed asynchronously. A successful request returns HTTP status code 202 Accepted with a Location header pointing to the action instance for status checking. The Location header contains the URI for the action instance, which can be used to check the action status.
+Actions are performed asynchronously. A successful request returns HTTP status code 202 Accepted with a Location header pointing to the action instance for status checking, and a Retry-After header indicating the number of seconds the client should wait before polling. The Location header contains the URI for the action instance, which can be used to check the action status.
 
 Example of a successful response:
 
 ~~~~~
 HTTP/1.1 202 Accepted
 Location: /devices/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/actions?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Retry-After: 5
 ~~~~~
 {: post="fold"}
 
@@ -1225,7 +1223,7 @@ Query Parameters:
   - instanceId: the instance ID of the action (obtained from the Location header)
 
 Response:
-MUST return 200 OK with an action status, which may be "in progress" or "completed".
+MUST return 200 OK with an action status, which may be "IN_PROGRESS" or "COMPLETED".
 
 ~~~~ cddl
 {::include-fold cddl/api/action_response.cddl}
@@ -1255,9 +1253,9 @@ If a NIPC Gateway supports multiple protocols, then a trigger can be defined on 
 
 ### Create a trigger on a device
 
-Method: `POST /devices/{id}/triggers{?sdfName}`
+Method: `POST /devices/{id}/triggers{?eventName}`
 
-Description: Creates a trigger on an affordance of a device. A trigger will trigger an action on another device or a group of devices.
+Description: Creates a trigger on an affordance of a device. A trigger will trigger an action on another device or a group of devices. If a trigger for the same `eventName` is already enabled on the device, the gateway MUST return an error with the `trigger-already-enabled` problem type.
 
 Parameters:
 
@@ -1265,11 +1263,11 @@ Parameters:
 
 Query Parameters:
 
- - sdfName: the sdfName of the affordance that is associated with the trigger. This must be an event. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
+ - eventName: the eventName of the event that is associated with the trigger. This must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
 
 Request Body:
   
- - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter. 
+ - The request body must be of type 'application/nipc+json', and contain an action object. The action object contains a NIPC URI to be executed, including the device or group id and actionname percent-encoded query parameter.
 
 ~~~~ cddl
 {::include-fold cddl/api/action.cddl}
@@ -1341,7 +1339,7 @@ Response:
 The response must be an array of triggers, each containing an instanceId, the sdfName of an event and an action.
 
  - instanceId: must be the instance ID for each installed trigger, as returned by the NIPC GW when the trigger was created.
- - sdfName: must be the sdfName of the event that is associated with the trigger.
+ - eventName: must be the sdfName of the event that is associated with the trigger.
  - action: must be the NIPC URI of the action to be executed when the trigger is activated.
 
 ~~~~ cddl
@@ -1364,9 +1362,9 @@ Example of a response:
 
 ### Create a trigger on a group of devices
 
-Method: `POST /groups/{id}/triggers{?sdfName}`
+Method: `POST /groups/{id}/triggers{?eventName}`
 
-Description: Creates a trigger on an affordance of a group of devices. A trigger will trigger an action on another device or a group of devices.
+Description: Creates a trigger on an affordance of a group of devices. A trigger will trigger an action on another device or a group of devices. If a trigger for the same `eventName` is already enabled on the group, the gateway MUST return an error with the `trigger-already-enabled` problem type.
 
 Parameters:
 
@@ -1374,7 +1372,7 @@ Parameters:
 
 Query Parameters:
 
- - sdfName: the sdfName of the affordance that is associated with the trigger. This must be an event. The sdfName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
+ - eventName: the eventName of the affordance that is associated with the trigger. This must be an event. The eventName must be a URL encoded string that is the absolute URI that is the global name of an `sdfEvent`. 
 
 Request Body:
   
@@ -1449,7 +1447,7 @@ Response:
 
 The response must be an array of triggers, each containing an instanceId, the sdfName of an affordance and an action.
  - deviceId: must be the device ID for each installed trigger.
- - sdfName: must be the sdfName of the affordance (event or action) that is associated with the trigger.
+ - eventName: must be the sdfName of the affordance (event or action) that is associated with the trigger.
  - action: must be the NIPC URI of the action to be executed when the trigger is activated.
 
 ~~~~ cddl
@@ -1463,7 +1461,7 @@ Example of a response:
 [
   {
     "deviceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor",
+    "eventName": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/rate",
     "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
   }
 ]
@@ -1726,18 +1724,7 @@ Parameters:
 
 Response:
 
-Returns HTTP status code 200 OK with device ID on successful disconnect.
-
-Example of a response:
-
-~~~~~ json
-{
-  "id": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
-}
-~~~~~
-{:json #exdisconnresp title="Example disconnect response" sourcecode-markers="true"}
-
-where "id" is the ID of the device.
+Returns HTTP status code 204 No Content on successful disconnect.
 
 A failure will generate a standard failed response. Please refer to {{failure}}
 definition of failed response.
@@ -1846,9 +1833,12 @@ NIPC error types are defined in the table below:
 | unsupported-uri-scheme                     | Unsupported URI scheme                        | Generic           |
 | property-not-readable                      | Property not readable                         | Property APIs     |
 | property-not-writable                      | Property not writable                         | Property APIs     |
+| property-read-failed                       | Property read failed                          | Property APIs     |
+| property-write-failed                      | Property write failed                         | Property APIs     |
 | event-already-enabled                      | Event already enabled                         | Event APIs        |
 | event-not-enabled                          | Event not enabled                             | Event APIs        |
 | event-not-registered                       | Event not registered for any data application | Event APIs        |
+| trigger-already-enabled                    | Trigger already enabled for this event        | Trigger APIs      |
 | protocolmap-ble-already-connected          | Device already connected                      | Protocol specific |
 | protocolmap-ble-no-connection              | No connection found for device                | Protocol specific |
 | protocolmap-ble-connection-timeout         | BLE connection timeout                        | Protocol specific |
@@ -1982,7 +1972,7 @@ The sequence of operations for this are:
 
     { ... }
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 201 Created
     content-type: application/nipc+json
 
     [
@@ -2033,8 +2023,7 @@ The sequence of operations for this are:
 
     [
       {
-        "property": "https://example.com/thermometer#/sdfThing/thermometer/sdfProperty/device_name",
-        "value": "dGVzdA=="
+        "status": 200
       }
     ]
     ~~~~~
@@ -2059,7 +2048,7 @@ The sequence of operations for this are:
 
     { ... }
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 201 Created
     content-type: application/nipc+json
 
     [
@@ -2089,7 +2078,7 @@ The sequence of operations for this are:
       "mqttClient": true
     }
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 201 Created
     content-type: application/nipc+json
 
     {
@@ -2124,9 +2113,12 @@ The sequence of operations for this are:
     HTTP/1.1 200 OK
     content-type: application/nipc+json
 
-    {
-      "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
-    }
+    [
+      {
+        "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
+        "event": "https://example.com/thermometer#/sdfThing/thermometer/sdfEvent/isPresent"
+      }
+    ]
     ~~~~~
     {: post="fold66"}
 
@@ -2149,7 +2141,7 @@ The sequence of operations for this are:
 
     { ... }
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 201 Created
     content-type: application/nipc+json
 
     [
@@ -2179,7 +2171,7 @@ The sequence of operations for this are:
       "mqttClient": true
     }
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 201 Created
     content-type: application/nipc+json
 
     {
@@ -2232,7 +2224,7 @@ The sequence of operations for this are:
         "status": 400,
         "title": "Event Not Enabled",
         "deviceId": "9171ec16-e3c1-4ccf-ad23-b92a1a3f069d",
-        "detail": "Failed to disable the event for device 9171ec16-e3c1-4ccf-ad23-b92a1a3f069d"
+        "detail": "Failed to enable the event for device 9171ec16-e3c1-4ccf-ad23-b92a1a3f069d"
       }
     ]
     ~~~~~
@@ -2536,6 +2528,7 @@ registry:
 | https://www.iana.org/assignments/nipc-problem-types#event-already-enabled   | Event already enabled                         | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#event-not-enabled       | Event not enabled                             | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#event-not-registered    | Event not registered for any data application | This document   |
+| https://www.iana.org/assignments/nipc-problem-types#trigger-already-enabled | Trigger already enabled for this event        | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-already-connected | Device already connected                      | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-no-connection | No connection found for device                | This document   |
 | https://www.iana.org/assignments/nipc-problem-types#protocolmap-ble-connection-timeout | BLE connection timeout                        | This document   |
@@ -2631,9 +2624,9 @@ The following OpenAPI models define a few example extensions to the NIPC API.
 ## NIPC API property extensions
 
 ~~~ yaml
-{::include-fold nipc-openapi/extensions/Extension-Property.yaml}
+{::include-fold nipc-openapi/extensions/Extension-Transmit.yaml}
 ~~~
-{: sourcecode-markers="true" sourcecode-name="Extension-Property.yaml"}
+{: sourcecode-markers="true" sourcecode-name="Extension-Transmit.yaml"}
 
 # NIPC API CDDL Definition
 
