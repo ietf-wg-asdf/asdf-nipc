@@ -42,7 +42,7 @@ author:
 normative:
   RFC8610: cddl
   RFC9880: sdf
-  I-D.ietf-scim-device-model: scim-devices
+  RFC9944: scim-devices
   I-D.ietf-asdf-sdf-protocol-mapping: sdf-protocol-mapping
 
 informative:
@@ -2649,6 +2649,8 @@ The following is a combined reference of all NIPC API CDDL definitions used in t
 {: title="Example SDF model with protocol mappings for BLE" sourcecode-markers="true" sourcecode-name="thermometer.sdf.json" }
 
 # Acknowledgements
+{:numbered="false"}
 
 This document relies on SDF models described in {{-sdf}}, as such, we are grateful to the authors of this
-document for putting their time and effort into defining SDF in depth, allowing us to make use of it. The authors would also like to thank the ASDF working group for their excellent feedback and steering of the document.
+document for putting their time and effort into defining SDF in depth, allowing us to make use of it.
+The authors would like to thank Ari Keränen, Carsten Bormann, Eliot Lear, Michael Richardson, and Sriram Sekar for their reviews and contributions that helped improve this document.
