@@ -1,0 +1,17 @@
+; Group Action status response array and item shape
+
+GroupActionStatusResponseArray = [* GroupActionStatusResponse]
+
+GroupActionStatusResponse = (GroupActionSuccessResponse // GroupActionFailureResponse)
+
+GroupActionSuccessResponse = {
+  status: ActionStatus,
+  deviceId: text     ; UUID (as text)
+}
+
+ActionStatus = "IN_PROGRESS" / "COMPLETED"
+
+GroupActionFailureResponse = {
+  FailureResponse,
+  ? deviceId: text
+}

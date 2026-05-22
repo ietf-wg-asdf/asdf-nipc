@@ -883,9 +883,9 @@ Example of a response:
     "status": 200
   },
   {
-    "type": "https://www.iana.org/assignments/nipc-problem-types#invalid-property",
+    "type": "https://www.iana.org/assignments/nipc-problem-types#property-not-writable",
     "status": 400,
-    "title": "Invalid Property",
+    "title": "Property Not Writable",
     "detail": "Property https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature does not exist or is not writable"
   }
 ]
@@ -1238,6 +1238,76 @@ Example of a response:
 ~~~~~
 {:json #exactionstatusresp title="Example action status response" sourcecode-markers="true"}
 
+### Perform an action on a group of devices
+
+Method: `POST /groups/{id}/actions{?actionName}`
+
+Description: Perform an action on a group of devices
+
+Parameters:
+
+  - id: the ID of the group
+
+Query Parameters:
+
+  - actionName: the action to perform
+
+Request Body:
+
+The request body is optional and may contain a value. The media type of the value can be defined by the underlying protocol, for example it could be octet-stream for binary data.
+
+Response:
+
+Actions are performed asynchronously. A successful request returns HTTP status code 202 Accepted with a Location header pointing to the action instance for status checking, and a Retry-After header indicating the number of seconds the client should wait before polling.
+
+Example of a successful response:
+
+~~~~~
+HTTP/1.1 202 Accepted
+Location: /groups/0dc729d7-f6c3-491d-9b9d-e7176d2be243/actions?instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+Retry-After: 5
+~~~~~
+{: post="fold"}
+
+### Check group action status
+
+Method: `GET /groups/{id}/actions{?instanceId}`
+
+Description: Check the status of an action on a group of devices. Returns a per-device status array.
+
+Parameters:
+
+  - id: the ID of the group
+
+Query Parameters:
+
+  - instanceId: the instance ID of the action (obtained from the Location header)
+
+Response:
+
+MUST return 200 OK with an array of per-device action statuses. Each entry contains the action status and a deviceId. Entries for failed devices contain a problem detail with the deviceId.
+
+~~~~ cddl
+{::include-fold cddl/api/group_action_status_response_array.cddl}
+~~~~
+{:cddl sourcecode-markers="true" sourcecode-name="group_action_status_response_array.cddl"}
+
+Example of a response:
+
+~~~~~ json
+[
+  {
+    "status": "COMPLETED",
+    "deviceId": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30"
+  },
+  {
+    "status": "IN_PROGRESS",
+    "deviceId": "d62c7fb2-a216-4811-a388-053b17fdbedc"
+  }
+]
+~~~~~
+{:json post="fold" #exgroupactionstatusresp title="Example group action status response" sourcecode-markers="true"}
+
 ## NIPC Trigger APIs
 
 Triggers APIs do not actually execute an operation on a device or group of devices, but install a trigger that registers an operation. When triggered the registered operation gets executed.
@@ -1357,7 +1427,7 @@ Example of a response:
 [
   {
     "instanceId": "02ee282c-8915-4b2e-bbd2-88966773134a",
-    "sdfName": "https://example.com/heartrate#/sdfObject/healthsensor",
+    "eventName": "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected",
     "action": "/devices/3171ec43-42a5-4415-ab4b-afd0dfbe9615/actions?actionName=https%3A%2F%2Fexample.com%2FAlarmSystem%23%2FsdfObject%2Fbell%2FsdfAction%2Fring"
   }
 ]

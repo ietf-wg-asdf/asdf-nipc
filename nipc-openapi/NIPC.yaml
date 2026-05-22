@@ -599,7 +599,7 @@ paths:
       parameters:
       - name: id
         in: path
-        description: The ID of the device. Group ID is not allowed.
+        description: The ID of the group of devices.
         required: true
         schema:
           type: string
@@ -647,11 +647,10 @@ paths:
           type: string
           format: uuid
           example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
-      - name: sdfName
+      - name: eventName
         in: query
         description: |-
-          sdf affordance that will trigger this action, this can be 
-          either an event or an action
+          The SDF global name of the event that will trigger this action
         required: true
         allowReserved: true
         schema:
@@ -777,11 +776,10 @@ paths:
           type: string
           format: uuid
           example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
-      - name: sdfName
+      - name: eventName
         in: query
         description: |-
-          sdf affordance that will trigger this action, this can be 
-          either an event or an action
+          The SDF global name of the event that will trigger this action
         required: true
         allowReserved: true
         schema:
@@ -879,12 +877,8 @@ paths:
           format: uuid
           example: 02ee282c-8915-4b2e-bbd2-88966773134a
       responses:
-        '200':
-          description: Success, trigger deleted
-          content:
-            application/nipc+json:
-              schema:
-                $ref: '#/components/schemas/GroupTriggerStatusResponseArray'
+        '204':
+          description: Success, no content
         default:
           description: Error response
           content:
@@ -1033,13 +1027,8 @@ paths:
             format: uuid
             example: 1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30
       responses:
-        '200':
-          description: Success
-          content:
-            application/nipc+json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/Id'
+        '204':
+          description: Success, no content
         default:
           description: Error response
           content:
@@ -1110,8 +1099,8 @@ paths:
               $ref: '#/components/schemas/SdfModel'
         required: true
       responses:
-        '200':
-          description: Success
+        '201':
+          description: Created
           content:
             application/nipc+json:
               schema:
@@ -1130,15 +1119,18 @@ paths:
     get:
       tags:
         - NIPC registration APIs
-      summary: Get all registered SDF model names
+      summary: Get registered SDF models
       description: |-
-        Get all registered SDF model names.
+        Without sdfName, returns a list of all registered SDF model
+        references. With sdfName, returns the full SDF model for that
+        name.
       operationId: getSdfRefs
       parameters:
         - name: sdfName
           in: query
           description: |-
-            sdfName can be a reference to an sdfThing or sdfObject
+            sdfName can be a reference to an sdfThing or sdfObject.
+            If omitted, all registered model references are returned.
           required: false
           allowReserved: true
           schema:
@@ -1146,11 +1138,17 @@ paths:
             example: "https://example.com/heartrate#/sdfObject/healthsensor"
       responses:
         '200':
-          description: Success
+          description: |-
+            Without sdfName, returns a list of SDF model references.
+            With sdfName, returns the full SDF model.
           content:
             application/sdf+json:
               schema:
-                $ref: '#/components/schemas/SdfModel'
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/SdfReference'
+                  - $ref: '#/components/schemas/SdfModel'
         default:
           description: Error response
           content:
@@ -1254,8 +1252,8 @@ paths:
               $ref: '#/components/schemas/DataApp'
         required: true
       responses:
-        '200':
-          description: Success
+        '201':
+          description: Created
           content:
             application/nipc+json:
               schema:
@@ -1325,13 +1323,8 @@ paths:
             format: uuid
             example: 0927ce7c-b258-4bfa-a345-bcc9f74385b4
       responses:
-        '200':
-          description: Success
-          content:
-            application/nipc+json:
-              schema:
-                allOf:
-                  - $ref: '#/components/schemas/DataApp'
+        '204':
+          description: Success, no content
         default:
           description: Error response
           content:
@@ -1555,6 +1548,15 @@ components:
         sdfName:
           type: string
           example: "https://example.com/heartrate#/sdfObject/healthsensor"
+
+ ## Event name reference for triggers
+    EventNameReference:
+      type: object
+      description: SDF global name of the event associated with a trigger
+      properties:
+        eventName:
+          type: string
+          example: "https://example.com/heartrate#/sdfObject/healthsensor/sdfEvent/fallDetected"
     
     SdfModel:
       allOf:
@@ -1713,6 +1715,7 @@ components:
             - https://www.iana.org/assignments/nipc-problem-types#extension-operation-not-executed
             - https://www.iana.org/assignments/nipc-problem-types#sdf-model-already-registered
             - https://www.iana.org/assignments/nipc-problem-types#sdf-model-in-use
+            - https://www.iana.org/assignments/nipc-problem-types#unsupported-uri-scheme
             - https://www.iana.org/assignments/nipc-problem-types#property-not-readable
             - https://www.iana.org/assignments/nipc-problem-types#property-read-failed
             - https://www.iana.org/assignments/nipc-problem-types#property-not-writable
@@ -1797,7 +1800,14 @@ components:
                 type: string
                 format: uuid
                 example: 0dc729d7-f6c3-491d-9b9d-e7176d2be243
-        - $ref: '#/components/schemas/FailureResponse'
+        - allOf:
+          - $ref: '#/components/schemas/FailureResponse'
+          - type: object
+            properties:
+              deviceId:
+                type: string
+                format: uuid
+                example: 9171ec16-e3c1-4ccf-ad23-b92a1a3f069d
 
     GroupEventStatusResponseArray:
       type: array
@@ -1806,11 +1816,14 @@ components:
     
     ActionResponse:
       required:
-        - action
+        - status
       type: object
       properties:
         status:
           type: string
+          enum:
+            - IN_PROGRESS
+            - COMPLETED
           example: COMPLETED
           description: |-
             Status of the action, can be IN_PROGRESS or COMPLETED
@@ -1836,9 +1849,9 @@ components:
     TriggerResponse:
       type: object
       allOf:
-        - $ref: '#/components/schemas/InstanceId'
-        - $ref: '#/components/schemas/SdfReference'
+        - $ref: '#/components/schemas/EventNameReference'
         - $ref: '#/components/schemas/Action'
+        - $ref: '#/components/schemas/InstanceId'
 
     TriggerStatusResponseArray:
       type: array
@@ -1854,7 +1867,7 @@ components:
               type: string
               format: uuid
               example: 0dc729d7-f6c3-491d-9b9d-e7176d2be243
-        - $ref: '#/components/schemas/SdfReference'
+        - $ref: '#/components/schemas/EventNameReference'
         - $ref: '#/components/schemas/Action'
 
     GroupTriggerStatusResponseArray:
