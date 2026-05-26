@@ -48,19 +48,19 @@ components:
           type: integer
           format: int32
           example: 0
-        properties:
+        attributes:
           type: array
           items:
-            $ref: '#/components/schemas/ProtocolInfo-Zigbee-Property'
+            $ref: '#/components/schemas/ProtocolInfo-Zigbee-Attribute'
 
-    ProtocolInfo-Zigbee-Property:
+    ProtocolInfo-Zigbee-Attribute:
       type: object
       properties:
         attributeID:
           type: integer
           format: int32
           example: 1
-        propertyType:
+        attributeType:
           type: integer
           format: int32
           example: 32
