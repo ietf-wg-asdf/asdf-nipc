@@ -57,12 +57,12 @@ zigbee-endpoint = {
 
 zigbee-cluster = {
   clusterID: uint,
-  ? properties: [* zigbee-property],
+  ? attributes: [* zigbee-attribute],
 }
 
-zigbee-property = {
+zigbee-attribute = {
   attributeID: uint,
-  propertyType: uint,
+  attributeType: uint,
 }
 
 zigbee-broadcast = {

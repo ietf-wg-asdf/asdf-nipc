@@ -7,8 +7,8 @@
           "clusters": [
             {
               "clusterID": 0,
-              "properties": [
-                { "attributeID": 1, "propertyType": 32 }
+              "attributes": [
+                { "attributeID": 1, "attributeType": 32 }
               ]
             }
           ]
