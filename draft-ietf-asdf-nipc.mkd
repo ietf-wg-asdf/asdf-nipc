@@ -1967,20 +1967,6 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
 ~~~
 [
   {
-    "data": h'02011A020A0C16FF4C001007721F41B0392078',
-    "timestamp": 1727484393,
-    "bleAdvertisement": {
-        "macAddress": "C1:5C:00:00:00:01",
-        "rssi": -25
-    }
-  }
-]
-~~~
-{: title="Non-Onboarded BLE Device Advertisement"}
-
-~~~
-[
-  {
     "data": h'434630374346303739453036',
     "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
     "timestamp": 1727484393,
@@ -2014,6 +2000,7 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
     "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
     "timestamp": 1727484393,
     "zigbeeSubscription": {
+        "type": "attribute_reporting",
         "endpointID": 1,
         "clusterID": 6,
         "attributeID": 12,
@@ -2023,6 +2010,39 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
 ]
 ~~~
 {: title="Zigbee Attribute Notification"}
+
+~~~
+[
+  {
+    "data": h'434630374346303739453036',
+    "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
+    "timestamp": 1727484393,
+    "zigbeeSubscription": {
+        "type": "write_event",
+        "endpointID": 1,
+        "clusterID": 6,
+        "attributeID": 12,
+        "attributeType": 1
+    }
+  }
+]
+~~~
+{: title="Zigbee Attribute Write Event"}
+
+~~~
+[
+  {
+    "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
+    "timestamp": 1727484393,
+    "zigbeeConnectionStatus": {
+        "connected": true,
+        "rssi": -55,
+        "lqi": 200
+    }
+  }
+]
+~~~
+{: title="Zigbee Connection status event"}
 
 # Examples
 
@@ -2545,7 +2565,8 @@ IANA is requested to register the following initial entries:
 | bleSubscription      | BLE GATT notification/indication                 | BleSubscription     | This document |
 | bleAdvertisement     | BLE advertisement data                           | BleAdvertisement    | This document |
 | bleConnectionStatus  | BLE device connection status changes             | BleConnectionStatus | This document |
-| zigbeeSubscription   | Zigbee attribute report subscription             | ZigbeeSubscription  | This document |
+| zigbeeSubscription   | Zigbee attribute report or write event           | ZigbeeSubscription  | This document |
+| zigbeeConnectionStatus | Zigbee device join/leave connection status     | ZigbeeConnectionStatus | This document |
 
 The CDDL definitions for these subscription types are provided in {{cddl-data-subscription}}.
 
