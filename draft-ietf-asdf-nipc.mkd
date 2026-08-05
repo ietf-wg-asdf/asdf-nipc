@@ -1,7 +1,7 @@
 ---
 v: 3
 
-title: An Application Layer Interface for Non-Internet-Connected Physical Components (NIPC)
+title: An Application Layer Interface for Non-Internet-connected Physical Components (NIPC)
 abbrev: NIPC
 docname: draft-ietf-asdf-nipc-20
 submissionType: IETF
@@ -105,9 +105,9 @@ A standardized Application Layer Gateway interface has the following benefits:
  3. Reduces time and operational cost to integrate new networks and devices.
  4. Allows applications to interact with devices in a protocol-neutral way, leveraging interaction models.
 
-## Non-IP Gateway
+## NIPC Gateway
 
-A Non-Internet-Connected Physical Components (NIPC) gateway is an application layer gateway (ALG) that implements APIs for applications to communicate with devices on different networks connected to the Gateway. These devices may leverage different protocols, IP based or non-IP based. NIPC APIs allow reading or writing properties of devices, invoking actions on devices, as well as enabling or disabling events on devices, by means of a supporting gateway, in a protocol-neutral way.
+A Non-Internet-connected Physical Components (NIPC) gateway is an application layer gateway (ALG) that implements APIs for applications to communicate with devices on different networks connected to the Gateway. These devices may leverage different protocols, IP based or non-IP based. Even when the device network uses IP, the ALG may still need to act as an intermediary, since the device network may not be directly reachable from the application network, may use a different overlay protocol than the one expected by applications, or may be subject to a different authorization model. NIPC APIs allow reading or writing properties of devices, invoking actions on devices, as well as enabling or disabling events on devices, by means of a supporting gateway, in a protocol-neutral way.
 
 In order to perform NIPC operations on a device, 2 prerequisites must be fulfilled:
 
@@ -163,7 +163,7 @@ capitals, as shown here.
 
 ## Glossary
 
- - NIPC: Non-Internet-Connected Physical Components, the application layer interface defined in this
+ - NIPC: Non-Internet-connected Physical Components, the application layer interface defined in this
    document.
  - NIPC Gateway: An application layer gateway that implements the NIPC
    interface.
@@ -289,7 +289,7 @@ Property operations allow clients to read and write values for SDF properties.
 An example of using a property API is reading the property temperature from a temperature sensor.
 
 Requests and responses use application/nipc+json unless another media type is negotiated via Content‑Type and Accept.
-When using JSON, binary property values are base64‑encoded with padding per {{Section 4 of !RFC4648}}.
+When using JSON, binary property values are base64‑encoded with padding per {{Section 4 of !RFC4648}}. Regardless of media type, the byte order of any multi-byte values within a binary payload is not specified by NIPC and is determined by the underlying protocol.
 Multiple properties MAY be read or written in a single request. When a single property is addressed via a query parameter, non‑JSON media types MAY be used for the payload.
 On success, the response returns either 200 with per‑property status (JSON) or 204 No Content for single, non‑JSON writes.
 
@@ -2517,13 +2517,13 @@ The well-known URI for NIPC is:
 
 ## Registries {#iana-registries}
 
-IANA is requested to create a "Non-Internet-Connected Physical Components
+IANA is requested to create a "Non-Internet-connected Physical Components
 (NIPC)" registry group, with the registries defined in this section.
 
 ### API extensions {#iana-api-ext}
 
 IANA is requested to create a new registry called "NIPC API extensions" in
-the "Non-Internet-Connected Physical Components (NIPC)" registry group.
+the "Non-Internet-connected Physical Components (NIPC)" registry group.
 
 The registration policy for this registry is Specification Required {{!RFC8126}}.
 
@@ -2548,7 +2548,7 @@ Following API extensions are described in this document:
 ### Data Subscription Types {#iana-data-subscription-types}
 
 IANA is requested to create a new registry called "NIPC Data Subscription
-Types" in the "Non-Internet-Connected Physical Components (NIPC)" registry
+Types" in the "Non-Internet-connected Physical Components (NIPC)" registry
 group.
 
 This registry tracks the subscription types used in the NIPC publish/subscribe
@@ -2579,7 +2579,7 @@ The CDDL definitions for these subscription types are provided in {{cddl-data-su
 ### NIPC Protocols {#iana-protocol-info-types}
 
 IANA is requested to create a new registry called "NIPC Protocols" in the
-"Non-Internet-Connected Physical Components (NIPC)" registry group.
+"Non-Internet-connected Physical Components (NIPC)" registry group.
 
 This registry tracks the protocols used in the `protocolInformation` object
 for NIPC connection management and service discovery operations. Each protocol
