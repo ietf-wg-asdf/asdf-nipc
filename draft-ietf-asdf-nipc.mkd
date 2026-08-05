@@ -289,7 +289,7 @@ Property operations allow clients to read and write values for SDF properties.
 An example of using a property API is reading the property temperature from a temperature sensor.
 
 Requests and responses use application/nipc+json unless another media type is negotiated via Content‑Type and Accept.
-When using JSON, binary property values are base64‑encoded with padding per {{Section 5 of !RFC4648}}.
+When using JSON, binary property values are base64‑encoded with padding per {{Section 4 of !RFC4648}}.
 Multiple properties MAY be read or written in a single request. When a single property is addressed via a query parameter, non‑JSON media types MAY be used for the payload.
 On success, the response returns either 200 with per‑property status (JSON) or 204 No Content for single, non‑JSON writes.
 
@@ -813,7 +813,7 @@ The NIPC Gateway must match the SDF global name against the registered SDF model
 These APIs allow applications to read and update device properties. If the underlying protocol requires a connection, the gateway establishes it implicitly for the operation; when an explicit connection is already active, operations reuse it without modification.
 
 Requests and responses support content negotiation via Content-Type and Accept.
-When using "application/nipc+json", payloads must follow the examples above. Binary property values must be base64‑encoded with padding per {{Section 5 of !RFC4648}} in the "value" field. For other media types, payload semantics must follow the selected media type.
+When using "application/nipc+json", payloads must follow the examples above. Binary property values must be base64‑encoded with padding per {{Section 4 of !RFC4648}} in the "value" field. For other media types, payload semantics must follow the selected media type.
 
 ### Update one or multiple values
 
@@ -839,7 +839,7 @@ Request Body:
 
  -or-
 
-  - If the query parameter propertyName is NOT provided, the request body must be an array of properties to update, each containing a property and a value. The value attribute contains the raw binary data, which must be encoded in base64 with padding as per {{Section 5 of !RFC4648}}.
+  - If the query parameter propertyName is NOT provided, the request body must be an array of properties to update, each containing a property and a value. The value attribute contains the raw binary data, which must be encoded in base64 with padding as per {{Section 4 of !RFC4648}}.
 
 ~~~~ cddl
 {::include-fold cddl/api/property_value_array.cddl}
@@ -908,7 +908,7 @@ Query Parameters:
 
 Response:
 
- - If the Accept header is set to `application/nipc+json`, the response must be an array of properties, each containing a property and a value. The value must be the raw binary data read from the property, encoded in base64 with padding as per {{Section 5 of !RFC4648}}. The array must contain objects with 2 attributes:
+ - If the Accept header is set to `application/nipc+json`, the response must be an array of properties, each containing a property and a value. The value must be the raw binary data read from the property, encoded in base64 with padding as per {{Section 4 of !RFC4648}}. The array must contain objects with 2 attributes:
        - property: The property that was read.
        - value: The bytes that were read in base64 encoding
 
@@ -2463,7 +2463,7 @@ This section provides guidance to the Internet Assigned Numbers Authority (IANA)
 
 ## Media Type Registration {#iana-media-types}
 
-This document registers the "application/nipc+json" media type  for messages of the NIPC APIs defined in this document carrying parameters encoded in JSON.
+IANA is requested to add the following media type to the "Media Types" registry {{!IANA.media-types}}. This document registers the "application/nipc+json" media type for messages of the NIPC APIs defined in this document carrying parameters encoded in JSON.
 
 Type name: application
 
@@ -2475,7 +2475,7 @@ Optional parameters: none
 
 Encoding considerations: Encoding considerations are identical to those specified for the "application/json" media type.
 
-Security considerations: See the {{security-considerations}} section of this document.
+Security considerations: See {{security-considerations}} of this document.
 
 Interoperability considerations: none
 
@@ -2495,19 +2495,35 @@ Additional information:
 
 - Macintosh file type code(s): none
 
-Person & email address to contact for further information:
+Person & email address to contact for further information: ASDF WG mailing list (asdf@ietf.org), or IETF Applications and Real-Time Area (art@ietf.org)
 
 Intended usage: LIMITED USE
 
 Restrictions on usage: To be used for NIPC APIs as defined in this document.
 
-Author:
+Author/Change controller: IETF
 
-Change controller: IETF
+## Well-known URIs {#iana-well-known}
 
-## API extensions {#iana-api-ext}
+IANA is requested to register the following well-known URI in the "Well-Known URIs" registry {{!IANA.well-known-uris}} as defined by {{!RFC8615}}:
 
-IANA is requested to create a new registry called "NIPC API extensions".
+| URI Suffix | Change Controller | Specification Document            |
+|------------|-------------------|-----------------------------------|
+| nipc       | IETF              | This document, [](#paths-general) |
+
+The well-known URI for NIPC is:
+
+    /.well-known/nipc
+
+## Registries {#iana-registries}
+
+IANA is requested to create a "Non-Internet-Connected Physical Components
+(NIPC)" registry group, with the registries defined in this section.
+
+### API extensions {#iana-api-ext}
+
+IANA is requested to create a new registry called "NIPC API extensions" in
+the "Non-Internet-Connected Physical Components (NIPC)" registry group.
 
 The registration policy for this registry is Specification Required {{!RFC8126}}.
 
@@ -2529,21 +2545,11 @@ Following API extensions are described in this document:
 | /extensions/{id}/events/conditional          | Event conditional API| Enable an event until a condition is fulfilled | {{NIPCextensions}} |
 | /extensions/{id}/transmit                 | Transmit API         | Transmits a payload to a device                | {{NIPCextensions}} |
 
-## Well-known URIs {#iana-well-known}
+### Data Subscription Types {#iana-data-subscription-types}
 
-IANA is requested to register the following well-known URI in the "Well-Known URIs" registry as defined by {{!RFC8615}}:
-
-| URI Suffix | Change Controller | Specification Document            |
-|------------|-------------------|-----------------------------------|
-| nipc       | IETF              | This document, [](#paths-general) |
-
-The well-known URI for NIPC is:
-
-    /.well-known/nipc
-
-## Data Subscription Types {#iana-data-subscription-types}
-
-IANA is requested to create a new registry called "NIPC Data Subscription Types".
+IANA is requested to create a new registry called "NIPC Data Subscription
+Types" in the "Non-Internet-Connected Physical Components (NIPC)" registry
+group.
 
 This registry tracks the subscription types used in the NIPC publish/subscribe
 interface for streaming event data from devices. Each subscription type defines
@@ -2570,9 +2576,10 @@ IANA is requested to register the following initial entries:
 
 The CDDL definitions for these subscription types are provided in {{cddl-data-subscription}}.
 
-## NIPC Protocols {#iana-protocol-info-types}
+### NIPC Protocols {#iana-protocol-info-types}
 
-IANA is requested to create a new registry called "NIPC Protocols".
+IANA is requested to create a new registry called "NIPC Protocols" in the
+"Non-Internet-Connected Physical Components (NIPC)" registry group.
 
 This registry tracks the protocols used in the `protocolInformation` object
 for NIPC connection management and service discovery operations. Each protocol
@@ -2601,7 +2608,7 @@ with following URL: [](https://www.iana.org/assignments/nipc-problem-types).
 
 The registration policy for this registry is Specification Required {{!RFC8126}}.
 
-Registrations MUST use the prefix []("https://www.iana.org/assignments/nipc-problem-types#") for the type URI.
+Registrations MUST use the prefix "[](https://www.iana.org/assignments/nipc-problem-types#)" for the type URI.
 
 The registration requests MUST use the template defined in {{Section 4.2 of RFC9457}}.
 
