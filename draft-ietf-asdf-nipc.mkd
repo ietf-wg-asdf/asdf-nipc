@@ -185,6 +185,9 @@ capitals, as shown here.
  - Descriptor (BLE): Metadata element attached to a characteristic.
  - Bonding (BLE): Procedure to establish trusted, reusable security keys.
  - Service Discovery (BLE): Procedure to enumerate GATT services/characteristics/descriptors.
+ - Endpoint (Zigbee): Addressable application entity on a Zigbee device, grouping clusters.
+ - Cluster (Zigbee): Group of related attributes and commands defined by the Zigbee Cluster Library.
+ - Attribute (Zigbee): Zigbee Cluster Library data element, supporting read/write/report access.
  - Device ID / Group ID: UUID identifying a device or a group of devices.
  - UUID: Universally unique identifier (128-bit).
  - Data Application / Data App: Registered application receiving streamed event data.
