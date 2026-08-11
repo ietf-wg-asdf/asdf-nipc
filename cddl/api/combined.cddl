@@ -168,7 +168,7 @@ PropertyValueArray = [* PropertyValue]
 ; Minimal PropertyValue shape (matches allOf of Property + Value)
 PropertyValue = {
   property: text,        ; SDF global name of the property
-  value: b64text         ; base64-encoded bytes (RFC 4648 Section 5)
+  value: b64text         ; base64-encoded bytes (RFC 4648 Section 4)
 }
 
 ; Helper type for base64-with-padding encoded text
@@ -283,7 +283,10 @@ zigbee-cluster = {
 zigbee-attribute = {
   attributeID: uint,
   attributeType: uint,
+  ? flags: [* zigbee-flag],
 }
+
+zigbee-flag = "read" / "write" / "report"
 
 zigbee-broadcast = {
   zigbee: {

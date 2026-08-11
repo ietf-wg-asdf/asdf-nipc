@@ -64,6 +64,17 @@ components:
           type: integer
           format: int32
           example: 32
+        flags:
+          type: array
+          example:
+          - read
+          - report
+          items:
+            type: string
+            enum:
+              - read
+              - write
+              - report
           
 ## Protocol Information for Zigbee broadcast
     ProtocolInfo-Zigbee-Broadcast:

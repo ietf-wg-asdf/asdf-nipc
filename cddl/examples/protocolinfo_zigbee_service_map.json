@@ -8,7 +8,11 @@
             {
               "clusterID": 0,
               "attributes": [
-                { "attributeID": 1, "attributeType": 32 }
+                {
+                  "attributeID": 1,
+                  "attributeType": 32,
+                  "flags": ["read", "report"]
+                }
               ]
             }
           ]

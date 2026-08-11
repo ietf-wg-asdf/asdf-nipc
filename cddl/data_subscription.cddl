@@ -16,6 +16,7 @@ subscription = (
   bleAdvertisement: BleAdvertisement //
   bleConnectionStatus: BleConnectionStatus //
   zigbeeSubscription: ZigbeeSubscription //
+  zigbeeConnectionStatus: ZigbeeConnectionStatus //
   $$subscription-extension
 )
 
@@ -36,8 +37,18 @@ BleConnectionStatus = {
 }
 
 ZigbeeSubscription = {
-  endpointID: int,
-  clusterID: int,
-  attributeID: int,
-  attributeType: int
+  type: "attribute_reporting" / "write_event",
+  endpointID: uint,
+  clusterID: uint,
+  attributeID: uint,
+  attributeType: uint,
+  ? profileID: uint,
+  ? manufacturerCode: uint
+}
+
+ZigbeeConnectionStatus = {
+  connected: bool,   ; true = joined, false = left the network
+  ? reason: int,
+  ? rssi: int,       ; received signal strength indicator, in dBm
+  ? lqi: uint        ; link quality indicator (0-255)
 }
