@@ -2035,6 +2035,23 @@ This section contains a few examples of the DataSubscription struct in CBOR diag
 ~~~
 [
   {
+    "data": h'010001',
+    "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
+    "timestamp": 1727484393,
+    "zigbeeClusterCommand": {
+        "endpointID": 1,
+        "clusterID": 6,
+        "commandID": 1,
+        "direction": "client_to_server"
+    }
+  }
+]
+~~~
+{: title="Zigbee Cluster Command"}
+
+~~~
+[
+  {
     "deviceID": "1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30",
     "timestamp": 1727484393,
     "zigbeeConnectionStatus": {
@@ -2575,6 +2592,7 @@ IANA is requested to register the following initial entries:
 | bleAdvertisement     | BLE advertisement data                           | BleAdvertisement    | This document |
 | bleConnectionStatus  | BLE device connection status changes             | BleConnectionStatus | This document |
 | zigbeeSubscription   | Zigbee attribute report or write event           | ZigbeeSubscription  | This document |
+| zigbeeClusterCommand | Zigbee cluster command                           | ZigbeeClusterCommand | This document |
 | zigbeeConnectionStatus | Zigbee device join/leave connection status     | ZigbeeConnectionStatus | This document |
 
 The CDDL definitions for these subscription types are provided in {{cddl-data-subscription}}.
