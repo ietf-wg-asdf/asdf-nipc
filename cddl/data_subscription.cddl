@@ -16,6 +16,7 @@ subscription = (
   bleAdvertisement: BleAdvertisement //
   bleConnectionStatus: BleConnectionStatus //
   zigbeeSubscription: ZigbeeSubscription //
+  zigbeeClusterCommand: ZigbeeClusterCommand //
   zigbeeConnectionStatus: ZigbeeConnectionStatus //
   $$subscription-extension
 )
@@ -42,6 +43,15 @@ ZigbeeSubscription = {
   clusterID: uint,
   attributeID: uint,
   attributeType: uint,
+  ? profileID: uint,
+  ? manufacturerCode: uint
+}
+
+ZigbeeClusterCommand = {
+  endpointID: uint,
+  clusterID: uint,
+  commandID: uint,
+  direction: "client_to_server" / "server_to_client",
   ? profileID: uint,
   ? manufacturerCode: uint
 }
