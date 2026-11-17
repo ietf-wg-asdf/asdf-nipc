@@ -66,7 +66,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events/conditional/status?eventName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfEvent%2Ftemperature&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events/conditional/status?eventName=https%3A%2F%2Fexample.com%2Fthermostat%23%2FsdfObject%2Fthermostat%2FsdfEvent%2Ftemperature&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
               description: |-
                 URL to get the conditional event status
             Retry-After:
@@ -98,7 +98,7 @@ paths:
                         summary: Success
                         value:
                           id: 02ee282c-8915-4b2e-bbd2-88966773134a
-                          event: https://example.com/heartrate#/sdfObject/thermostat/sdfEvent/temperature
+                          event: https://example.com/thermostat#/sdfObject/thermostat/sdfEvent/temperature
                           value: dGVzdA==
                       failedResponse:
                         summary: Failed
@@ -108,7 +108,7 @@ paths:
                           type: https://www.iana.org/assignments/nipc-problem-types#invalid-id
                           title: Invalid ID
                           detail: "Invalid request"
-                          event: https://example.com/heartrate#/sdfObject/thermostat/sdfEvent/temperature
+                          event: https://example.com/thermostat#/sdfObject/thermostat/sdfEvent/temperature
                           value: dGVzdA==
                           
               responses:
@@ -215,7 +215,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events/conditional?eventName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfEvent%2Ftemperature&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/events/conditional?eventName=https%3A%2F%2Fexample.com%2Fthermostat%23%2FsdfObject%2Fthermostat%2FsdfEvent%2Ftemperature&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
               description: URL to get the conditional event response
           content:
             application/json:

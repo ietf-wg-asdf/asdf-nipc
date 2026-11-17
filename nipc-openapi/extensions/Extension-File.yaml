@@ -58,7 +58,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware"
+          example: "https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/firmware"
       requestBody:
         content:
           application/json:
@@ -74,7 +74,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/file/status?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/file/status?propertyName=https%3A%2F%2Fexample.com%2Fthermostat%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
               description: |-
                 URL to get the file write status
             Retry-After:
@@ -106,7 +106,7 @@ paths:
                         summary: Success
                         value:
                           id: 02ee282c-8915-4b2e-bbd2-88966773134a
-                          property: https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware
+                          property: https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/firmware
                       failedResponse:
                         summary: Failed
                         value:
@@ -115,7 +115,7 @@ paths:
                           type: https://www.iana.org/assignments/nipc-problem-types#invalid-id
                           title: Invalid ID
                           detail: "Invalid request"
-                          property: https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware
+                          property: https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/firmware
               responses:
                 '200':
                   description: Success
@@ -144,7 +144,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware"
+          example: "https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/firmware"
       - name: instanceId
         in: query
         description: |-
@@ -189,7 +189,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware"
+          example: "https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/firmware"
       - name: instanceId
         in: query
         description: |-
@@ -212,7 +212,7 @@ paths:
             Location:
               schema:
                 type: string
-                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fheartrate%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
+                example: /extensions/1d3b2c36-8a65-45a6-87c1-bcdbe0a32e30/properties/file?propertyName=https%3A%2F%2Fexample.com%2Fthermostat%23%2FsdfObject%2Fthermostat%2FsdfProperty%2Ffirmware&instanceId=02ee282c-8915-4b2e-bbd2-88966773134a
               description: URL to get the file write response
           content:
             application/json:

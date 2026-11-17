@@ -81,7 +81,7 @@ paths:
         allowReserved: true
         schema:
           type: string
-          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature"
+          example: "https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/temperature"
       requestBody:
         description: |-
           The value to be written to the property or properties.
@@ -147,7 +147,7 @@ paths:
           type: array
           items:
             type: string
-            example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature"
+            example: "https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/temperature"
       responses:
         '200':
           description: Success
@@ -1390,7 +1390,7 @@ components:
       properties:
         property:
           type: string
-          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/temperature"
+          example: "https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/temperature"
 
 ## A value
     Value:

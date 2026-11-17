@@ -28,8 +28,11 @@ components:
                   - $ref: '#/components/schemas/ProtocolInfo-BLE-Service'
             cached:
               description: |-
-                If we can cache information, then device doesn't need
-                to be rediscovered before every connected.
+                If true, use cached service information when available and
+                discover services only if they are not present in the cache.
+                If false, discover services for this request regardless of
+                the cache. Discovered service information is cached in
+                either case.
               type: boolean
               default: false
             cacheExpiryDuration:
