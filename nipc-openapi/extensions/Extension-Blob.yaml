@@ -58,7 +58,7 @@ paths:
         required: true
         schema:
           type: string
-          example: "https://example.com/heartrate#/sdfObject/thermostat/sdfProperty/firmware"
+          example: "https://example.com/thermostat#/sdfObject/thermostat/sdfProperty/firmware"
       requestBody:
         content:
           application/json:
